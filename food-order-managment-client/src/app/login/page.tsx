@@ -5,8 +5,25 @@ import LoginImage1 from "@/../public/login-1.jpeg";
 import LoginImage2 from "@/../public/login-2.png";
 import LoginImage3 from "@/../public/login-3.svg";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import loginAxios from "./login";
+import Loader from "../components/Loader";
 
 const Login = () => {
+
+
+  const { error, isError, isIdle, isSuccess, status, data, isPending, mutate } = useMutation({
+    mutationFn: loginAxios,
+    mutationKey:["login"],
+    onSuccess: (data: any) => {
+      localStorage.setItem("token", data.accessToken);
+    },
+    onError: (error) => {
+      setPasswordInvalid(true);
+    },
+  })
+
+
   const images = [
     {
       image: LoginImage1,
@@ -27,6 +44,7 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ phoneNumber: "", password: "" });
+  const [passwordInvalid, setPasswordInvalid] = useState(false);
 
   const validateFields = () => {
     const newErrors = { phoneNumber: "", password: "" };
@@ -59,7 +77,7 @@ const Login = () => {
     e.preventDefault();
     if (validateFields()) {
       console.log("Form submitted successfully");
-      // Proceed with form submission logic
+      mutate({username:phoneNumber,password})
     } else {
       console.log("Validation errors:", errors);
     }
@@ -67,6 +85,7 @@ const Login = () => {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
+    setPasswordInvalid(false);
     if (errors.phoneNumber) {
       setErrors((prevErrors) => ({ ...prevErrors, phoneNumber: "" }));
     }
@@ -74,12 +93,13 @@ const Login = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    setPasswordInvalid(false);
     if (errors.password) {
       setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
     }
   };
 
-  return (
+  return !isPending?(
     <div className="w-screen h-screen flex">
       <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
         <h3 className=" font-poppins text-2xl">Welcome Back</h3>
@@ -90,9 +110,9 @@ const Login = () => {
               className={
                 student
                   ? "px-12 py-2 rounded-full text-gray-600 hover:text-black hover:bg-gray-100 font-medium focus:outline-none transition-all duration-300"
-                  : "px-12 py-2 rounded-full bg-red-600 text-white font-medium focus:outline-none transition-all duration-300"
+                  : "px-12 py-2 rounded-full bg-[#C57E2c] text-white font-medium focus:outline-none transition-all duration-300"
               }
-              
+
               onClick={(e) => handleLoginSelection(e)}
             >
               Student
@@ -112,12 +132,20 @@ const Login = () => {
         </div>
         <div className="w-[60%] flex flex-col gap-6 pt-5">
           <div>
+            <div className={passwordInvalid?`flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 `:`hidden`} role="alert">
+              <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+              </svg>
+              <span className="sr-only">Info</span>
+              <div>
+                <span className="font-medium">Invalid</span> Please check the username and password.
+              </div>
+            </div>
             <input
               type="text"
               id="phone-number"
-              className={`bg-gray-50 border ${
-                errors.phoneNumber ? "border-red-500" : "border-gray-300"
-              } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+              className={`bg-gray-50 border ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               placeholder="Phone Number"
@@ -132,9 +160,8 @@ const Login = () => {
               <input
                 type={isPasswordVisible ? "text" : "password"}
                 id="password"
-                className={`bg-gray-50 border ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10`}
+                className={`bg-gray-50 border ${errors.password ? "border-red-500" : "border-gray-300"
+                  } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10`}
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Password"
@@ -157,7 +184,7 @@ const Login = () => {
           className={
             student
               ? "bg-transparent hover:bg-gray-500 w-[60%] mt-5 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-black hover:border-transparent rounded-lg"
-              : "bg-transparent hover:bg-red-500 w-[60%] mt-5 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded-lg"
+              : "bg-transparent hover:bg-[#C57E2c] w-[60%] mt-5 text-[#C57E2c] font-semibold hover:text-white py-2 px-4 border border-[#C57E2c] hover:border-transparent rounded-lg"
           }
           onClick={handleSubmit}
         >
@@ -174,7 +201,9 @@ const Login = () => {
         ></Image>
       </div>
     </div>
-  );
+  ):(
+    <Loader/>
+  )
 };
 
 export default Login;
