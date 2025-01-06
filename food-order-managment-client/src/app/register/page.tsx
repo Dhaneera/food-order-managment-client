@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 
 type RegisterPayload = {
   phoneNumber: string;
+  name: string;
   password: string;
   role: string;
 };
@@ -14,13 +15,20 @@ const statue = "/login-2.png";
 
 const RegisterPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [name,setName]= useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+
+
+
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
     if (!phoneNumber) newErrors.phoneNumber = "Phone number is required.";
+    if (!/^\d{10}$/.test(phoneNumber)) newErrors.phoneNumber = "Invalid phone number.";
+    if (!name) newErrors.name = "Name is required.";
+    if (!password) newErrors.password = "Password is required.";
     if (!password || password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
     if (!role) newErrors.role = "Role is required.";
@@ -46,13 +54,13 @@ const RegisterPage = () => {
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      mutate({ phoneNumber, password, roleType:role });
+      mutate({ phoneNumber,name, password, roleType:role });
     }
   };
-
+  
   return (
     <div className="flex h-screen font-poppins">
-      <div className="w-1/2 h-full">
+      <div className="w-1/2 h-full max-lg:hidden">
         <Image
           src={statue}
           alt="Statue"
@@ -61,7 +69,7 @@ const RegisterPage = () => {
           height={1000}
         />
       </div>
-      <div className="w-1/2 h-full flex items-center justify-center bg-white">
+      <div className="w-1/2 h-full flex items-center justify-center bg-white max-lg:w-screen">
         <form className="w-3/4 max-w-md space-y-6" onSubmit={handleSignup}>
           <div>
             <h1 className="text-3xl font-bold mb-2">Let's get your food</h1>
@@ -83,6 +91,21 @@ const RegisterPage = () => {
             />
             {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
           </div>
+          <div>
+            
+          <label htmlFor='name' className="block text-sm font-medium text-gray-700 mb-2">
+              Username
+            </label>
+          <input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={`w-full border px-4 py-2 rounded-md shadow-sm ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
