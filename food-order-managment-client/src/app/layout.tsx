@@ -37,7 +37,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${poppins.variable} antialiased w-[98%] h-screen`}
       >
         <ReactQueryProvider>
-          <Header/>
         {children}
         </ReactQueryProvider>
       </body>
