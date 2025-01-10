@@ -7,7 +7,7 @@ import LoginImage3 from "@/../public/login-3.svg";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import loginAxios from "./login";
-import Loader from "../components/Loader";
+import Loader from "../../components/Loader";
 
 const Login = () => {
 
@@ -204,6 +204,6 @@ const Login = () => {
   ):(
     <Loader/>
   )
-};
-
+  
+}
 export default Login;

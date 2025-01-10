@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono,Poppins } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "../app/lib/react-query-client"
+import Header from "./components/Header";
 
 
 
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${poppins.variable} antialiased`}
+        className={`${geistSans.variable} ${poppins.variable} antialiased w-[98%] h-screen`}
       >
         <ReactQueryProvider>
         {children}
