@@ -28,6 +28,7 @@ const tableHeader: tableInterface = [
   },
 ];
 
+
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [tableData, setTableData] = useState([]);
