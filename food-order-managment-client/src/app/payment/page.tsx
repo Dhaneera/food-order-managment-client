@@ -28,6 +28,7 @@ const tableHeader:tableInterface = [
   },
 ];
 
+
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [tableData, setTableData] = useState([]);
@@ -40,7 +41,9 @@ const Page = () => {
   const fetchData = async (page: number) => {
     setLoading(true);
     try {
-      const data = await ordersAxios(page , rowsPerPage); // Page index starts at 0
+
+      const data = await ordsesAxios(page , rowsPerPage); 
+
       setTableData(data.content);
       setTotalPages(data.totalPages);
     } catch (error) {
