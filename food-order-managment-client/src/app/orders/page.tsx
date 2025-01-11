@@ -96,6 +96,8 @@ const Page = () => {
             </div>
             <div className='w-full'>
                 <div className="p-6 bg-white h-full rounded-lg shadow-md">
+                    {data?.content.length==0?
+                    <div className='w-full h-96 flex justify-center items-center'><p className='text-center text-2xl font-bold'>No Orders To Show</p></div>:
                     <table className="w-full border-collapse">
                         <TableHeader header={tableHeader}></TableHeader>
                         <tbody>
@@ -106,6 +108,7 @@ const Page = () => {
                             })}
                         </tbody>
                     </table>
+                }
                 </div>
             </div>
             <div className='w-full flex gap-5 py-5 justify-center items-center'>
