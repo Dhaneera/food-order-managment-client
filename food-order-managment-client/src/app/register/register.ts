@@ -1,17 +1,31 @@
 import axios from "axios";
-import { Console } from "console";
 
 type RegisterPayload = {
-    phoneNumber: string;
-    name: string;
-    password: string;
-    roleType: string;
-  };
+  phoneNumber: string;
+  name: string;
+  password: string;
+  roleType: string;
+};
+
+const registerAxios = async (payload: RegisterPayload) => {
+  console.log(payload);
+  console.log(process.env.NEXT_PUBLIC_BASE_URL);
   
-  const registerAxios = async (payload: RegisterPayload) => {
-    console.log(payload)
-    console.log(process.env.NEXT_PUBLIC_BASE_URL);
-    axios.post(process.env.NEXT_PUBLIC_BASE_URL+"/api/auth/register",payload).then((res:any)=> console.log(res.data))
-  };
-  
-  export default registerAxios;
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`,
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response.data);
+  } catch (error) {
+    console.error("Registration error:", error.response || error);
+  }
+};
+
+export default registerAxios;

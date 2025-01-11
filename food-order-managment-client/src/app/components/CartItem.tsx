@@ -4,7 +4,7 @@ import img from '../../../public/breakfast.png';
 
 const CartItem = ({ cartItems, subtotal }:any) => {
   return (
-    <div className="w-full h-full px-3 flex gap-2 flex-col justify-center items-center">
+    <div className="w-full h-full px-3 flex gap-2 flex-col py-10">
       {cartItems.map((item:any, index:any):any => (
         <div
           key={index}

@@ -47,10 +47,10 @@ const Page = () => {
   }
 
   return (
-    <div className="w-full flex flex-col ml-6">
+    <div className="w-full flex flex-col ml-6 h-screen">
       <Header />
-      <div className="w-full flex">
-        <div className="lg:w-[52%] max-lg:align-middle w-full mt-5">
+      <div className="w-full flex h-full">
+        <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 h-full">
           <h1 className="font-sans font-bold text-3xl">Place Order</h1>
           <div className="mt-5 gap-5 flex-col flex w-full">
             <div className="gap-5 flex">
