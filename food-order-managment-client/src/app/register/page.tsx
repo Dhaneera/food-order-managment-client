@@ -46,8 +46,7 @@ const RegisterPage = () => {
       setErrors({});
 
       localStorage.setItem("token", data.accessToken);
-      alert("Signup successful!");
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     },
     onError: () => {
       setuserInvalid(true);
@@ -149,8 +148,8 @@ const RegisterPage = () => {
               <option value="" disabled>
                 Select Role
               </option>
-              <option value="admin">Staff</option>
-              <option value="admin">Piriven Student</option>
+              <option value="staff">Staff</option>
+              <option value="piriven">Piriven Student</option>
               <option value="student">Student</option>
             </select>
             {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role}</p>}
