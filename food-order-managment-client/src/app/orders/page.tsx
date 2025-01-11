@@ -58,7 +58,7 @@ const Page = () => {
         {
             id: "4a2a3e8a-fb2f-4e09-b96f-02800e7ac0a6",
             name: "Dinner Combo",
-            status: "Pending",
+            status: 'Complete',
             price: "29.0",
             createdBy: "JohnDoe",
             createdAt: "2025-01-10T18:30:00",
@@ -128,14 +128,15 @@ const Page = () => {
 
     let tableRows: { style: string; cellData: { isButton: string; text: string; style: string }[] }[] = [];
     mock_data.map((obj, index) => {
+        let status= obj.status;
         tableRows.push({
             style: "", cellData: [{
-                isButton: 'Success',
+                isButton: 'Complete',
                 text: obj.id,
                 style: ''
             },
             {
-                isButton: 'Pending',
+                isButton: '',
                 text: obj.price,
                 style: ''
             }
@@ -149,9 +150,9 @@ const Page = () => {
                 isButton: '',
                 text: obj.orderedAt,
                 style: ''
-            }
-                , {
-                isButton: 'Rejected',
+            },
+            {
+                isButton: status,
                 text: obj.status,
                 style: 'bg-[#faeee6] px-3 py-2'
             }]

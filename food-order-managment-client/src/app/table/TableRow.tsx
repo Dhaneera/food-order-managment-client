@@ -6,7 +6,7 @@ const TableRow = ({cellData,...props}:any) => {
   return (
     <tr className={`text-sm text-gray-700 border-b hover:bg-gray-50 max-h-1/2 ${props.styles}`}>
         {cellData.map((key:any,index:any)=>{
-            if(key.isButton=='Success'){
+            if(key.isButton=='Complete'){
                 return(
                     
                     <TableButton key={index} text={key.text} styles={key.style} color='green'/>
