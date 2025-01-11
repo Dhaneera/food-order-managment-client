@@ -24,7 +24,7 @@ const registerAxios = async (payload: RegisterPayload) => {
     );
     console.log(response.data);
   } catch (error) {
-    console.error("Registration error:", error.response || error);
+  
   }
 };
 
