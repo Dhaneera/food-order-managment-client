@@ -1,7 +1,7 @@
 import axios, { Axios } from "axios";
 
 
-type Order = {
+export type Order = {
     id: string;
     name: string;
     status: string;
@@ -11,7 +11,7 @@ type Order = {
     orderedAt: string;
   };
   
-  type Pageable = {
+export type Pageable = {
     pageNumber: number;
     pageSize: number;
     offset: number;
@@ -24,7 +24,7 @@ type Order = {
     };
   };
   
-  type OrderResponse = {
+export type OrderResponse = {
     content: Order[];
     pageable: Pageable;
     totalPages: number;
@@ -37,12 +37,12 @@ type Order = {
     first: boolean;
     empty: boolean;
   };
-  const ordsesAxios = async (pageNumber = 0, pageSize = 10): Promise<OrderResponse> => {
+  const ordersAxios = async (pageNumber = 0, pageSize = 10): Promise<OrderResponse> => {
     try {
       const response = await axios.get<OrderResponse>(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`,
         {
-          params: { page: pageNumber, size: pageSize },
+          params: { page: pageNumber-1, size: pageSize },
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
@@ -57,4 +57,4 @@ type Order = {
     }
   };
 
-  export default ordsesAxios;
+  export default ordersAxios;

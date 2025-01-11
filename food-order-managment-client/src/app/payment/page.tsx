@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import TableHeader from "../table/TableHeader";
 import tableInterface from "../table/TableInteface";
 import TableRow from "../table/TableRow";
-import ordsesAxios from "./orders";
+import ordersAxios from "./orders";
 
-const tableHeader: tableInterface = [
+const tableHeader:tableInterface = [
   {
     width: "25%",
     text: "Payment ID",
@@ -40,7 +40,7 @@ const Page = () => {
   const fetchData = async (page: number) => {
     setLoading(true);
     try {
-      const data = await ordsesAxios(page , rowsPerPage); // Page index starts at 0
+      const data = await ordersAxios(page , rowsPerPage); // Page index starts at 0
       setTableData(data.content);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -67,7 +67,7 @@ const Page = () => {
     ],
   }));
 
-  // Handle pagination controls
+ 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
