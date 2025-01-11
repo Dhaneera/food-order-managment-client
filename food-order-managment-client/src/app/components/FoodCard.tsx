@@ -29,7 +29,7 @@ const FoodCard = ({
   };
 
   return (
-    <div className="w-[95%] h-[20%] flex py-4 shadow-lg rounded-lg">
+    <div className="w-[95%] bg-white h-[20%] flex py-4 shadow-lg rounded-lg">
       <div className="w-[30%]">
         <Image src={image} alt={name} className="scale-125 py-2 px-4" />
       </div>

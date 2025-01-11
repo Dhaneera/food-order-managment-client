@@ -4,7 +4,7 @@ import TableButton from './TableButton'
 
 const TableRow = ({cellData,...props}:any) => {
   return (
-    <tr className={`text-sm text-gray-700 border-b hover:bg-gray-50 max-h-1/2 ${props.styles}`}>
+    <tr className={`text-sm text-gray-700   border-b-2 hover:bg-gray-50 max-h-1/2 ${props.styles}`}>
         {cellData.map((key:any,index:any)=>{
             if(key.isButton=='Complete'){
                 return(

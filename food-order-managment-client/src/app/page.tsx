@@ -122,7 +122,7 @@ const Page = () => {
       )}
     </div>
     </div>
-      <div className="w-full flex h-full">
+      <div className="w-full flex h-full max-lg:flex-col">
         <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 h-full">
           <h1 className="font-sans font-bold text-3xl">Place Order</h1>
           <div className="mt-5 gap-5 flex-col flex w-full">

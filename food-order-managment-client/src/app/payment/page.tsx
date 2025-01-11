@@ -4,6 +4,7 @@ import TableHeader from "../table/TableHeader";
 import tableInterface from "../table/TableInteface";
 import TableRow from "../table/TableRow";
 import ordersAxios from "./orders";
+import Header from "../components/Header";
 
 const tableHeader:tableInterface = [
   {
@@ -42,7 +43,7 @@ const Page = () => {
     setLoading(true);
     try {
 
-      const data = await ordsesAxios(page , rowsPerPage); 
+      const data = await ordersAxios(page , rowsPerPage); 
 
       setTableData(data.content);
       setTotalPages(data.totalPages);
@@ -65,7 +66,7 @@ const Page = () => {
     cellData: [
       { isButton: "Complete", text: obj.id, style: "" },
       { isButton: "", text: obj.name, style: "" },
-      { isButton: "", text: `$${obj.price}`, style: "" },
+      { isButton: "", text: `$${obj.price}`, style: "py-6" },
       { isButton: obj.status, text: obj.status, style: "px-3 py-2" },
     ],
   }));
@@ -81,11 +82,12 @@ const Page = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col">
-      <div className="border-b-2 flex py-3 justify-between px-3">
-        <h3 className="font-sans text-3xl font-semibold px-3 py-2">My Payments</h3>
+      <div className="flex py-3 justify-between px-3">
+        <Header />
       </div>
-      <div className="w-full">
-        <div className="p-6 bg-white rounded-lg shadow-md">
+      <div className="w-full flex flex-col items-center">
+        <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md">
+        <h3 className="font-sans text-3xl font-semibold px-3 py-4">My Payments</h3>
           <table className="w-full border-collapse">
             <TableHeader header={tableHeader}></TableHeader>
             <tbody>
@@ -107,20 +109,20 @@ const Page = () => {
           <button
             onClick={handlePrevious}
             disabled={currentPage === 1}
-            className={`px-4 py-2 bg-gray-200 rounded ${
-              currentPage === 1 && "opacity-50 cursor-not-allowed"
+            className={`px-4 py-2 bg-gray-200 rounded-l-3xl ${
+              currentPage === 1 && "opacity-50 cursor-not-allowed  rounded-l-3xl"
             }`}
           >
             Previous
           </button>
-          <span>
+          <span className=" mt-2">
             Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className={`px-4 py-2 bg-gray-200 rounded ${
-              currentPage === totalPages && "opacity-50 cursor-not-allowed"
+            className={`px-4 py-2 bg-gray-200 rounded-r-3xl ${
+              currentPage === totalPages && "opacity-50 cursor-not-allowed rounded-r-3xl"
             }`}
           >
             Next

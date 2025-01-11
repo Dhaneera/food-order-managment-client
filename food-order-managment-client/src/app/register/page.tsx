@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import registerAxios from "./register"; // Your API function
 import { useMutation } from "@tanstack/react-query";
-
+import Link from "next/link";
 type RegisterPayload = {
   phoneNumber: string;
   name: string;
@@ -19,7 +19,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [userInvalid, setuserInvalid] = useState(false);
-  
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
@@ -73,14 +73,14 @@ const RegisterPage = () => {
           height={1000}
         />
       </div>
-      <div className="w-1/2 h-full flex items-center justify-center bg-white max-lg:w-screen">
+      <div className="w-1/2 h-full flex items-center justify-center  max-lg:w-screen">
         <form className="w-3/4 max-w-md space-y-6" onSubmit={handleSignup}>
           <div>
             <h1 className="text-3xl font-bold mb-2">Let's get your food</h1>
             <p className="text-xs text-gray-600 mb-6">
               Fill the below information to get started
             </p>
-            <div className={userInvalid?`flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 `:`hidden`} role="alert">
+            <div className={userInvalid ? `flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 ` : `hidden`} role="alert">
               <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
               </svg>
@@ -98,9 +98,8 @@ const RegisterPage = () => {
               id="phoneNumber"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className={`w-full border px-4 py-2 rounded-md shadow-sm ${
-                errors.phoneNumber ? "border-red-500" : "border-gray-300"
-              } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+              className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
             />
             {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
           </div>
@@ -112,9 +111,8 @@ const RegisterPage = () => {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full border px-4 py-2 rounded-md shadow-sm ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+              className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.name ? "border-red-500" : "border-gray-300"
+                } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
           </div>
@@ -127,9 +125,8 @@ const RegisterPage = () => {
               type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full border px-4 py-2 rounded-md shadow-sm ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+              className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.password ? "border-red-500" : "border-gray-300"
+                } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
@@ -141,9 +138,8 @@ const RegisterPage = () => {
               id="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${
-                errors.role ? "border-red-500" : "border-gray-300"
-              } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
+              className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.role ? "border-red-500" : "border-gray-300"
+                } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
             >
               <option value="" disabled>
                 Select Role
@@ -161,6 +157,7 @@ const RegisterPage = () => {
           >
             {isLoading ? "Signing Up" : "Sign Up"}
           </button>
+          <h2 className="text-sm ml-24"> Have an account click here to <Link href='/login'><span className="text-red-700">Sign In</span></Link></h2>
         </form>
       </div>
     </div>
