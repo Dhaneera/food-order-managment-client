@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState } from "react";
 import Image from "next/image";
 import registerAxios from "./register"; // Your API function
@@ -15,13 +15,10 @@ const statue = "/login-2.png";
 
 const RegisterPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [name,setName]= useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
-
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -40,6 +37,12 @@ const RegisterPage = () => {
     mutationFn: registerAxios,
     mutationKey: ["register"],
     onSuccess: (data: any) => {
+      setPhoneNumber("");
+      setName("");
+      setPassword("");
+      setRole("");
+      setErrors({});
+
       localStorage.setItem("token", data.accessToken);
       alert("Signup successful!");
       window.location.href = "/dashboard";
@@ -54,10 +57,10 @@ const RegisterPage = () => {
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      mutate({ phoneNumber,name, password, roleType:role });
+      mutate({ phoneNumber, name, password, roleType: role });
     }
   };
-  
+
   return (
     <div className="flex h-screen font-poppins">
       <div className="w-1/2 h-full max-lg:hidden">
@@ -92,11 +95,10 @@ const RegisterPage = () => {
             {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
           </div>
           <div>
-            
-          <label htmlFor='name' className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Username
             </label>
-          <input
+            <input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -105,7 +107,7 @@ const RegisterPage = () => {
               } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
+          </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
