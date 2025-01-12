@@ -32,7 +32,7 @@ const tableHeader:tableInterface[] = [
 
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData]:any = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
