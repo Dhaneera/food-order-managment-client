@@ -56,7 +56,7 @@ const Page = () => {
   console.log('Cart Items:', cartItems);
   console.log('Subtotal:', subtotal);
 
-  return <CartItem cartItems={cartItems} subtotal={subtotal} />;
+  return <div className='w-screen h-screen flex flex-col justify-center items-center'><CartItem cartItems={cartItems} subtotal={subtotal} /></div>;
 };
 
 export default Page;
