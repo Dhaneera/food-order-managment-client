@@ -4,6 +4,7 @@ import Image from "next/image";
 import registerAxios from "./register"; // Your API function
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+
 type RegisterPayload = {
   phoneNumber: string;
   name: string;

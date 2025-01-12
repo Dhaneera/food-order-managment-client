@@ -144,8 +144,8 @@ const Login = () => {
             <input
               type="text"
               id="phone-number"
-              className={`bg-gray-50 border ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
-                } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+              className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               placeholder="Phone Number"
@@ -160,8 +160,8 @@ const Login = () => {
               <input
                 type={isPasswordVisible ? "text" : "password"}
                 id="password"
-                className={`bg-gray-50 border ${errors.password ? "border-red-500" : "border-gray-300"
-                  } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10`}
+                className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                  } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Password"
