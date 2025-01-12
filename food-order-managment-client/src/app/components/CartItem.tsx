@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import img from '../../../public/breakfast.png';
+import Button from './Button';
 
 const CartItem = ({ cartItems, subtotal }:any) => {
   return subtotal!=0?(
@@ -27,9 +28,9 @@ const CartItem = ({ cartItems, subtotal }:any) => {
           <h3 className="font-sans font-thin">Grand Total</h3>
           <h2 className="font-poppins font-bold">{subtotal?.toFixed(2)}</h2>
         </div>
-        <button className="px-3 py-2 ml-auto mr-auto my-2 rounded-full w-[60%] text-[#6cd598] bg-[#e6f6e9] hover:bg-[#6fdc83] hover:text-[#b9e7cc]">
-          Place Order
-        </button>
+        <div className='mt-10'>
+        <Button/>
+        </div>
       </div>
     </div>
   ):(

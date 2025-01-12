@@ -7,12 +7,17 @@ import img from '../../public/breakfast.png'
 import Image from 'next/image';
 import Button from './components/Button';
 import UserHeader from './components/UserHeader';
+import Modal from './components/Modal';
 
 const Page = () => {
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
   const [dayAfterTomorrow, setDayAfterTomorrow] = useState({ date: 0, month: '' });
   const [selected, setSelected] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => setModalVisible(true);
+  const handleCloseModal = () => setModalVisible(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -68,7 +73,14 @@ const Page = () => {
     <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>
         <Header />
-        <UserHeader onSettingsClick={() => {}} />
+        <UserHeader onSettingsClick={handleOpenModal} />
+        <Modal
+            title="User Settings"
+            isVisible={isModalVisible}
+            onClose={handleCloseModal}
+            onDiscard={() => setModalVisible(false)}
+            onSubmit={() => setModalVisible(false)}
+          />
       </div>
       <div className="w-full flex h-full max-lg:flex-col">
         <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 h-full">
@@ -77,8 +89,8 @@ const Page = () => {
             <div className="gap-5 flex">
               <button
                 className={`${selected
-                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
-                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
+                  ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
+                  : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
                   }`}
                 onClick={handleChangeSelectTomorrow}
               >
@@ -86,8 +98,8 @@ const Page = () => {
               </button>
               <button
                 className={`${!selected
-                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
-                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
+                  ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
+                  : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
                   }`}
                 onClick={handleChangeSelectDayAfterTomorrow}
               >
@@ -106,7 +118,7 @@ const Page = () => {
           </div>
         </div>
         <div className='lg:hidden w-full flex justify-center items-center mb-96  '>
-          <Button data={cartItems}/>
+          <Button data={cartItems} />
         </div>
       </div>
     </div>
