@@ -4,16 +4,16 @@ import img from '../../../public/breakfast.png';
 
 const CartItem = ({ cartItems, subtotal }:any) => {
   return subtotal!=0?(
-    <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
+    <div className="w-full h-full px-3 flex gap-2 flex-col py-10  ">
       {cartItems.map((item:any, index:any):any => (
         item.quantity!=0?(
         <div
           key={index}
           className="w-full flex justify-between items-center border-gray-500 border-2 rounded-md px-2 py-1"
         >
-          <Image src={img} alt={item.name} className="w-24 h-24" />
+          <Image src={img} alt={item.name} className="w-10 h-24" />
           <p>{item.name}</p>
-          <h3 className="px-1 font-medium">{item.price.toFixed(2)}</h3>
+          <h3 className="px-1 font-medium ">{item.price.toFixed(2)}</h3>
         </div>
         ):(<div key={index}></div>)
         

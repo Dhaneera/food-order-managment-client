@@ -81,7 +81,7 @@ const Page = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-screen flex flex-col max-lg:w-2/3">
       <div className="flex py-3 justify-between px-3">
         <Header />
       </div>
@@ -132,5 +132,4 @@ const Page = () => {
     </div>
   );
 };
-
 export default Page;

@@ -5,6 +5,7 @@ import Order from './components/Order';
 import CartItem from './components/CartItem';
 import img from '../../public/breakfast.png'
 import Image from 'next/image';
+import Button from './components/Button';
 
 const Page = () => {
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
@@ -63,10 +64,10 @@ const Page = () => {
   }
 
   return (
-    <div className="w-full flex flex-col ml-6 h-screen">
-      <div className='flex items-center  ml-24'>
+    <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
+      <div className='flex items-center  ml-24  max-lg:ml-0'>
       <Header  />
-      <div className="relative mr-36 ">
+      <div className="relative mr-36 max-lg:hidden">
       <button
         id="avatarButton"
         type="button"
@@ -158,6 +159,9 @@ const Page = () => {
           <div className="w-full h-[85%] shadow-2xl rounded-md">
             <CartItem cartItems={cartItems} subtotal={subtotal} />
           </div>
+        </div>
+        <div className='lg:hidden w-full flex justify-center items-center mt-[-70%]'>
+        <Button/>
         </div>
       </div>
     </div>
