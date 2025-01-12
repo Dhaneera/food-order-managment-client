@@ -27,7 +27,7 @@ const FoodCard = ({
       onUpdateQuantity(newQuantity);
     }
   };
-
+  
   return (
     <>
     <div className="flex items-center gap-4 py-4 lg:hidden border-b-2 border-gray-200 ">
