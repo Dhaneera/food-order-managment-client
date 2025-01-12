@@ -39,5 +39,4 @@ const CartItem = ({ cartItems, subtotal }:any) => {
     </div>
   );
 };
-
 export default CartItem;
