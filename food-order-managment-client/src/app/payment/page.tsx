@@ -6,7 +6,7 @@ import TableRow from "../table/TableRow";
 import ordersAxios from "./orders";
 import Header from "../components/Header";
 
-const tableHeader:tableInterface = [
+const tableHeader:tableInterface[] = [
   {
     width: "25%",
     text: "Payment ID",
