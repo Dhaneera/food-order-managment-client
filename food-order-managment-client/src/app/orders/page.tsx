@@ -7,6 +7,7 @@ import ordersAxios from '../payment/orders'
 import {  useQuery } from '@tanstack/react-query'
 import {  useRouter } from 'next/navigation'
 import { Loader } from 'lucide-react'
+import Header from '../components/Header'
 
 const Page = () => {
     const rowCountPerPage = 10;
@@ -60,7 +61,7 @@ const Page = () => {
             {
                 isButton: '',
                 text: String(obj.price),
-                style: ''
+                style: 'py-8'
             }
                 ,
             {
@@ -89,13 +90,16 @@ const Page = () => {
     return isLoading?(
         <Loader/>
     ):(
-        <div className='h-screen flex flex-col'>
-            <div className='border-b-2 w-full flex py-3 justify-between px-3'>
-                <h3 className='font-sans text-3xl font-semibold px-3 py-2'>My Orders</h3>
-                <button className=' px-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold'onClick={navigateToPlaceOrder}>Place Order</button>
+        <div className='h-screen flex flex-col motion-preset-slide-right motion-duration-700'>
+            <div className=' w-full flex py-3 justify-between px-3'>
+                <Header/>
             </div>
-            <div className='w-full'>
-                <div className="p-6 bg-white h-full rounded-lg shadow-md">
+            <div className='w-full flex justify-center'>
+                <div className="p-6 w-[85%] bg-white h-full rounded-lg shadow-md">
+                    <div className='flex justify-between px-2 py-4'>
+                    <h3 className='font-sans text-3xl font-semibold px-3 py-2'>My Orders</h3>
+                    <button className=' px-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold'onClick={navigateToPlaceOrder}>Place Order</button>
+                    </div>
                     {data?.content.length==0?
                     <div className='w-full h-96 flex justify-center items-center'><p className='text-center text-2xl font-bold'>No Orders To Show</p></div>:
                     <table className="w-full border-collapse">

@@ -81,7 +81,7 @@ const Page = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-screen flex flex-col motion-preset-slide-right motion-duration-700">
       <div className="flex py-3 justify-between px-3">
         <Header />
       </div>
