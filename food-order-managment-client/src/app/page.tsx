@@ -159,7 +159,7 @@ const Page = () => {
           </div>
         </div>
         <div className='lg:hidden w-full flex justify-center items-center mb-96  '>
-          <Button />
+          <Button data={cartItems}/>
         </div>
       </div>
     </div>

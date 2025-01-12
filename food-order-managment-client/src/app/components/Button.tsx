@@ -1,9 +1,15 @@
 import React from "react";
 import Link from "next/link"; // Import the Next.js Link component
+import { useParams } from "next/navigation";
 
-const Button = () => {
+const Button = ({data,...props}:any) => {
+
+  console.log(data);
+  let serialDa=encodeURIComponent(JSON.stringify(data));
   return (
-    <Link href="/cart">
+    
+    <Link href={{ pathname: "/cart", query: {name:serialDa} }}>
+
       <button
         type="button"
         className="relative z-10 flex items-center justify-center gap-12 px-20 py-2 mx-auto text-lg font-semibold bg-gray-50 border-2 border-gray-50 rounded-full shadow-xl overflow-hidden group isolation-auto backdrop-blur-md lg:font-semibold before:absolute before:w-full before:aspect-square before:transition-all before:duration-700 before:rounded-full before:bg-emerald-500 before:-z-10 before:scale-0 before:hover:scale-150 before:hover:w-full before:-left-full before:hover:left-0 hover:text-gray-50"
