@@ -16,7 +16,13 @@ const Login = () => {
     mutationFn: loginAxios,
     mutationKey:["login"],
     onSuccess: (data: any) => {
+
+      const { id, roles,name } = data.data;
+      
       localStorage.setItem("token", data.accessToken);
+      sessionStorage.setItem("userId", id.toString());
+      sessionStorage.setItem("role", roles[0]?.name || ""); 
+      sessionStorage.setItem("name",name||"");  
     },
     onError: (error) => {
       setPasswordInvalid(true);
