@@ -1,13 +1,15 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
-import Order from './components/Order';
 import CartItem from './components/CartItem';
 import img from '../../public/breakfast.png'
 import Image from 'next/image';
 import Button from './components/Button';
 import UserHeader from './components/UserHeader';
 import Modal from './components/Modal';
+import routeToTheLogin from './RouteBack';
+import OrderInteface from './PlaceOrderInterface';
+import Order from './components/Order';
 
 const Page = () => {
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
@@ -15,6 +17,39 @@ const Page = () => {
   const [selected, setSelected] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [name,setName]=useState('');
+  let foodDataForBackend:OrderInteface = {
+    id:'d290f1ee-6c54-4b01-90e6-d701748f0851',
+    name:'',
+    status:'Pending',
+    price:0,
+    createdBy:sessionStorage.getItem(''),
+    createdAt:'',
+    orderedAt:'',
+    meals:{
+      breakfast:{
+        id:1,
+        count:0,
+        orderId:'d290f1ee-6c54-4b01-90e6-d701748f0851',
+        status:'Pending',
+        type:'breakfast'
+      },
+      lunch:{
+        id:1,
+        count:0,
+        orderId:'d290f1ee-6c54-4b01-90e6-d701748f0851',
+        status:'Pending',
+        type:'breakfast'
+      },
+      dinner:{
+        id:1,
+        count:0,
+        orderId:'d290f1ee-6c54-4b01-90e6-d701748f0851',
+        status:'Pending',
+        type:'breakfast'
+      }
+    }
+  }
 
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
@@ -40,6 +75,7 @@ const Page = () => {
   };
 
   useEffect(() => {
+    routeToTheLogin();
     const today = new Date();
 
     const tomorrowDate = new Date(today);
