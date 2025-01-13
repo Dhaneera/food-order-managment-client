@@ -2,8 +2,19 @@ import React from 'react';
 import Image from 'next/image';
 import img from '../../../public/breakfast.png';
 import Button from './Button';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
-const CartItem = ({ cartItems, subtotal }:any) => {
+const CartItem = ({ cartItems, subtotal,foodDataForBackend }:any) => {
+  const mutation=useMutation({
+    mutationKey:[],
+    mutationFn:()=>placeOrder(foodDataForBackend),
+    retry:1,
+    retryDelay:5000,
+    onSuccess: console.log("success")
+      
+    
+  })
   return subtotal!=0?(
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
       {cartItems?.map((item:any, index:any):any => (
@@ -29,7 +40,7 @@ const CartItem = ({ cartItems, subtotal }:any) => {
           <h2 className="font-poppins font-bold">{subtotal?.toFixed(2)}</h2>
         </div>
         <div className='mt-10'>
-        <Button/>
+        <Button event={submit}/>
         </div>
       </div>
     </div>
@@ -38,5 +49,20 @@ const CartItem = ({ cartItems, subtotal }:any) => {
       <h1 className="font-sans text-3xl font-semibold">No items in cart</h1>
     </div>
   );
+  
+function submit(){
+  debugger
+  console.log(foodDataForBackend)
+  mutation.mutate();
+}
 };
 export default CartItem;
+
+function placeOrder(data:any){
+  try{
+  axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data);
+  }catch(ex){
+    console.log(ex);
+    throw ex;
+  }
+}

@@ -15,6 +15,7 @@ interface Meals {
 interface OrderInteface {
     id: string;
     name: string;
+    role: string,
     status: string;
     price: number;
     createdBy: string;

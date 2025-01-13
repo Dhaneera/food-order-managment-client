@@ -40,17 +40,16 @@ const RegisterPage = () => {
     mutationFn: registerAxios,
     mutationKey: ["register"],
     onSuccess: (data: any) => {
-      const { id, roles,name } = data.data;
+      const { id, roles } = data.data;
       setPhoneNumber("");
       setName("");
       setPassword("");
       setRole("");
       setErrors({});
 
-      localStorage.setItem("token", data.accessToken);
       sessionStorage.setItem("userId", id.toString());
       sessionStorage.setItem("role", roles[0]?.name || ""); 
-      sessionStorage.setItem("name",name||"");
+      sessionStorage.setItem("name",phoneNumber);
 
     
       
