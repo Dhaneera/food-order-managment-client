@@ -40,6 +40,7 @@ const RegisterPage = () => {
     mutationFn: registerAxios,
     mutationKey: ["register"],
     onSuccess: (data: any) => {
+      const { id, roles,name } = data.data;
       setPhoneNumber("");
       setName("");
       setPassword("");
@@ -47,6 +48,12 @@ const RegisterPage = () => {
       setErrors({});
 
       localStorage.setItem("token", data.accessToken);
+      sessionStorage.setItem("userId", id.toString());
+      sessionStorage.setItem("role", roles[0]?.name || ""); 
+      sessionStorage.setItem("name",name||"");
+
+    
+      
       window.location.href = "/";
     },
     onError: () => {
