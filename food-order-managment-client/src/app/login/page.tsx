@@ -8,23 +8,28 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import loginAxios from "./login";
 import Loader from "../components/Loader";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
 
-
+  const router=useRouter();
   const { error, isError, isIdle, isSuccess, status, data, isPending, mutate } = useMutation({
     mutationFn: loginAxios,
     mutationKey:["login"],
     onSuccess: (data: any) => {
+      console.log(data)
 
-      const { id, roles,name } = data.data;
+      const { userId, roles } = data;
       
-      localStorage.setItem("token", data.accessToken);
-      sessionStorage.setItem("userId", id.toString());
-      sessionStorage.setItem("role", roles[0]?.name || ""); 
-      sessionStorage.setItem("name",name||"");  
+      sessionStorage.setItem("userId", userId.toString());
+      sessionStorage.setItem("role", roles[0] || ""); 
+      sessionStorage.setItem("name",phoneNumber.toString());  
+
+      router.push('/');
     },
     onError: (error) => {
+      debugger
+      console.log(error)
       setPasswordInvalid(true);
     },
   })
