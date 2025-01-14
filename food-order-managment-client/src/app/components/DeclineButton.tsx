@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link"; // Import the Next.js Link component
 import { useParams } from "next/navigation";
 
-const AcceptButton = ({ data, ...props }: any) => {
+const DeclineButton = ({ data, ...props }: any) => {
 
   console.log(data);
   let serialDa = encodeURIComponent(JSON.stringify(data));
@@ -11,9 +11,9 @@ const AcceptButton = ({ data, ...props }: any) => {
     <button
       onClick={props.event}
       type="button"
-      className="relative z-10 flex items-center justify-center gap-12 px-20 py-2 mx-auto text-lg font-semibold bg-gray-50 border-2 border-gray-50 rounded-full shadow-xl overflow-hidden group isolation-auto backdrop-blur-md lg:font-semibold before:absolute before:w-full before:aspect-square before:transition-all before:duration-700 before:rounded-full before:bg-emerald-500 before:-z-10 before:scale-0 before:hover:scale-150 before:hover:w-full before:-left-full before:hover:left-0 hover:text-gray-50"
+      className="relative z-10 flex items-center justify-center gap-12 px-20 py-2 mx-auto text-lg font-semibold bg-gray-50 border-2 border-gray-50 rounded-full shadow-xl overflow-hidden group isolation-auto backdrop-blur-md lg:font-semibold before:absolute before:w-full before:aspect-square before:transition-all before:duration-700 before:rounded-full before:bg-red-400 before:-z-10 before:scale-0 before:hover:scale-150 before:hover:w-full before:-left-full before:hover:left-0 hover:text-gray-50"
     >
-      Place Order
+      Clear
       <svg
         className="w-8 h-8 p-2 border border-gray-700 rounded-full text-gray-50 rotate-45 group-hover:rotate-90 group-hover:border-none group-hover:bg-gray-50 ease-linear duration-300"
         viewBox="0 0 16 19"
@@ -28,4 +28,4 @@ const AcceptButton = ({ data, ...props }: any) => {
   );
 };
 
-export default AcceptButton;
+export default DeclineButton;

@@ -13,7 +13,6 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend }:any) => {
     retryDelay:5000,
     onSuccess: console.log("success")
       
-    
   })
   return subtotal!=0?(
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
