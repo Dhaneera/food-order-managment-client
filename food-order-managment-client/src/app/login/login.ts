@@ -2,7 +2,7 @@
 import axios from "axios"
 
 export default async function loginAxios(userDto:any){
-    const url=process.env.NEXT_PUBLIC_BASE_URL+"/api/auth/login"
+    const url=process.env.NEXT_PUBLIC_BASE_URL+""
     console.log(url)
     console.log(userDto)
     return await axios.post(url,userDto)

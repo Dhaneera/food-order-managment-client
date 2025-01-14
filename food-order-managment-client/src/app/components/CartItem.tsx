@@ -7,8 +7,9 @@ import axios from 'axios';
 
 const CartItem = ({ cartItems, subtotal,foodDataForBackend }:any) => {
   const mutation=useMutation({
+
     mutationKey:[],
-    mutationFn:()=>placeOrder(foodDataForBackend),
+    mutationFn:():any=>placeOrder(foodDataForBackend),
     retry:1,
     retryDelay:5000,
     onSuccess: console.log("success")

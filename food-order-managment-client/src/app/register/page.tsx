@@ -4,6 +4,7 @@ import Image from "next/image";
 import registerAxios from "./register"; // Your API function
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type RegisterPayload = {
   phoneNumber: string;
@@ -15,6 +16,7 @@ type RegisterPayload = {
 const statue = "/login-2.png";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -40,33 +42,42 @@ const RegisterPage = () => {
     mutationFn: registerAxios,
     mutationKey: ["register"],
     onSuccess: (data: any) => {
-      const { id, roles } = data.data;
-      setPhoneNumber("");
-      setName("");
-      setPassword("");
-      setRole("");
-      setErrors({});
+      debugger
+      // const { id, roles } = data.data;
 
-      sessionStorage.setItem("userId", id.toString());
-      sessionStorage.setItem("role", roles[0]?.name || ""); 
-      sessionStorage.setItem("name",phoneNumber);
+      router.push('/');
+
+      // setPhoneNumber("");
+      // setName("");
+      // setPassword("");
+      // setRole("");
+      // setErrors({});
+
+      // sessionStorage.setItem("userId", id.toString());
+      // sessionStorage.setItem("role", roles[0]?.name || ""); 
+      // sessionStorage.setItem("name",phoneNumber);
 
     
       
-      window.location.href = "/";
     },
     onError: () => {
-      setuserInvalid(true);
+      debugger
+      // setuserInvalid(true);
+      router.push('/');
+
     },
   });
 
   const isLoading = isPending;
 
   const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      mutate({ phoneNumber, name, password, roleType: role });
-    }
+    // e.preventDefault();
+    // if (validateForm()) {
+    //   // mutate({ phoneNumber, name, password, roleType: role });
+
+    // }
+    debugger
+    router.push('/login');
   };
 
   return (

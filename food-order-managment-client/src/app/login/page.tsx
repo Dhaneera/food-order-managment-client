@@ -18,12 +18,11 @@ const Login = () => {
     mutationKey:["login"],
     onSuccess: (data: any) => {
 
-
-      const { userId, roles } = data;
+      // const { userId, roles } = data;
       
-      sessionStorage.setItem("userId", userId.toString());
-      sessionStorage.setItem("role", roles[0] || ""); 
-      sessionStorage.setItem("name",phoneNumber.toString());  
+      // sessionStorage.setItem("userId", userId.toString());
+      // sessionStorage.setItem("role", roles[0] || ""); 
+      // sessionStorage.setItem("name",phoneNumber.toString());  
 
       router.push('/');
     },
@@ -85,13 +84,14 @@ const Login = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateFields()) {
-      console.log("Form submitted successfully");
-      mutate({username:phoneNumber,password})
-    } else {
-      console.log("Validation errors:", errors);
-    }
+    // e.preventDefault();
+    // if (validateFields()) {
+    //   console.log("Form submitted successfully");
+    //   // mutate({username:phoneNumber,password})
+    // } else {
+    //   console.log("Validation errors:", errors);
+    // }
+    router.push('/')
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
