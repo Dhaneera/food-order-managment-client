@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import tableInterface from '../table/TableInteface'
 import TableHeader from '../table/TableHeader'
 import TableRow from '../table/TableRow'
@@ -13,17 +13,22 @@ import { orderMobile } from './order'
 
 const Page = () => {
     const rowCountPerPage = 10;
+    let name:string ='';
     const [page, setPage] = useState(1);
     const router = useRouter();
     const { isError, isLoading, isFetched, data, isSuccess, isStale, isFetching } = useQuery({
-        queryFn: () => ordersAxios(page, rowCountPerPage),
-        queryKey: ['orders', 'payments', page],
+        queryFn: () => ordersAxios(page, rowCountPerPage,name),
+        queryKey: ['orders', 'payments', page,name],
         retry: 3,
         retryDelay: 3000,
         retryOnMount: true,
         refetchOnReconnect: true,
 
     })
+
+    useEffect(()=>{
+        name = sessionStorage.getItem('name') || '';
+    },[])
     const ordersMobileMock:orderMobile[] = [];
 
     data?.content.map((obj,index)=>{

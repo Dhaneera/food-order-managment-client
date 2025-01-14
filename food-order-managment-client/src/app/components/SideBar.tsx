@@ -1,0 +1,32 @@
+import React from 'react';
+import Link from 'next/link';
+import { DollarSign, GraduationCap, Hand, Home, Package, Users } from 'lucide-react';
+import { Tooltip } from "@nextui-org/tooltip";
+
+const SideBar = () => {
+    return (
+        <div className=' h-screen flex flex-col justify-center items-center gap-5 bg-white motion-preset-slide-right motion-duration-800'>
+            <Tooltip content='Order Completion' showArrow={true} placement='right'>
+                <Link href='/'><Home size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+            <Tooltip content='User Managment' placement='right'>
+                <Link href='/'><Users size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+            <Tooltip content='Piriven student Managment' placement='right'>
+                <Link href='/'><Hand size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+            <Tooltip content='Student Managment' placement='right'>
+                <Link href='/'><GraduationCap size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+            <Tooltip content='Order Managment' placement='right'>
+                <Link href='/'><Package size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+            <Tooltip content='View Payments' placement='right'>
+                <Link href='/'><DollarSign size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+        </div>
+    );
+};
+
+export default SideBar;
+
