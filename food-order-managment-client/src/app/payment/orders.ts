@@ -36,17 +36,17 @@ export type OrderResponse = {
     numberOfElements: number;
     first: boolean;
     empty: boolean;
+    createdBy:String;
   };
-  const ordersAxios = async (pageNumber = 0, pageSize = 10): Promise<OrderResponse> => {
+  const ordersAxios = async (pageNumber = 0, pageSize = 10,createdBy=""): Promise<OrderResponse> => {
     try {
+      debugger
       const response = await axios.get<OrderResponse>(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`,
+        
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/createdBy/${createdBy}`,
         {
-          params: { page: pageNumber-1, size: pageSize },
+          params: { page: pageNumber-1, size: pageSize,createdBy: createdBy },
           withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
       console.log("Response Data:", response.data);
