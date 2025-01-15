@@ -8,11 +8,9 @@ import axios from 'axios';
 const CartItem = ({ cartItems, subtotal,foodDataForBackend }:any) => {
   const mutation=useMutation({
     mutationKey:[],
-    mutationFn:()=>placeOrder(foodDataForBackend),
+    mutationFn:():any=>placeOrder(foodDataForBackend),
     retry:1,
     retryDelay:5000,
-    onSuccess: console.log("success")
-      
   })
   return subtotal!=0?(
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
