@@ -1,5 +1,7 @@
 'use client';
 
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useState } from 'react';
 
 interface ModalProps {
@@ -13,7 +15,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ title, isVisible, onClose, onDiscard, onSubmit }) => {
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage]: any = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +39,21 @@ const Modal: React.FC<ModalProps> = ({ title, isVisible, onClose, onDiscard, onS
     }
   };
 
+  const mutation = useMutation({
+    mutationFn: (): any => {
+      const formData = new FormData();
+      formData.append('file', image);
+      formData.append("name", name);
+      const response = axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/images/upload?id=1`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", 
+        },
+      });
+    },
+    mutationKey: [image]
+  })
   const handleSubmit = () => {
-    onSubmit({ name, contact, image });
+    mutation.mutate();
   };
 
   if (!isVisible) return null;
@@ -56,7 +71,7 @@ const Modal: React.FC<ModalProps> = ({ title, isVisible, onClose, onDiscard, onS
 
 
         <form>
- 
+
           <div
             className="flex flex-col items-center mb-6"
             onDragOver={handleDragOver}

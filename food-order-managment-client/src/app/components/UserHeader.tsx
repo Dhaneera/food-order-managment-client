@@ -1,15 +1,35 @@
-'use client';
-
 import React, { useState } from 'react';
-import Image from 'next/image';
-import img from '../../../public/breakfast.png';
+import Image, { StaticImageData } from 'next/image';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import profile from '../../../public/login-1.jpeg';
 
 interface UserHeaderProps {
-  onSettingsClick: () => void; // Prop for opening the modal
+  onSettingsClick: () => void;
 }
 
 const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [img, setImage] = useState<string | StaticImageData>(profile);
+
+  const { isLoading, isError } = useQuery({
+    queryKey: ['userImage'],
+    queryFn: async () => {
+      const userId = sessionStorage.getItem('userId');
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/images/image/base64/${userId}`,
+        { responseType: 'arraybuffer' } 
+      );
+      const blob = new Blob([response.data], { type: 'image/jpeg' });
+      const profileImage=URL.createObjectURL(blob);
+      if(profileImage){
+        setImage(profileImage);
+      }
+      return response;
+    },
+    refetchInterval: false,
+    retry: 3,
+  });
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
@@ -21,13 +41,19 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
         onClick={toggleDropdown}
         className="w-10 h-10 rounded-full cursor-pointer"
       >
-        <Image src={img} alt="User dropdown" className="w-10 h-10 rounded-full" />
+        <Image
+          src={typeof img === 'string' ? img : profile}
+          alt="User dropdown"
+          width={40}
+          height={40}
+          className="w-10 h-10 rounded-full"
+        />
       </button>
 
       {isDropdownOpen && (
         <div
           id="userDropdown"
-          className="z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44"
+          className="z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-56"
         >
           <div className="px-4 py-3 text-sm">
             <div>Bonnie Green</div>
@@ -44,8 +70,8 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
                 href="#"
                 className="block px-4 py-2 hover:bg-gray-100"
                 onClick={(e) => {
-                  e.preventDefault(); 
-                  onSettingsClick(); 
+                  e.preventDefault();
+                  onSettingsClick();
                 }}
               >
                 Settings
