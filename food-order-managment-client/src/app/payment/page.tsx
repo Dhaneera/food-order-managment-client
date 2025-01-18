@@ -63,7 +63,7 @@ const Page = () => {
   // Generate table rows
   const tableRows = tableData.map((obj: any) => ({
     style: "",
-    cellData: [
+    cellData:[
       { isButton: "Complete", text: obj.id, style: "" },
       { isButton: "", text: obj.name, style: "" },
       { isButton: "", text: `$${obj.price}`, style: "py-6" },
@@ -107,7 +107,7 @@ const Page = () => {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-center mt-4 space-x-4">
+        <div className="flex justify-center mt-4 space-x-4">  
           <button
             onClick={handlePrevious}
             disabled={currentPage === 1}
