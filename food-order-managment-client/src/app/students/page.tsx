@@ -1,16 +1,19 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Header from '../components/Header'
 import TableHeader from '../table/TableHeader'
 import tableInterface from '../table/TableInteface'
-import { Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import TableRow from '../table/TableRow'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import axios, { Axios } from 'axios'
+
 
 
 const tableHeader: tableInterface[] = [
     {
         width: '25%',
-        text: "StudentID",
+        text: "name",
         style: ""
     }, {
         width: '25%',
@@ -18,7 +21,7 @@ const tableHeader: tableInterface[] = [
         style: ""
     }, {
         width: '25%',
-        text: "Student Name",
+        text: "role",
         style: ""
     }, {
         width: '25%',
@@ -32,57 +35,60 @@ const tableHeader: tableInterface[] = [
 ]
 
 
-const tableRows: tableInterface[] = [
-    {
-        style: "",
-         cellData:[{
-            isButton: 'Complete',
-            text: 'jdojfo',
-            style: ''
-        },
-        {
-            isButton: '',
-            text: '1299',
-            style: 'py-8'
-        }
-            ,
-        {
-            isButton: '',
-            text: '2323',
-            style: ''
-        }
-            , {
-            isButton: '',
-            text: '121',
-            style: ''
-        },
-        {
-            isButton: 'icons',
-            text: <Trash2 />,
-            click: deleteItemFromArray,
-            style: 'px-3'
-        }]
-    },
-    // {
-    //     id: 3,
-    //     phoneNumber: 987654321,
-    //     studentName: "Jane Smith",
-    //     status: "Inactive",
-    //     actions:<Trash2/>
-    // },
-    // {
-    //     id: 3,
-    //     phoneNumber: 987654321,
-    //     studentName: "Jane Smith",
-    //     status: "Inactive",
-    //     actions:<Trash2/>
-    // }
-]
-function deleteItemFromArray(){
-    debugger
-    console.log("deleteItemFromArray")
-    tableHeader.pop();
-}
+
+
+
+// const tableRows: tableInterface[] = [
+//     {
+//         style: "",
+//          cellData:[{
+//             isButton: 'Complete',
+//             text: 'jdojfo',
+//             style: ''
+//         },
+//         {
+//             isButton: '',
+//             text: '1299',
+//             style: 'py-8'
+//         }
+//             ,
+//         {
+//             isButton: '',
+//             text: '2323',
+//             style: ''
+//         }
+//             , {
+//             isButton: '',
+//             text: '121',
+//             style: ''
+//         },
+//         {
+//             isButton: 'icons',
+//             text: <Trash2 />,
+//             click: deleteItemFromArray,
+//             style: 'px-3'
+//         }]
+//     },
+//     // {
+//     //     id: 3,
+//     //     phoneNumber: 987654321,
+//     //     studentName: "Jane Smith",
+//     //     status: "Inactive",
+//     //     actions:<Trash2/>
+//     // },
+//     // {
+//     //     id: 3,
+//     //     phoneNumber: 987654321,
+//     //     studentName: "Jane Smith",
+//     //     status: "Inactive",
+//     //     actions:<Trash2/>
+//     // }
+// ]
+// function deleteItemFromArray(){
+//     debugger
+//     console.log("deleteItemFromArray")
+//     tableHeader.pop();
+// }
 
 
 
@@ -90,7 +96,7 @@ const Students = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [data,setData] = useState([]);
+    const [data, setData] = useState([]);
 
 
     // const TableRow=data.map((obj:any)=>{
@@ -103,6 +109,114 @@ const Students = () => {
     //     ]
     // })
 
+    let tableRows = []
+    //     {
+    //         style: "",
+    //          cellData:[{
+    //             isButton: 'Complete',
+    //             text: 'jdojfo',
+    //             style: ''
+    //         },
+    //         {
+    //             isButton: '',
+    //             text: '1299',
+    //             style: 'py-8'
+    //         }
+    //             ,
+    //         {
+    //             isButton: '',
+    //             text: '2323',
+    //             style: ''
+    //         }
+    //             , {
+    //             isButton: '',
+    //             text: '121',
+    //             style: ''
+    //         },
+    //         {
+    //             isButton: 'icons',
+    //             text: <Trash2 />,
+    //             click: deleteItemFromArray,
+    //             style: 'px-3'
+    //         }]
+    //     },
+        // {
+        //     id: 3,
+        //     phoneNumber: 987654321,
+        //     studentName: "Jane Smith",
+        //     status: "Inactive",
+        //     actions:<Trash2/>
+        // },
+        // {
+        //     id: 3,
+        //     phoneNumber: 987654321,
+        //     studentName: "Jane Smith",
+        //     status: "Inactive",
+        //     actions:<Trash2/>
+        // }
+    // ]
+
+    const [students, setStudents] = useState([]);
+    let RefObj=useRef(-1);
+    tableRows=students.map((obj:any,index:number)=>{
+        
+        return{style:'',
+            cellData:[
+              {  isButton:'',
+                text:obj.name,
+                style:''
+              },
+              {
+                isButton:'',
+                text:obj.username,
+                style:''
+              },
+              {
+                isButton:'',
+                text:obj.roles[0].name,
+                style:''
+              },
+              {
+                isButton:[obj.roles[0].name=="ROLE_STUDENT"?'Complete':obj.roles[0].name=="ROLE_STAFF"?'Pending':'Rejected'],
+                text:obj.status,
+                style:''
+              },
+              {
+                isButton:'icon',
+                text:[<Trash2 onClick={()=>deleteFuction(obj.id)}/>,<Edit/>],
+                style:'flex flex-row gap-4'
+              }
+
+            ]
+        
+        }
+    })
+    const deleteMutation=useMutation({
+        mutationFn:deleteFromDatabase(RefObj.current),
+        mutationKey:[students],
+        
+    })
+    
+    function deleteFuction(index: number){
+        RefObj.current=index;
+        deleteMutation.mutate()
+        students.pop();
+    }
+    useQuery({
+        queryKey: [students, 'allStudents'],
+        queryFn: () => fetchDataForAllStudents(currentPage - 1)
+    })
+    function fetchDataForAllStudents(pageNum: any) {
+        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll?page=${pageNum}&size=10`)
+            .then((res: any) => {
+                setStudents(res?.data?.content)
+                return res
+            })
+            .catch((ex:any)=>{
+                return ex;
+            })
+    }
+    console.log(students)
     const handlePrevious = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1)
@@ -114,14 +228,13 @@ const Students = () => {
         }
     }
 
-    function navigateToRegisterStudents(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        // Assuming you want to navigate to a different page
-        window.location.href = '/register';
+    function getStudentsForApproval(event:any): void {
+        
     }
-    function approveStudents(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        // Assuming you want to navigate to a different page
-        window.location.href = '/approve';
-    }
+
+    // function deleteFromDatabase(index: any){
+    //    axios.
+    // }
 
     return (
         <div className="w-screen h-screen flex flex-col max-lg:w-2/3">
@@ -134,17 +247,19 @@ const Students = () => {
                     <h3 className="font-sans text-3xl font-semibold px-3 py-4 mb-24 ">View Students</h3>
 
                     <div className='flex items-end gap-5'>
-                    <button className=' px-8 py-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold mb-10  ' onClick={navigateToRegisterStudents}>Register Students</button>
-                    <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={approveStudents}>Approve Students</button>
+                        <button className=' px-8 py-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold mb-10  '>Register Students</button>
+                        <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={getStudentsForApproval}>Approve Students</button>
                     </div>
-                    
+
                     <table className='w-full border-collapse'>
                         <TableHeader header={tableHeader} />
-                        
-                            {tableRows.map((row:any, index) => (
-                                <TableRow key={index} cellData={row.cellData}/>
-                            ))}
-                      
+
+                        {tableRows.map((row:any,index:number)=>{
+                            return(
+                               <TableRow key={index} cellData={row.cellData} styles={row.style}></TableRow>
+                            )
+                        })}
+
                     </table>
                 </div>
                 <div className="flex justify-center mt-4 space-x-4">
@@ -173,3 +288,12 @@ const Students = () => {
     )
 }
 export default Students
+
+
+function deleteFromDatabase(indexforDelete: number){
+    console.log(indexforDelete)
+  axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res:any)=>{
+    console.log(res)
+  })
+}
+

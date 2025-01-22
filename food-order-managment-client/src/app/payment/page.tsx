@@ -60,7 +60,7 @@ const Page = () => {
 
 
 
-  // Generate table rows
+
   const tableRows = tableData.map((obj: any) => ({
     style: "",
     cellData:[
