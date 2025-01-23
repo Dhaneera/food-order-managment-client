@@ -14,11 +14,11 @@
                     )
                 }else if(key.isButton=='Rejected'){
                     return(
-                        <TableButton key={index} text={key.text} styles={key.style} color='red'/>
+                        <TableButton key={index} text={key.text} styles={key.style}  color='red'/>
                     )
                 }else if(key.isButton=='Pending'){
                     return(
-                        <TableButton key={index} text={key.text} styles={key.style} color='yellow'/>
+                        <TableButton key={index} text={key.text} styles={key.style}  onClick={key.clickEvent} color='yellow'/>
                     )
                 }else if(key.isButton=='icons'){
                     return(

@@ -7,6 +7,7 @@ import { Edit, Search, Trash2 } from 'lucide-react';
 import TableRow from '../table/TableRow'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios, { Axios } from 'axios'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 
 
@@ -125,13 +126,14 @@ const Students = () => {
                     style: ''
                 },
                 {
-                    isButton: [obj.roles[0].name == "ROLE_STUDENT" ? 'Complete' : obj.roles[0].name == "ROLE_STAFF" ? 'Pending' : 'Rejected'],
+                    isButton: [obj.status == "ACTIVE" ? 'Complete' : obj.status == "PENDING" ? 'Pending' : 'Rejected'],
+                    clickEvent: (e: any) => changeStatusOfPirivenStudents(e, obj.id),
                     text: obj.status,
                     style: ''
                 },
                 {
                     isButton: 'icon',
-                    text: [<Trash2 onClick={() => deleteFuction(obj.id)} />, <Edit />],
+                    text: <Trash2 width={60} onClick={() => deleteFuction(obj.id)} />,
                     style: 'flex flex-row gap-4'
                 }
 
@@ -139,7 +141,26 @@ const Students = () => {
 
         }
     })
+    const updateRef = useRef(0)
+    const [visible,setVisible]=useState(false)
+    const statusChangeMutation=useMutation({
+        mutationKey: [students],
+        mutationFn: () => changeStatus(updateRef.current),
+        onSuccess:()=>window.location.reload()
+    })
 
+    function changeStatus(index: any): any {
+        axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/status/change/${index}`)
+
+    }
+    function changeStatusOfPirivenStudents(e: any, index: number) {
+        updateRef.current = index
+        setVisible(true);
+
+
+    }
+
+    console.log('visible',visible)
 
     const deleteMutation = useMutation({
         mutationFn: deleteFromDatabase(ref),
@@ -160,7 +181,7 @@ const Students = () => {
     })
     function fetchDataForAllStudents(pageNum: any) {
 
-        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll?page=${pageNum}&size=10`)
+        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll/students?page=${pageNum}&size=10`)
             .then((res: any) => {
                 setStudents(res?.data?.content)
                 setTotalPages(res?.data?.totalPages)
@@ -210,34 +231,37 @@ const Students = () => {
             fetchDataForAllStudents(0);
         }
     }
+   
 
-
-   const serachStudentMutaion = useMutation({
+    const serachStudentMutaion = useMutation({
         mutationKey: ['searchStudent'],
-        mutationFn: () => fetchDataForSearchedStudents(currentPage - 1,sarch)
+        mutationFn: () => fetchDataForSearchedStudents(currentPage - 1, sarch)
     })
 
-    function fetchDataForSearchedStudents(page: number,userName:any): any {
+    function fetchDataForSearchedStudents(page: number, userName: any): any {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/serach?username=${userName}&pageable=${page}`)
-        .then((res)=>{
-        console.log(res);
-            setStudents(res?.data?.content)
-            return res
-        }).catch((err)=>{
-            setStudents([])
-            return err
-        })
+            .then((res) => {
+                console.log(res);
+                setStudents(res?.data?.content)
+                return res
+            }).catch((err) => {
+                setStudents([])
+                return err
+            })
     }
 
     function getStudentsList(): any {
-        serachStudentMutaion.mutate();        
+        serachStudentMutaion.mutate();
     }
-    const [sarch,setSearch]:any = useState('');
-    function search(e:any):any{
+    const [sarch, setSearch]: any = useState('');
+    function search(e: any): any {
         setSearch(e.target.value);
     }
 
+
     return (
+        <>
+        {visible?<ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible}/>:<></>}
         <div className="w-screen h-screen flex flex-col max-lg:w-2/3">
             <div className="flex py-3 justify-between px-3">
                 <Header />
@@ -255,9 +279,8 @@ const Students = () => {
                                 type="text"
                                 name="search"
                                 placeholder="Search..."
-                                onChange={(e)=> search(e)}
-                            />
-                        <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
+                                onChange={(e) => search(e)} />
+                            <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
 
                         </div>
                     </div>
@@ -277,8 +300,7 @@ const Students = () => {
                     <button
                         onClick={handlePrevious}
                         disabled={currentPage === 1}
-                        className={`px-4 py-2 bg-gray-200 rounded-l-3xl ${currentPage === 1 && "opacity-50 cursor-not-allowed  rounded-l-3xl"
-                            }`}
+                        className={`px-4 py-2 bg-gray-200 rounded-l-3xl ${currentPage === 1 && "opacity-50 cursor-not-allowed  rounded-l-3xl"}`}
                     >
                         Previous
                     </button>
@@ -288,14 +310,13 @@ const Students = () => {
                     <button
                         onClick={handleNext}
                         disabled={currentPage === totalPages}
-                        className={`px-4 py-2 bg-gray-200 rounded-r-3xl ${currentPage === totalPages && "opacity-50 cursor-not-allowed rounded-r-3xl"
-                            }`}
+                        className={`px-4 py-2 bg-gray-200 rounded-r-3xl ${currentPage === totalPages && "opacity-50 cursor-not-allowed rounded-r-3xl"}`}
                     >
                         Next
                     </button>
                 </div>
             </div>
-        </div>
+        </div></>
     )
 }
 export default Students
