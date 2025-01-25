@@ -100,7 +100,7 @@ const MealOrder = () => {
       </div>
     </div>
   ):(
-    <ErrorModal setVisible={setErrorForModal}/>
+    <ErrorModal message={errorForModal} setVisible={setErrorForModal}/>
   )
 };
 

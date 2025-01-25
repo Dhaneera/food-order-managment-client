@@ -23,7 +23,7 @@ export default function OrdersSearch(props:any) {
       props.setOrderData(data);
     },
     onError: (error:any) => {
-      props.setError(error.message);
+      props.setError(error.response.data);
     },
   })
 
