@@ -74,13 +74,17 @@ const MealOrder = () => {
   
   async function getOrderDetails(date:any, meal:any) {
     try {
+      if(data && meal){
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/count/${date}/${meal}`);
       console.log("Order Details:", response.data);
+      
       setTotalOrders(response.data);
+      }
     } catch (error) {
       console.error("Error fetching order details:", error);
       throw error;
     }
+    return null;
   }
 
   return errorForModal==''? (

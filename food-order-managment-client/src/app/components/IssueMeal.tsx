@@ -16,7 +16,7 @@ export default function IssueMeal({ mealData, ...props }:any) {
       </>
     )
   }
-  console.log(mealData.name.substring(0,2));
+  console.log(mealData?.name?.substring(0,2));
 
 
   return props.order == null && props.order == undefined ? (
@@ -43,7 +43,7 @@ export default function IssueMeal({ mealData, ...props }:any) {
       </div>
 
       <div className="flex justify-between items-center text-lg font-medium text-gray-600 mb-6">
-        <span>{mealData.mealId.substring(0,2)=='BR'?`Breakfast`:mealData.mealId.substring(0,2)=='LN'?`Lunch`:`Dinner`}</span>
+        <span>{mealData?.mealId?.substring(0,2)=='BR'?`Breakfast`:mealData?.mealId?.substring(0,2)=='LN'?`Lunch`:`Dinner`}</span>
         <span>{mealData.quantity}</span>
       </div>
 
