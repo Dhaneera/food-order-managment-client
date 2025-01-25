@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import CartItem from './components/CartItem';
-import img from '../../public/breakfast.png'
-import Image from 'next/image';
 import Button from './components/Button';
 import UserHeader from './components/UserHeader';
 import Modal from './components/Modal';

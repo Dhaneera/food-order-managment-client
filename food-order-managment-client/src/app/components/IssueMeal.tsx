@@ -1,14 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function IssueMeal({ mealData }:any) {
+export default function IssueMeal({ mealData, ...props }:any) {
   const [issued, setIssued] = useState(false);
+  const [isintial,setIsIntial] = useState(true);
 
   const handleIssueOrder = () => {
     setIssued(true);
     console.log(`Order for Meal ID: ${mealData.mealId} has been issued.`);
   };
 
-  return (
+
+  if(props.error!=''){
+    return(
+      <>
+      </>
+    )
+  }
+  console.log(mealData.name.substring(0,2));
+
+
+  return props.order == null && props.order == undefined ? (
+    <div className=" w-1/3 ml-12 bg-white border flex justify-center items-center rounded-lg shadow-xl p-6 text-center">
+      <h3 className='font-bold font-sans text-2xl'>Search for a meal in order to show here</h3>
+    </div>    
+  ):(
     <div className=" w-1/3 ml-12 bg-white border rounded-lg shadow-xl p-6 text-center">
       <h3 className="text-2xl font-bold text-gray-800 mb-4">Issue Meal</h3>
       
@@ -17,7 +32,6 @@ export default function IssueMeal({ mealData }:any) {
           <span className="font-medium text-gray-800">Meal ID:</span> #{mealData.mealId}
         </p>
       </div>
-
       <div className="flex flex-col items-center gap-2 mb-6">
         <img
           src={mealData.image}
@@ -29,7 +43,7 @@ export default function IssueMeal({ mealData }:any) {
       </div>
 
       <div className="flex justify-between items-center text-lg font-medium text-gray-600 mb-6">
-        <span>Breakfast</span>
+        <span>{mealData.mealId.substring(0,2)=='BR'?`Breakfast`:mealData.mealId.substring(0,2)=='LN'?`Lunch`:`Dinner`}</span>
         <span>{mealData.quantity}</span>
       </div>
 

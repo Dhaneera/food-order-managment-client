@@ -1,40 +1,57 @@
 import { useState } from 'react';
 import Button from './Button';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import ConfirmationModal from './ConfirmationModal';
 
-export default function OrdersSearch() {
+export default function OrdersSearch(props:any) {
+
   const [orderData, setOrderData] = useState({
-    totalOrders: 250,
-    completedOrders: 150,
-    pendingOrders: 100,
+    completedOrders: 0,
+
   });
 
   const [searchOrder, setSearchOrder] = useState('');
 
-  const handleSearch = () => {
-    console.log(`Searching for order: ${searchOrder}`);
+  const mutation = useMutation({
+    mutationKey: ['ordersSearch', searchOrder],
+    mutationFn: async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/meal/${searchOrder}`);
+      return response.data;
+    },
+    onSuccess: (data:any) => {
+      props.setOrderData(data);
+    },
+    onError: (error:any) => {
+      props.setError(error.message);
+    },
+  })
+
+  const handleSearch = (e:any) => {
+    e.preventDefault();
+    setSearchOrder(e.target.value);
+    mutation.mutateAsync();
+
   };
 
   const handleDiscard = () => {
     setSearchOrder('');
     console.log('Search discarded');
   };
+  
 
-  return (
+  return props.error==''?(
     <div className=" w-1/3  bg-white border rounded-lg p-8 shadow-xl">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Orders Search</h3>
       
       <div className="space-y-4 border-b pb-6">
         <div className="flex justify-between items-center text-gray-700">
-          <span className="text-lg font-medium">Total Orders:</span>
-          <span className="text-xl font-bold">{orderData.totalOrders}</span>
+          <span className="text-lg font-medium">Total Meals:</span>
+          <span className="text-xl font-bold">{props.totalOrders}</span>
         </div>
         <div className="flex justify-between items-center text-gray-700">
-          <span className="text-lg font-medium">Completed Orders:</span>
+          <span className="text-lg font-medium">Completed Meals:</span>
           <span className="text-xl font-bold">{orderData.completedOrders}</span>
-        </div>
-        <div className="flex justify-between items-center text-gray-700">
-          <span className="text-lg font-medium">Pending Orders:</span>
-          <span className="text-xl font-bold">{orderData.pendingOrders}</span>
         </div>
       </div>
 
@@ -60,12 +77,15 @@ export default function OrdersSearch() {
           Discard
         </button>
         <button
-          onClick={handleSearch}
+          onClick={(e)=>handleSearch(e)}
           className="w-full bg-green-500 text-white font-medium py-3 rounded-lg shadow-md hover:bg-green-700 transition-all"
         >
           Search Order
         </button>
       </div>
     </div>
+  ):(
+    <>
+    </>
   );
 }

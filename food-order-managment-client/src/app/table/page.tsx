@@ -57,7 +57,6 @@ const Page = () => {
                     text:"hi"
                 }
             ]
-
         },
         {
             style:"",
@@ -68,7 +67,6 @@ const Page = () => {
                     text:"hi"
                 }
             ]
-
         },
         {
             style:"",
@@ -78,7 +76,6 @@ const Page = () => {
                     text:"hello"
                 }
             ]
-
         },
     ]
   return (
