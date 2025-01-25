@@ -1,13 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import Image, { StaticImageData } from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import profile from '../../../public/file.svg';
 
 export default function IssueMeal({ mealData, ...props }:any) {
   const [issued, setIssued] = useState(false);
   const [isintial,setIsIntial] = useState(true);
+  const [img, setImage] = useState<string | StaticImageData>(profile);
+  const count = useRef(0);
 
   const handleIssueOrder = () => {
     setIssued(true);
     console.log(`Order for Meal ID: ${mealData.mealId} has been issued.`);
   };
+  
+  const { isLoading, isError } = useQuery({
+    queryKey: ['userImage'],
+    queryFn: async () => {
+      if(count.current==0){
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/images/image/base64/${mealData.image}`,
+        { responseType: 'arraybuffer' } 
+      );
+      const blob = new Blob([response.data], { type: 'image/jpeg' });
+      const profileImage=URL.createObjectURL(blob);
+      if(profileImage){
+        setImage(profileImage);
+      }
+      return response;
+    }
+    return null;
+    },
+    refetchInterval: false,
+    retry: 3,
+  });
 
 
   if(props.error!=''){
@@ -33,10 +60,12 @@ export default function IssueMeal({ mealData, ...props }:any) {
         </p>
       </div>
       <div className="flex flex-col items-center gap-2 mb-6">
-        <img
-          src={mealData.image}
-          alt="Profile"
-          className="w-24 h-24 rounded-full border shadow-sm"
+      <Image
+          src={typeof img === 'string' ? img : profile}
+          alt="User dropdown"
+          width={1600}
+          height={1600}
+          className="w-48 h-48 rounded-full"
         />
         <p className="text-lg font-medium text-gray-800">{mealData.name}</p>
         <p className="text-gray-500">{mealData.contact}</p>
