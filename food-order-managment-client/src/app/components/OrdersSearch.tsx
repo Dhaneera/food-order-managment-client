@@ -17,7 +17,11 @@ export default function OrdersSearch(props:any) {
     mutationKey: ['ordersSearch', searchOrder],
     mutationFn: async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/meal/${searchOrder}`);
-      return response.data;
+      const responseReturn=response.data;
+      return{
+        ...responseReturn,
+        search:searchOrder
+      }
     },
     onSuccess: (data:any) => {
       props.setOrderData(data);
@@ -50,8 +54,8 @@ export default function OrdersSearch(props:any) {
           <span className="text-xl font-bold">{props.totalOrders}</span>
         </div>
         <div className="flex justify-between items-center text-gray-700">
-          <span className="text-lg font-medium">Completed Meals:</span>
-          <span className="text-xl font-bold">{orderData.completedOrders}</span>
+          <span className="text-lg font-medium">Pending Meals:</span>
+          <span className="text-xl font-bold">{props.completedOrders}</span>
         </div>
       </div>
 

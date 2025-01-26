@@ -5,13 +5,27 @@ import Button from './Button';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-const CartItem = ({ cartItems, subtotal,foodDataForBackend }:any) => {
+const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
   const mutation=useMutation({
     mutationKey:[],
     mutationFn:():any=>placeOrder(foodDataForBackend),
+    onSuccess:()=>{
+      props.setIsModalComplete(true);
+    },
     retry:1,
     retryDelay:5000,
   })
+
+  function placeOrder(data:any){
+    try{
+    axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data).then((data:any)=>{
+      props.setMealIds(data.data)
+    })  
+    }catch(ex){
+      console.log(ex);
+      throw ex;
+    }
+  }
   return subtotal!=0?(
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
       {cartItems?.map((item:any, index:any):any => (
@@ -55,11 +69,4 @@ function submit(){
 };
 export default CartItem;
 
-function placeOrder(data:any){
-  try{
-  axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data);
-  }catch(ex){
-    console.log(ex);
-    throw ex;
-  }
-}
+

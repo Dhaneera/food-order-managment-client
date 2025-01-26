@@ -20,9 +20,11 @@ const formatDate = (date:any) => {
 const MealOrder = () => {
   const [order,setOrder]=useState(null);
   const [errorForModal,setErrorForModal] = useState('');
+  const[completedOrders,setCompletedOrders] = useState(0);
   const [date, setDate] = useState(""); // Stores the formatted date string
   const [meal, setMeal] = useState(""); // Stores the meal type (Breakfast, Lunch, Dinner)
   const ref = useRef(""); // Stores the current time string
+
 
 
   const [totalOrders,setTotalOrders] =useState(0);
@@ -59,6 +61,7 @@ const MealOrder = () => {
     }
   }, [breakfastTimeStamp, lunchTimeStamp, dinnerTimeStamp]);
 
+
   // Fetch orders using React Query
   const { data, isLoading, error } = useQuery({
    queryKey: ["orders", date, meal], // Add both date and meal in the query key for better refetching
@@ -74,12 +77,14 @@ const MealOrder = () => {
   
   async function getOrderDetails(date:any, meal:any) {
     try {
-      if(data && meal){
+
+
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/count/${date}/${meal}`);
       console.log("Order Details:", response.data);
       
-      setTotalOrders(response.data);
-      }
+      setTotalOrders(response.data.total);
+      setCompletedOrders(response.data.pending);
+      
     } catch (error) {
       console.error("Error fetching order details:", error);
       throw error;
@@ -95,7 +100,7 @@ const MealOrder = () => {
         Current Meal: {meal}
       </p>
       <div className="w-screen mt-56 flex h-1/2 justify-center">
-        <OrdersSearch totalOrders={totalOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder}  />
+        <OrdersSearch totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder}  />
         <IssueMeal error={errorForModal} order={order} mealData={order} />
       </div>
     </div>

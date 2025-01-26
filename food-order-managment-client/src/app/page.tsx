@@ -8,6 +8,8 @@ import Modal from './components/Modal';
 import routeToTheLogin from './RouteBack';
 import OrderInteface from './PlaceOrderInterface';
 import Order from './components/Order';
+import ErrorModal from './components/ErrorModal';
+import Modall from './components/Modall';
 
 const Page = () => {
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
@@ -15,6 +17,8 @@ const Page = () => {
   const [selected, setSelected] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalComplete,setIsModalComplete]= useState(false);
+  const[mealIds,setMealIds] = useState([]);
 
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
@@ -105,7 +109,13 @@ const Page = () => {
     }
   }
 
-  return (
+  return isModalComplete?(
+    <Modall setIsModalComplete={setIsModalComplete} message={mealIds?.map((obj:any)=>{
+      return obj
+    })}/>
+  )
+  
+  : (
     <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>
         <Header />
@@ -150,7 +160,7 @@ const Page = () => {
         <div className="w-[51%] px-[5%] mt-5 max-lg:hidden">
           <h1 className="font-sans font-bold text-3xl pb-5">Cart</h1>
           <div className="w-full h-[85%] shadow-2xl rounded-md">
-            <CartItem foodDataForBackend={foodDataForBackend} cartItems={cartItems} subtotal={subtotal} />
+            <CartItem foodDataForBackend={foodDataForBackend} setIsModalComplete={setIsModalComplete}cartItems={cartItems} setMealIds={setMealIds} subtotal={subtotal} />
           </div>
         </div>
         <div className='lg:hidden w-full flex justify-center items-center mb-96  '>

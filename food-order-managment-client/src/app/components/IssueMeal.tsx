@@ -1,19 +1,48 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Image, { StaticImageData } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import profile from '../../../public/file.svg';
+import ErrorModal from './ErrorModal';
 
 export default function IssueMeal({ mealData, ...props }:any) {
   const [issued, setIssued] = useState(false);
   const [isintial,setIsIntial] = useState(true);
   const [img, setImage] = useState<string | StaticImageData>(profile);
   const count = useRef(0);
+  const mealId = useRef('');
 
-  const handleIssueOrder = () => {
+  const mutate=useMutation({
+    mutationKey:[mealId.current],
+    mutationFn:async()=>{
+      if(mealId.current!==''){
+      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/meal/status/${mealId.current}`)
+      .then((res:any)=>{
+        console.log(res.data)
+        return res.data
+      }) 
+    }
+    },
+    retry:2,
+    retryDelay:5000,
+    onSuccess: (data:any) => {
+      setIssued(false);
+      return(
+        <ErrorModal/>
+      )
+    },
+    onError: (error:any) => {
+      props.setError(error.response.data);
+    },
+  })
+
+  const handleIssueOrder = (e:any) => {
     setIssued(true);
-    console.log(`Order for Meal ID: ${mealData.mealId} has been issued.`);
+    debugger
+    mealId.current=mealData.search;
+    mutate.mutateAsync();
   };
+
   
   const { isLoading, isError } = useQuery({
     queryKey: ['userImage'],
@@ -43,7 +72,6 @@ export default function IssueMeal({ mealData, ...props }:any) {
       </>
     )
   }
-  console.log(mealData?.name?.substring(0,2));
 
 
   return props.order == null && props.order == undefined ? (
@@ -77,7 +105,7 @@ export default function IssueMeal({ mealData, ...props }:any) {
       </div>
 
       <button
-        onClick={handleIssueOrder}
+        onClick={(e)=>handleIssueOrder(e)}
         disabled={issued}
         className={`w-full py-3 rounded-lg text-lg font-medium ${
           issued
