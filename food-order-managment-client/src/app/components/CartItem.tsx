@@ -32,13 +32,13 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
         item.quantity!=0?(
         <div
           key={index}
-          className="w-full flex justify-between items-center border-gray-500 border-2 rounded-md px-2 py-1"
+          className="w-full flex justify-between items-center bg-white  border-2 rounded-md px-2 py-1"
         >
           <Image src={img} alt={item.name} className="w-24 h-24" />
           <p>{item.name}</p>
           <h3 className="px-1 font-medium">{item?.price?.toFixed(2)}</h3>
         </div>
-        ):(<div key={index}></div>)
+        ):(<div key={index}></div>) 
         
       ))}
       <div className="w-full border-t-2 flex flex-col mt-6">

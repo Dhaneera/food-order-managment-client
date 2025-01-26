@@ -37,8 +37,8 @@ export type OrderResponse = {
     first: boolean;
     empty: boolean;
     createdBy:String;
-  }
-  const ordersAxios = async (pageNumber = 0, pageSize = 10,createdBy=""): Promise<OrderResponse> => {
+  };
+  const paymentsAxios = async (pageNumber = 0, pageSize = 10,createdBy=""): Promise<OrderResponse> => {
     try {
       debugger
       const response = await axios.get<OrderResponse>(
@@ -57,4 +57,4 @@ export type OrderResponse = {
     }
   };
 
-  export default ordersAxios;
+  export default paymentsAxios;

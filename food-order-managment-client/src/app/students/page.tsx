@@ -8,6 +8,7 @@ import TableRow from '../table/TableRow'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios, { Axios } from 'axios'
 import ConfirmationModal from '../components/ConfirmationModal'
+import SideBar from '../components/SideBar'
 
 
 
@@ -34,60 +35,6 @@ const tableHeader: tableInterface[] = [
         style: ""
     }
 ]
-
-
-
-// const tableRows: tableInterface[] = [
-//     {
-//         style: "",
-//          cellData:[{
-//             isButton: 'Complete',
-//             text: 'jdojfo',
-//             style: ''
-//         },
-//         {
-//             isButton: '',
-//             text: '1299',
-//             style: 'py-8'
-//         }
-//             ,
-//         {
-//             isButton: '',
-//             text: '2323',
-//             style: ''
-//         }
-//             , {
-//             isButton: '',
-//             text: '121',
-//             style: ''
-//         },
-//         {
-//             isButton: 'icons',
-//             text: <Trash2 />,
-//             click: deleteItemFromArray,
-//             style: 'px-3'
-//         }]
-//     },
-//     // {
-//     //     id: 3,
-//     //     phoneNumber: 987654321,
-//     //     studentName: "Jane Smith",
-//     //     status: "Inactive",
-//     //     actions:<Trash2/>
-//     // },
-//     // {
-//     //     id: 3,
-//     //     phoneNumber: 987654321,
-//     //     studentName: "Jane Smith",
-//     //     status: "Inactive",
-//     //     actions:<Trash2/>
-//     // }
-// ]
-// function deleteItemFromArray(){
-//     debugger
-//     console.log("deleteItemFromArray")
-//     tableHeader.pop();
-// }
 
 
 
@@ -176,7 +123,7 @@ const Students = () => {
         }
     }
     useQuery({
-        queryKey: ['allStudents'],
+        queryKey: ['allStudents',currentPage],
         queryFn: () => fetchDataForAllStudents(currentPage - 1)
     })
     function fetchDataForAllStudents(pageNum: any) {
@@ -262,11 +209,11 @@ const Students = () => {
     return (
         <>
         {visible?<ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible}/>:<></>}
-        <div className="w-screen h-screen flex flex-col max-lg:w-2/3">
-            <div className="flex py-3 justify-between px-3">
-                <Header />
-            </div>
-            <div className="w-full flex flex-col items-center">
+        <div className="w-screen flex flex-col">
+        <div className='flex'>
+            <SideBar/>
+    
+            <div className="w-full flex flex-col items-center justify-center">
 
                 <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md  ">
                     <h3 className="font-sans text-3xl font-semibold px-3 py-4 mb-10 ">View Students</h3>
@@ -274,15 +221,19 @@ const Students = () => {
                     <div className='flex items-end gap-5'>
                         <button className=' px-8 py-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold mb-10  '>Register Students</button>
                         <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</button>
-                        <div className=' m-12  ring  rounded border'>
+                        
+                        <div className='flex  flex-auto justify-end'>
+                        <div className=' m-12  ring  ring-orange-300 hover:ring-orange-400  active:ring-orange-400     rounded border'>
                             <input
                                 type="text"
                                 name="search"
                                 placeholder="Search..."
                                 onChange={(e) => search(e)} />
-                            <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
 
                         </div>
+                        <button className=' mt-10  px-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
+                        </div>
+
                     </div>
 
                     <table className='w-full border-collapse'>
@@ -315,6 +266,7 @@ const Students = () => {
                         Next
                     </button>
                 </div>
+            </div>
             </div>
         </div></>
     )
