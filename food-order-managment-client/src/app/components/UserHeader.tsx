@@ -34,7 +34,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   return (
-    <div className="relative mr-36 max-lg:hidden">
+    <div className="relative mr-48 max-lg:hidden">
       <button
         id="avatarButton"
         type="button"
@@ -55,16 +55,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
           id="userDropdown"
           className="z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-56"
         >
-          <div className="px-4 py-3 text-sm">
-            <div>Bonnie Green</div>
-            <div className="font-medium truncate">name@flowbite.com</div>
-          </div>
           <ul className="py-2 text-sm text-gray-700" aria-labelledby="avatarButton">
-            <li>
-              <a href="#" className="block px-4 py-2 hover:bg-gray-100">
-                Dashboard
-              </a>
-            </li>
             <li>
               <a
                 href="#"
@@ -79,7 +70,14 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
             </li>
           </ul>
           <div className="py-1">
-            <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="#" 
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            onClick={(e) => {
+              e.preventDefault();
+              sessionStorage.clear();
+              window.location.href = '/login';
+            }}
+            >
               Sign out
             </a>
           </div>
