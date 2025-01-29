@@ -8,17 +8,28 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import loginAxios from "./login";
 import Loader from "../components/Loader";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
 
-
+  const router=useRouter();
   const { error, isError, isIdle, isSuccess, status, data, isPending, mutate } = useMutation({
     mutationFn: loginAxios,
     mutationKey:["login"],
     onSuccess: (data: any) => {
-      localStorage.setItem("token", data.accessToken);
+
+
+      const { userId, roles } = data;
+      
+      sessionStorage.setItem("userId", userId.toString());
+      sessionStorage.setItem("role", roles[0] || ""); 
+      sessionStorage.setItem("name",phoneNumber.toString());  
+
+      router.push('/');
     },
     onError: (error) => {
+      debugger
+      console.log(error)
       setPasswordInvalid(true);
     },
   })
@@ -102,7 +113,7 @@ const Login = () => {
   return !isPending?(
     <div className="w-screen h-screen flex">
       <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
-        <h3 className=" font-poppins text-2xl">Welcome Back</h3>
+        <h3 className=" text-3xl font-bold mb-2 font-poppins">Welcome Back</h3>
         {/* responsive button */}
         <div className="flex justify-center items-center" onSubmit={handleSubmit}>
           <div className="flex bg-gray-200 rounded-full px-1 ">
@@ -144,8 +155,8 @@ const Login = () => {
             <input
               type="text"
               id="phone-number"
-              className={`bg-gray-50 border ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
-                } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+              className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               placeholder="Phone Number"
@@ -160,8 +171,8 @@ const Login = () => {
               <input
                 type={isPasswordVisible ? "text" : "password"}
                 id="password"
-                className={`bg-gray-50 border ${errors.password ? "border-red-500" : "border-gray-300"
-                  } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10`}
+                className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                  } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Password"
@@ -190,7 +201,7 @@ const Login = () => {
         >
           Login
         </button>
-        <h2 className="text-sm">Don t have an account click here to <Link href='/hi'><span className="text-red-700">Sign Up</span></Link></h2>
+        <h2 className="text-sm">Don t have an account click here to <Link href='/register'><span className="text-red-700">Sign Up</span></Link></h2>
       </div>
 
       <div className="w-[48%] max-md:hidden h-full">
