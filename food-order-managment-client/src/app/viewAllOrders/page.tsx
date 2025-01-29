@@ -16,6 +16,7 @@ const Page = () => {
     const rowCountPerPage = 10;
     let name: string = '';
     const [page, setPage] = useState(1);
+    const tableRows: any = [];
     const router = useRouter();
     const { isError, isLoading, isFetched, data, isSuccess, isStale, isFetching } = useQuery({
         queryFn: () => ordersAxios(page, rowCountPerPage, name),
@@ -32,7 +33,7 @@ const Page = () => {
     }, [])
     const ordersMobileMock: orderMobile[] = [];
 
-    data?.content.map((obj, index) => {
+    data?.content.map((obj, index):any => {
         ordersMobileMock.push({
             id: obj.id,
             price: obj.price,
@@ -66,8 +67,7 @@ const Page = () => {
             style: ""
         }
     ]
-    let status = obj.status;
-    data?.content.map((obj, index) => {
+    data?.content.map((obj:any, index) => {
         let status = obj.status;
         tableRows.push({
             style: "", cellData: [{

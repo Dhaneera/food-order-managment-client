@@ -17,8 +17,10 @@ const Page = () => {
   const [selected, setSelected] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isModalComplete,setIsModalComplete]= useState(false);
-  const[mealIds,setMealIds] = useState([]);
+  const [isModalComplete, setIsModalComplete] = useState(false);
+  const [mealIds, setMealIds] = useState([]);
+  const [role, setRole] = useState('');
+  const [name, setName] = useState('');
 
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
@@ -33,7 +35,7 @@ const Page = () => {
     { name: 'Dinner', price: 400.0, quantity: 0 },
   ]);
 
-  const subtotal:number = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const updateCartItemQuantity = (name: string, quantity: number) => {
     setCartItems((prevCartItems) =>
@@ -64,6 +66,12 @@ const Page = () => {
       date: dayAfterTomorrowDate.getDate(),
       month: dayAfterTomorrowMonth,
     });
+
+    // Ensures sessionStorage is accessed only on the client-side
+    if (typeof window !== 'undefined') {
+      setRole(sessionStorage.getItem('role') || '');
+      setName(sessionStorage.getItem('name') || '');
+    }
   }, []);
 
   function handleChangeSelectTomorrow() {
@@ -73,49 +81,48 @@ const Page = () => {
   function handleChangeSelectDayAfterTomorrow() {
     setSelected(false);
   }
-  let foodDataForBackend:OrderInteface = {
-    id:'d290f1ee-6c54-4b01-90e6-d701748f0851',
-    name:'normal Order',
-    role:sessionStorage.getItem('role') ||'', 
-    status:'Pending',
-    price:subtotal,
-    createdBy:sessionStorage.getItem('name') || '',
-    createdAt:new Date().toISOString(),
-    orderedAt:selected
-    ? new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
-    : new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(),
-    meals:{
-      breakfast:{
-        id:1,
-        count:cartItems[0].quantity,
-        orderId:'d290f1ee-6c54-4b01-90e6-d701748f0851',
-        status:'Pending',
-        type:'breakfast'
-      },
-      lunch:{
-        id:2,
-        count:cartItems[1].quantity,
-        orderId:'d290f1ee-6c54-4b01-90e6-d701748f0851',
-        status:'Pending',
-        type:'breakfast'
-      },
-      dinner:{
-        id:3,
-        count:cartItems[2].quantity,
-        orderId:'d290f1ee-6c54-4b01-90e6-d701748f0851',
-        status:'Pending',
-        type:'breakfast'
-      }
-    }
-  }
 
-  return isModalComplete?(
-    <Modall setIsModalComplete={setIsModalComplete} message={mealIds?.map((obj:any)=>{
-      return obj
-    })}/>
-  )
-  
-  : (
+  let foodDataForBackend: any = {
+    id: 'd290f1ee-6c54-4b01-90e6-d701748f0851',
+    name: 'normal Order',
+    role: role,
+    status: 'Pending',
+    price: subtotal,
+    createdBy: name,
+    createdAt: new Date().toISOString(),
+    orderedAt: selected
+      ? new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
+      : new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(),
+    meals: {
+      breakfast: {
+        id: 1,
+        count: cartItems[0].quantity,
+        orderId: 'd290f1ee-6c54-4b01-90e6-d701748f0851',
+        status: 'Pending',
+        type: 'breakfast',
+      },
+      lunch: {
+        id: 2,
+        count: cartItems[1].quantity,
+        orderId: 'd290f1ee-6c54-4b01-90e6-d701748f0851',
+        status: 'Pending',
+        type: 'lunch',
+      },
+      dinner: {
+        id: 3,
+        count: cartItems[2].quantity,
+        orderId: 'd290f1ee-6c54-4b01-90e6-d701748f0851',
+        status: 'Pending',
+        type: 'dinner',
+      },
+    },
+  };
+
+  return isModalComplete ? (
+    <Modall setIsModalComplete={setIsModalComplete} message={mealIds?.map((obj: any) => {
+      return obj;
+    })} />
+  ) : (
     <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>
         <Header />
@@ -160,7 +167,7 @@ const Page = () => {
         <div className="w-[51%] px-[5%] mt-5 max-lg:hidden">
           <h1 className="font-sans font-bold text-3xl pb-5">Cart</h1>
           <div className="w-full h-[85%] shadow-2xl rounded-md">
-            <CartItem foodDataForBackend={foodDataForBackend} setIsModalComplete={setIsModalComplete}cartItems={cartItems} setMealIds={setMealIds} subtotal={subtotal} />
+            <CartItem foodDataForBackend={foodDataForBackend} setIsModalComplete={setIsModalComplete} cartItems={cartItems} setMealIds={setMealIds} subtotal={subtotal} />
           </div>
         </div>
         <div className='lg:hidden w-full flex justify-center items-center mb-96  '>
