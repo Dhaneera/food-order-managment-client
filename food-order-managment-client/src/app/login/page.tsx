@@ -25,7 +25,12 @@ const Login = () => {
       sessionStorage.setItem("role", roles[0] || ""); 
       sessionStorage.setItem("name",phoneNumber.toString());  
 
-      router.push('/');
+      if(roles[0] == "ROLE_STAFF"){
+        router.push('/MealOrder')
+      }else{
+        router.push('/');
+      }
+      
     },
     onError: (error) => {
       debugger
