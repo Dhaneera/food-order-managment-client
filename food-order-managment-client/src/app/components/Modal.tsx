@@ -44,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({ title, isVisible, onClose, onDiscard, onS
       const formData = new FormData();
       formData.append('file', image);
       formData.append("name", name);
-      const response = axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/images/upload?id=1`, formData, {
+      const response = axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/images/upload?id=${sessionStorage.getItem("userId")}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data", 
         },
