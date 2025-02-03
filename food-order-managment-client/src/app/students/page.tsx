@@ -10,6 +10,11 @@ import axios, { Axios } from 'axios'
 import ConfirmationModal from '../components/ConfirmationModal'
 import SideBar from '../components/SideBar'
 import Loader from '../components/Loader'
+import { AlertDialog } from '@radix-ui/react-alert-dialog'
+import { AlertDescription } from '@/components/ui/alert'
+import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { debug } from 'console'
+import { useRouter } from 'next/navigation'
 
 
 
@@ -41,12 +46,12 @@ const tableHeader: tableInterface[] = [
 
 
 const Students = () => {
-
+    const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isAllApprovedusers, setIsAllApprovedUsers] = useState(false);
-    const [data, setData] = useState([]);
-    const [loading,isLoading]=useState(false)
+    const [data, setData] = useState(-1);
+    const [showModal, SetShowModal] = useState(false)
 
     let tableRows: any = []
 
@@ -82,7 +87,7 @@ const Students = () => {
                 },
                 {
                     isButton: 'icon',
-                    text: <Trash2 width={60} onClick={() => deleteFuction(obj.id)} />,
+                    text: <Trash2 width={60} onClick={() => deleteModalActivate(obj.id)} />,
                     style: 'flex flex-row gap-4'
                 }
 
@@ -91,11 +96,11 @@ const Students = () => {
         }
     })
     const updateRef = useRef(0)
-    const [visible,setVisible]=useState(false)
-    const statusChangeMutation=useMutation({
+    const [visible, setVisible] = useState(false)
+    const statusChangeMutation = useMutation({
         mutationKey: [students],
         mutationFn: () => changeStatus(updateRef.current),
-        onSuccess:()=>window.location.reload()
+        onSuccess: () => window.location.reload()
     })
 
     function changeStatus(index: any): any {
@@ -109,27 +114,41 @@ const Students = () => {
 
     }
 
-    console.log('visible',visible)
+    console.log('visible', visible)
 
     const deleteMutation = useMutation({
         mutationFn: deleteFromDatabase(ref),
         mutationKey: [students],
+        onSuccess: () => {
+            window.location.reload();
+        }
 
     })
+
+    if (deleteMutation.isPending) {
+        <Loader></Loader>
+    }
 
     function deleteFuction(index: number) {
         setRef(index);
         if (ref != -1) {
-            deleteMutation.mutate()
+            deleteMutation.mutate();
             students.pop();
         }
+        SetShowModal(false)
+        router.refresh();
     }
-    const {isPending}  = useQuery({
-        queryKey: ['allStudents',currentPage],
+    function deleteModalActivate(obj: any) {
+        debugger
+        setData(obj)
+        SetShowModal(true);
+    }
+    const { isPending } = useQuery({
+        queryKey: ['allStudents', currentPage],
         queryFn: () => fetchDataForAllStudents(currentPage - 1)
     })
     function fetchDataForAllStudents(pageNum: any) {
-       
+
 
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll/students?page=${pageNum}&size=10`)
             .then((res: any) => {
@@ -181,7 +200,7 @@ const Students = () => {
             fetchDataForAllStudents(0);
         }
     }
-   
+
 
     const serachStudentMutaion = useMutation({
         mutationKey: ['searchStudent'],
@@ -209,73 +228,89 @@ const Students = () => {
     }
 
     if (isPending) {
-        return <Loader/>
+        return <Loader />
     }
 
 
-    return  (
+    return (
         <>
-        {visible?<ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible}/>:<></>}
-        <div className="w-screen flex flex-col">
-        <div className='flex'>
-            <SideBar/>
-    
-            <div className="w-full flex flex-col items-center justify-center">
 
-                <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md  ">
-                    <h3 className="font-sans text-3xl font-semibold px-3 py-4 mb-10 ">View Students</h3>
+            {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}
+            <div className="w-screen flex flex-col">
+                <div className='flex'>
+                    <SideBar />
+                    <div className="w-full flex flex-col items-center justify-center">
+                        {showModal ? <AlertDialog open={showModal}>
 
-                    <div className='flex items-end gap-5'>
-                        <button className=' px-8 py-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold mb-10  '>Register Students</button>
-                        <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</button>
-                        
-                        <div className='flex  flex-auto justify-end'>
-                        <div className=' m-12  ring  ring-orange-300 hover:ring-orange-400  active:ring-orange-400     rounded border'>
-                            <input
-                                type="text"
-                                name="search"
-                                placeholder="Search..."
-                                onChange={(e) => search(e)} />
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure about deleting this user ?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete this account
+                                        and remove data from our servers.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel onClick={() => SetShowModal(false)}>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => deleteFuction(data)}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                            : <></>}
+                        <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md  ">
+                            <h3 className="font-sans text-3xl font-semibold px-3 py-4 mb-10 ">View Students</h3>
 
+                            <div className='flex items-end gap-5'>
+                                <button className=' px-8 py-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold mb-10  '>Register Students</button>
+                                <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</button>
+
+                                <div className='flex  flex-auto justify-end'>
+                                    <div className=' m-12  ring  ring-orange-300 hover:ring-orange-400  active:ring-orange-400     rounded border'>
+                                        <input
+                                            type="text"
+                                            name="search"
+                                            placeholder="Search..."
+                                            onChange={(e) => search(e)} />
+
+                                    </div>
+                                    <button className=' mt-10  px-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
+                                </div>
+
+                            </div>
+
+                            <table className='w-full border-collapse'>
+                                <TableHeader header={tableHeader} />
+
+                                {tableRows.map((row: any, index: number) => {
+                                    return (
+                                        <TableRow key={index} cellData={row.cellData} styles={row.style}></TableRow>
+                                    )
+                                })}
+
+                            </table>
                         </div>
-                        <button className=' mt-10  px-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
+                        <div className="flex justify-center mt-4 space-x-4">
+                            <button
+                                onClick={handlePrevious}
+                                disabled={currentPage === 1}
+                                className={`px-4 py-2 bg-gray-200 rounded-l-3xl ${currentPage === 1 && "opacity-50 cursor-not-allowed  rounded-l-3xl"}`}
+                            >
+                                Previous
+                            </button>
+                            <span className=" mt-2">
+                                Page {currentPage} of {totalPages}
+                            </span>
+                            <button
+                                onClick={handleNext}
+                                disabled={currentPage === totalPages}
+                                className={`px-4 py-2 bg-gray-200 rounded-r-3xl ${currentPage === totalPages && "opacity-50 cursor-not-allowed rounded-r-3xl"}`}
+                            >
+                                Next
+                            </button>
                         </div>
-
                     </div>
-
-                    <table className='w-full border-collapse'>
-                        <TableHeader header={tableHeader} />
-
-                        {tableRows.map((row: any, index: number) => {
-                            return (
-                                <TableRow key={index} cellData={row.cellData} styles={row.style}></TableRow>
-                            )
-                        })}
-
-                    </table>
                 </div>
-                <div className="flex justify-center mt-4 space-x-4">
-                    <button
-                        onClick={handlePrevious}
-                        disabled={currentPage === 1}
-                        className={`px-4 py-2 bg-gray-200 rounded-l-3xl ${currentPage === 1 && "opacity-50 cursor-not-allowed  rounded-l-3xl"}`}
-                    >
-                        Previous
-                    </button>
-                    <span className=" mt-2">
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                        onClick={handleNext}
-                        disabled={currentPage === totalPages}
-                        className={`px-4 py-2 bg-gray-200 rounded-r-3xl ${currentPage === totalPages && "opacity-50 cursor-not-allowed rounded-r-3xl"}`}
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-            </div>
-        </div></>
+            </div></>
     )
 }
 export default Students

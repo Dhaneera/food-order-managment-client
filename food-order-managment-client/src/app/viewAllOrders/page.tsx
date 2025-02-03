@@ -24,6 +24,7 @@ const Page = () => {
         queryKey: ['orders', 'payments', page, name],
         retry: 3,
         retryDelay: 3000,
+        staleTime:120000,
         retryOnMount: true,
         refetchOnReconnect: true,
 
