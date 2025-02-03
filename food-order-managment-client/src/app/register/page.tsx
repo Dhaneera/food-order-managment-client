@@ -5,6 +5,7 @@ import registerAxios from "./register"; // Your API function
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import Loader from "../components/Loader";
+import { useRouter } from "next/navigation";
 
 type RegisterPayload = {
   phoneNumber: string;
@@ -16,6 +17,7 @@ type RegisterPayload = {
 const statue = "/login-2.png";
 
 const RegisterPage = () => {
+   const router=useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -53,8 +55,11 @@ const RegisterPage = () => {
       sessionStorage.setItem("name",phoneNumber);
 
     
-      
-      window.location.href = "/";
+      console.log(data);
+      if(data.data.status=="ACTIVE")router.push("/");
+      else if(data.data.status=="PENDING"){
+        router.push("/accessError")
+      }
     },
     onError: () => {
       setuserInvalid(true);

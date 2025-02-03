@@ -23,11 +23,15 @@ const Login = () => {
       
       sessionStorage.setItem("userId", userId.toString());
       sessionStorage.setItem("role", roles[0] || ""); 
-      sessionStorage.setItem("name",phoneNumber.toString());  
-
-      if(roles[0] == "ROLE_STAFF"){
+      sessionStorage.setItem("name",phoneNumber.toString());
+      sessionStorage.setItem("status",data.status)  
+      console.log(data);
+      if(roles[0] == "ROLE_STAFF" && data.status=='ACTIVE'){
         router.push('/MealOrder')
-      }else{
+      }else if(data.status=='PENDING'){
+        router.push('/accessError')
+      }
+      else{
         router.push('/');
       }
       
