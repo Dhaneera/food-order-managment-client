@@ -5,10 +5,7 @@ import CartItem from './components/CartItem';
 import Button from './components/Button';
 import UserHeader from './components/UserHeader';
 import Modal from './components/Modal';
-import routeToTheLogin from './RouteBack';
-import OrderInteface from './PlaceOrderInterface';
 import Order from './components/Order';
-import ErrorModal from './components/ErrorModal';
 import Modall from './components/Modall';
 
 const Page = () => {
@@ -125,7 +122,7 @@ const Page = () => {
   ) : (
     <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>
-        <Header />
+        <Header modalView={setModalVisible}/>
         <UserHeader onSettingsClick={handleOpenModal} />
         <Modal
             title="User Settings"

@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, Link, List, Settings } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Modal from './Modal';
 
-const Header = () => {
+const Header = (props:any) => {
     const [isMouseIn, setIsMouseIn] = useState({ isIn: false, type: '' });
     const [isMobile, setIsMobile] = useState(false);
+
     const route=useRouter();
 
     
@@ -33,7 +35,7 @@ const Header = () => {
        }else if(e.currentTarget.id=='payments'){
         route.push('payment')
        }else{
-        route.push('/settings')
+            props.modalView(true)
        }
     }
 
@@ -80,7 +82,8 @@ const Header = () => {
                     <div
                         className="bg-[#e6f6e9] rounded-full w-14 h-14 justify-center items-center flex"
                         id="payments"
-                        onClick={isMobile ? (e) => handleInteraction(e, true) : (e)=>handleClick(e)}
+                        onClick={isMobile ? (e) => handleInteraction(e, true) : (e)=>handleClick(e)
+                         }
                         onMouseEnter={!isMobile ? (e) => handleInteraction(e, true) : undefined}
                         onMouseLeave={!isMobile ? (e) => handleInteraction(e, false) : undefined}
                     >
