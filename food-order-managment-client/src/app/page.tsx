@@ -46,7 +46,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    routeToTheLogin();
+    // routeToTheLogin();
     const today = new Date();
 
     const tomorrowDate = new Date(today);

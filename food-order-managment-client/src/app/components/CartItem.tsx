@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import img from '../../../public/breakfast.png';
 import Button from './Button';
+import { Button as Btn}  from '@/components/ui/button';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@radix-ui/react-label';
+import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 
 const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
+  const router = useRouter()
+  const [state,setState]=useState(false);
   const mutation=useMutation({
     mutationKey:[],
     mutationFn:():any=>placeOrder(foodDataForBackend),
@@ -26,7 +33,23 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
       throw ex;
     }
   }
-  return subtotal!=0?(
+  function handleLoginRedirect(event:any): void {
+    router.push('/login')
+  }
+  const [userName,setUsername]=useState('')
+
+  function handleUserData(event: any): void {
+    setUsername(event.target.value)
+  }
+
+
+  function handleOnClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    foodDataForBackend.createdBy=userName;
+    foodDataForBackend.role="Guest"
+    mutation.mutate();
+  }
+
+  return subtotal!=0 && state==false?(
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
       {cartItems?.map((item:any, index:any):any => (
         item.quantity!=0?(
@@ -51,20 +74,52 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
           <h2 className="font-poppins font-bold">{subtotal?.toFixed(2)}</h2>
         </div>
         <div className='mt-10'>
-        <Button event={submit}/>
+          {state?<></>:<Button event={submit}/>}
+        
         </div>
       </div>
     </div>
+  ):state==true?(
+    <>
+     <Dialog open={state}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Place Order As A Guest</DialogTitle>
+          <DialogDescription>
+            Place order without login just fill the data and make the payment 
+            <span className='font-bold'> for the order of RS {subtotal}.00</span>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Phone Number
+            </Label>
+            <Input onChange={(e)=>handleUserData(e)} id="name" pattern='^\d{10}$' className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Btn type="submit" onClick={handleLoginRedirect}>Login OR Register</Btn>
+          <Btn type="submit" onClick={(e)=>handleOnClick(e)}>Place Order</Btn> 
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   ):(
     <div className="w-full h-full flex justify-center items-center">
-      <h1 className="font-sans text-3xl font-semibold">No items in cart</h1>
+       <h1 className="font-sans text-3xl font-semibold">No items in cart</h1>
     </div>
-  );
+  )
   
 function submit(){
   debugger
+  if(sessionStorage.getItem("userId")){
+    debugger
   console.log(foodDataForBackend)
   mutation.mutate();
+  }else{
+    setState(true);
+  }
 }
 };
 export default CartItem;

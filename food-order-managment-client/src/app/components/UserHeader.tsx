@@ -27,8 +27,8 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
       }
       return response;
     },
-    refetchInterval: false,
-    retry: 3,
+    refetchInterval: 10000,
+    retry: 0,
   });
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
