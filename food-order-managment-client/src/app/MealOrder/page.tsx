@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ConfirmationModal from "../components/ConfirmationModal";
 import ErrorModal from "../components/ErrorModal";
+import Loader from "../components/Loader";
 
 // Helper function to format date to YYYY-MM-DD
 const formatDate = (date:any) => {
@@ -71,7 +72,7 @@ const MealOrder = () => {
   );
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   
@@ -92,7 +93,8 @@ const MealOrder = () => {
     return null;
   }
 
-  return errorForModal==''? (
+  return errorForModal==''? 
+   (
     <div className="flex h-screen">
       <Sidebar />
       <p className="absolute top-3 right-8 font-sans font-bold text-2xl">{date}</p>

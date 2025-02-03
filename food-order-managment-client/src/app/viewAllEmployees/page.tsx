@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import ConfirmationModal from '../components/ConfirmationModal';
+import Loader from '../components/Loader';
 
 const Page = () => {
     const rowCountPerPage = 10;
@@ -187,6 +188,12 @@ const Page = () => {
                 return err
             })
     }
+    
+
+    if (isLoading) {
+        return <Loader />
+    }
+
     return (
         <>
             {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}

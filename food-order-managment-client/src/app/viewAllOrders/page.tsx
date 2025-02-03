@@ -6,11 +6,12 @@ import TableRow from '../table/TableRow'
 import ordersAxios, { Order } from '../payment/orders'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ArrowRight, Loader, LucideAArrowDown } from 'lucide-react'
+import { ArrowLeft, ArrowRight, LucideAArrowDown } from 'lucide-react'
 import Header from '../components/Header'
 import MobileCard from '../table/MobileCard'
 import { orderMobile } from '../orders/order'
 import SideBar from '../components/SideBar'
+import Loader from '../components/Loader'
 
 const Page = () => {
     const rowCountPerPage = 10;

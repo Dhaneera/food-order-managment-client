@@ -6,10 +6,11 @@ import TableRow from '../table/TableRow'
 import ordersAxios, { Order } from '../payment/orders'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ArrowRight, Loader, LucideAArrowDown } from 'lucide-react'
+import { ArrowLeft, ArrowRight, LucideAArrowDown } from 'lucide-react'
 import Header from '../components/Header'
 import MobileCard from '../table/MobileCard'
 import { orderMobile } from './order'
+import Loader from "../components/Loader";
 
 const Page = () => {
     const rowCountPerPage = 10;
@@ -105,7 +106,7 @@ const Page = () => {
     }
 
     return isLoading ? (
-        <Loader />
+        <Loader/>
     ) : (
         <div className='h-screen flex flex-col motion-preset-slide-right motion-duration-700'>
             <div className=' w-full flex py-3 justify-between px-3'>

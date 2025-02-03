@@ -4,6 +4,7 @@ import Image from "next/image";
 import registerAxios from "./register"; // Your API function
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import Loader from "../components/Loader";
 
 type RegisterPayload = {
   phoneNumber: string;
@@ -69,7 +70,7 @@ const RegisterPage = () => {
     }
   };
 
-  return (
+  return!isPending?(
     <div className="flex h-screen font-poppins">
       <div className="w-1/2 h-full max-lg:hidden">
         <Image
@@ -168,7 +169,9 @@ const RegisterPage = () => {
         </form>
       </div>
     </div>
-  );
+  ):(
+    <Loader/>
+  )
 };
 
 export default RegisterPage;

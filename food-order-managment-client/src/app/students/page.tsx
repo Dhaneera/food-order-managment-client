@@ -9,6 +9,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import axios, { Axios } from 'axios'
 import ConfirmationModal from '../components/ConfirmationModal'
 import SideBar from '../components/SideBar'
+import Loader from '../components/Loader'
 
 
 
@@ -45,6 +46,7 @@ const Students = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [isAllApprovedusers, setIsAllApprovedUsers] = useState(false);
     const [data, setData] = useState([]);
+    const [loading,isLoading]=useState(false)
 
     let tableRows: any = []
 
@@ -122,11 +124,12 @@ const Students = () => {
             students.pop();
         }
     }
-    useQuery({
+    const {isPending}  = useQuery({
         queryKey: ['allStudents',currentPage],
         queryFn: () => fetchDataForAllStudents(currentPage - 1)
     })
     function fetchDataForAllStudents(pageNum: any) {
+       
 
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll/students?page=${pageNum}&size=10`)
             .then((res: any) => {
@@ -205,8 +208,12 @@ const Students = () => {
         setSearch(e.target.value);
     }
 
+    if (isPending) {
+        return <Loader/>
+    }
 
-    return (
+
+    return  (
         <>
         {visible?<ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible}/>:<></>}
         <div className="w-screen flex flex-col">
