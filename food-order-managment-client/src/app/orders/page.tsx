@@ -4,40 +4,47 @@ import tableInterface from '../table/TableInteface'
 import TableHeader from '../table/TableHeader'
 import TableRow from '../table/TableRow'
 import ordersAxios, { Order } from '../payment/orders'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, LucideAArrowDown } from 'lucide-react'
 import Header from '../components/Header'
 import MobileCard from '../table/MobileCard'
 import { orderMobile } from './order'
 import Loader from "../components/Loader";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import axios from 'axios'
 
 const Page = () => {
     const rowCountPerPage = 10;
-    let name:string ='';
+    let name: string = '';
     const [page, setPage] = useState(1);
+    const [moreData, setMoreData] = useState({
+        orderId: -1,
+        allData: []
+    });
     const router = useRouter();
     const { isError, isLoading, isFetched, data, isSuccess, isStale, isFetching } = useQuery({
-        queryFn: () => ordersAxios(page, rowCountPerPage,name),
-        queryKey: ['orders', 'payments', page,name],
-        retry: 3,
+        queryFn: () => ordersAxios(page, rowCountPerPage, name),
+        queryKey: ['orders', 'payments', page, name],
+        retry: 1,
         retryDelay: 3000,
-        retryOnMount: true,
-        refetchOnReconnect: true,
+        staleTime: Infinity,
+        retryOnMount: false,
+        refetchOnReconnect: false,
 
     })
 
-    useEffect(()=>{
+    useEffect(() => {
         name = sessionStorage.getItem('name') || '';
-    },[])
-    const ordersMobileMock:orderMobile[] = [];
+    }, [])
+    const ordersMobileMock: orderMobile[] = [];
 
-    data?.content.map((obj,index)=>{
+    data?.content.map((obj, index) => {
         ordersMobileMock.push({
-            id:obj.id,
-            price:obj.price,
-            orderRecDate:obj.orderedAt,
-            status:obj.status
+            id: obj.id,
+            price: obj.price,
+            orderRecDate: obj.orderedAt,
+            status: obj.status
         })
     })
 
@@ -66,12 +73,14 @@ const Page = () => {
             style: ""
         }
     ]
-
+    console.log(moreData)
     let tableRows: { style: string; cellData: { isButton: string; text: string; style: string }[] }[] = [];
     data?.content.map((obj, index) => {
         let status = obj.status;
         tableRows.push({
-            style: "", cellData: [{
+            style: "",
+
+            cellData: [{
                 isButton: 'Complete',
                 text: obj.id,
                 style: ''
@@ -99,18 +108,82 @@ const Page = () => {
             }]
         })
     })
-
     function navigateToPlaceOrder() {
         router.push('/')
 
     }
 
+    const mutate = useMutation({
+        mutationFn: (id: any) => getMealDataFromOrderId(id),
+        mutationKey: [moreData],
+        retry: 2,
+        retryDelay: 5000,
+    })
+
+    function getMealData(orderId: number) {
+        setMoreData((prev: any) => {
+            return {
+                ...prev,
+                orderId
+            }
+        })
+        mutate.mutateAsync(orderId);
+    }
+    async function getMealDataFromOrderId(orderId: number): Promise<any> {
+        await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/meal/get/order/${orderId}`)
+            .then((res: any) => {
+                setMoreData((prev: any) => {
+                    return {
+                        ...prev,
+                        allData: res.data
+                    }
+                })
+            })
+    }
     return isLoading ? (
-        <Loader/>
+        <Loader />
     ) : (
         <div className='h-screen flex flex-col motion-preset-slide-right motion-duration-700'>
             <div className=' w-full flex py-3 justify-between px-3'>
                 <Header />
+                <Sheet onOpenChange={()=>setMoreData(()=>{
+                    return{
+                        orderId:-1,
+                        allData:[]
+                    }
+                })} open={moreData.orderId != -1}>
+                    <SheetContent side={"bottom"}>
+                        <SheetHeader>
+                            <SheetTitle>Order Data</SheetTitle>
+                            <SheetDescription>
+                                <div className='flex flex-col w-full'>
+                                    <p>
+                                        Checkout meal information reagrding the order you have placed.
+                                    </p>
+                                    <div className="my-5 w-full grid grid-cols-3 max-md:grid max-md:grid-cols-2 max-md:gap-5 max-md:text-base ">
+                                        {["breakfast", "lunch", "dinner"].map((mealType) => {
+                                            const mealData = moreData?.allData.filter((obj: any) => obj.type === mealType) || [];
+                                            const totalCount = mealData.reduce((acc: number, obj: any) => acc + (obj.count || 0), 0);
+                                            const orderId = mealData.map((obj:any)=>obj.id || 0)
+                                            const totalPrice = totalCount * Number(process.env.NEXT_PUBLIC_BREKFAST_PRICE || 0);
+
+                                            return (
+                                                <div key={mealType} className="flex flex-col">
+                                                    <strong className="text-lg font-sans font-bold text-black max-md:text-sm">
+                                                        {`${mealType.toUpperCase()} : ${totalCount!=0?orderId:`N/A`}`}
+                                                    </strong>
+                                                    <p className="font-semibold text-xl max-md:text-sm">count: {totalCount}</p>
+                                                    <p className="font-semibold text-xl max-md:text-sm">price: {totalPrice}</p>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                </div>
+                            </SheetDescription>
+                        </SheetHeader>
+                    </SheetContent>
+                </Sheet>
             </div>
             <div className='w-full flex justify-center max-md:hidden'>
                 <div className="p-6 w-[85%] max-lg:w-[95%] bg-white h-full rounded-lg shadow-md ">
@@ -125,7 +198,7 @@ const Page = () => {
                             <tbody>
                                 {tableRows.map((row: any, index: any): any => {
                                     return (
-                                        <TableRow key={index} cellData={row.cellData} styles={row.style} />
+                                        <TableRow key={index} cellData={row.cellData} doubleClick={getMealData} styles={row.style} />
                                     )
                                 })}
                             </tbody>
@@ -137,18 +210,18 @@ const Page = () => {
             <div className='md:hidden w-screen h-screen px-3 flex flex-col'>
                 <h3 className='text-3xl font-poppins font-semibold my-3'>My Orders</h3>
                 <div className='w-full h-full  flex flex-col gap-1'>
-                    {ordersMobileMock.map((ord,index)=>{
-                        return(
-                            <MobileCard key={index} order={ord}/>
+                    {ordersMobileMock.map((ord, index) => {
+                        return (
+                            <MobileCard key={index} order={ord} />
                         )
                     })}
                     <div className='w-full justify-center pb-6 flex gap-3 items-center'>
-                     <ArrowLeft strokeWidth={1} size={30} className='hover:text-green-700'  onClick={() => page != 1 ? setPage((prev) => prev - 1) : setPage(prev => prev)}/>
-                     <p>{page}</p>
-                     <ArrowRight strokeWidth={1} size={30} className='hover:text-green-700'  onClick={() => page != data?.totalPages ? setPage((prev) => prev + 1) : setPage(prev => prev)}/>
-                     </div>
+                        <ArrowLeft strokeWidth={1} size={30} className='hover:text-green-700' onClick={() => page != 1 ? setPage((prev) => prev - 1) : setPage(prev => prev)} />
+                        <p>{page}</p>
+                        <ArrowRight strokeWidth={1} size={30} className='hover:text-green-700' onClick={() => page != data?.totalPages ? setPage((prev) => prev + 1) : setPage(prev => prev)} />
+                    </div>
                 </div>
-               
+
             </div>
             <div className='w-full flex gap-5 py-5 justify-center items-center max-lg:hidden'>
                 <button className=' bg-[#78b3a8] text-white px-4 py-2 rounded-md' onClick={() => page != 1 ? setPage((prev) => prev - 1) : setPage(prev => prev)}>Previous</button>
@@ -160,3 +233,5 @@ const Page = () => {
 }
 
 export default Page
+
+
