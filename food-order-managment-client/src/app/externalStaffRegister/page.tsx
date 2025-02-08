@@ -1,40 +1,81 @@
 "use client"
 import { useMutation } from '@tanstack/react-query';
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import statue from '../../../public/login-1.jpeg'
-const externalRegister=()=> {
-    
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
+import registerExternalStaff from './externalRegister';
+import { useRouter } from 'next/navigation';
+import Loader from '../components/Loader';
+const externalRegister = () => {
 
+    const route=useRouter();
     const [userInvalid, setuserInvalid] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [input, setInput] = useState({
-        mail:"",
-        gender:"",
-        nic:""
+        mail: "",
+        gender: "",
+        nic: "",
+        isInternal: false,
+        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
 
     });
 
-    function handleChange(e:any) {
-        console.log(e.target.value)
-       setInput((prev)=>{
-        return{
-            ...prev,
-            [e.target.name]:e.target.value,
-        }
-       })
+    function handleChange(e: any) {
+        setErrors({})
+        setInput((prev) => {
+            return {
+                ...prev,
+                [e.target.name]: e.target.value,
+            }
+        })
     }
 
 
-    const{isPending}=useMutation({
-        // mutationFn:register,
-        mutationKey:["register"],
-        onSuccess:()=>{},
-        onError:()=>{}
+    const mutaion = useMutation({
+        mutationFn:registerExternalStaff,
+        mutationKey: ["registerExternalStaff"],
+        onSuccess: () => {
+            route.push('/accessError')
+            
+         },
+        onError: () => { 
+            setuserInvalid(true)
+        }
     })
 
-    return (
+    const handleSignup = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validateForm()) {
+            console.log("hello")
+            toast.error("Please fill all the fields", {
+                position: "bottom-left", description: "Validation Error please fill all data correctly."
+
+            });
+        } else {
+            isInternal: false
+            mutaion.mutate(input);
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors: { [key: string]: string } = {};
+        if (input.mail == "") newErrors.mail = "Mail is required.";
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(input.mail)) {
+            newErrors.mail = "Invalid email address.";
+        }
+        if (input.gender == "") newErrors.gender = " gender is required.";
+        if (!/^\d{12}$|^\d{9}V$/.test(input.nic)) {
+            newErrors.nic = "Invalid NIC. Enter either 12 digits or 9 digits followed by 'V'.";
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
+
+    return mutaion.isPending?(
+        <Loader/>):(
         <div className='flex h-screen font-poppins'>
             <div className='w-1/2 h-full max-lg:hidden'>
                 <Image
@@ -44,9 +85,12 @@ const externalRegister=()=> {
                     width={1000}
                     height={1000}
                 />
+                <div className='absolute bottom-0 left-0 p-4'>
+                    <Toaster />
+                </div>
             </div>
             <div className="w-1/2 h-full flex items-center justify-center  max-lg:w-screen">
-                <form className="w-3/4 max-w-md space-y-6">
+                <form className="w-3/4 max-w-md space-y-6" onSubmit={handleSignup}>
                     <div>
                         <h1 className="text-3xl font-bold mb-2">External Staff Registration</h1>
                         <p className="text-xs text-gray-600 mb-6">
@@ -61,6 +105,21 @@ const externalRegister=()=> {
                                 <span className="font-medium">Alredy exists</span> user Alredy exists.
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <label htmlFor="nic" className="block text-sm font-medium text-gray-700 mb-2">
+                            Nic
+                        </label>
+                        <input
+                            id="nic"
+                            value={input.nic}
+                            onChange={handleChange}
+                            placeholder='national Identity Card Number'
+                            name='nic'
+                            className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.nic ? "border-red-500" : "border-gray-300"
+                                }   focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                        />
+                        {errors.nic && <p className="text-red-500 text-sm mt-1">{errors.nic}</p>}
                     </div>
                     <div>
                         <label htmlFor="mail" className="block text-sm font-medium text-gray-700 mb-2">
@@ -89,7 +148,7 @@ const externalRegister=()=> {
                             className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.gender ? "border-red-500" : "border-gray-300"
                                 }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
                         >
-                            <option value=" " disabled>
+                            <option value="" disabled>
                                 !--- Select Gender --!
                             </option>
                             <option value="male">Male</option>
@@ -99,36 +158,18 @@ const externalRegister=()=> {
                         </select>
                         {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
                     </div>
-                    <div>
-                        <label htmlFor="nic" className="block text-sm font-medium text-gray-700 mb-2">
-                            Nic
-                        </label>
-                        <input
-                            id="nic"
-                            value={input.nic}
-                            onChange={handleChange}
-                            placeholder='national Identity Card Number'
-                            name='nic'
-                            className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.nic ? "border-red-500" : "border-gray-300"
-                                }   focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.nic && <p className="text-red-500 text-sm mt-1">{errors.nic}</p>}
-                    </div>
-
                     <button
                         type="submit"
-                        disabled={isPending}
+                        disabled={mutaion.isPending}
                         className="w-full bg-black mt-3 text-white py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
                     >
-                        {isPending ? "Signing Up" : "Sign Up"}
-                        
+                        {mutaion.isPending ? "Signing Up" : "Sign Up"}
+
                     </button>
                     <h2 className="text-sm">Not Working Externally Click Here <Link href='/internalStaffRegister'><span className="text-red-700"> I am an Internal Staff member</span></Link></h2>
                 </form>
             </div>
         </div>
-    // ):(
-        // <Loader/>
     )
 }
 

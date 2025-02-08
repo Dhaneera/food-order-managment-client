@@ -4,40 +4,77 @@ import Image from "next/image";
 import { Input } from '@/components/ui/input';
 import { useMutation } from '@tanstack/react-query';
 import Loader from '../components/Loader';
+import studentRegisterAxios from './studentRegister';
+import { useRouter } from 'next/navigation';
+import { Toaster, toast } from 'sonner'
 const studentRegister = (props: any) => {
 
     const statue = "/login-2.png";
+    const router = useRouter();
 
     const [userInvalid, setuserInvalid] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [input, setInput] = useState({
-        mail:"",
-        faculity:"",
-        gender:"",
-        batch:"",
-        stream:""
+        studentId: "",
+        mail: "",
+        faculity: "",
+        gender: "",
+        batch: "",
+        stream: "",
+        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
 
     });
 
-    function handleChange(e:any) {
+    function handleChange(e: any) {
         console.log(e.target.value)
-       setInput((prev)=>{
-        return{
-            ...prev,
-            [e.target.name]:e.target.value,
-        }
-       })
+        setErrors({});  
+        setInput((prev) => {
+            return {
+                ...prev,
+                [e.target.name]: e.target.value,
+            }
+        })
     }
 
-
-    const{isPending}=useMutation({
-        // mutationFn:register,
-        mutationKey:["register"],
-        onSuccess:()=>{},
-        onError:()=>{}
+    const mutation = useMutation({
+        mutationFn: studentRegisterAxios,
+        mutationKey: ["studentRegister"],
+        onSuccess: () => {
+            router.push('/')
+        },
+        onError: () => {
+            setuserInvalid(true)
+        }
     })
 
-    return (
+    const handleSignup = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validateForm()) {
+            console.log("hello")
+           toast.error("Please fill all the fields", { position: "bottom-left",description:"Validation Error please fill all data correctly."
+
+           });
+        }else{
+            mutation.mutate(input);
+        }
+    };
+
+    const validateForm = () => {
+        debugger
+        const newErrors: { [key: string]: string } = {};
+        if (input.studentId=="") newErrors.studentId = "Student ID is required.";
+        if (!/^\d{5,10}$/.test(input.studentId)) newErrors.studentId = "Invalid student ID.";
+        if (input.mail=="") newErrors.mail = "Mail is required.";
+        if (input.faculity=="") newErrors.faculity = "Faculity is required.";
+        if (input.batch=="") newErrors.batch = "Batch is required.";
+        if (input.stream=="") newErrors.stream = "Stream is required.";
+        if (input.gender=="") newErrors.gender = " gender is required.";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
+
+    return mutation.isPending ? (
+        <Loader />) : (
         <div className='flex h-screen font-poppins'>
             <div className='w-1/2 h-full max-lg:hidden'>
                 <Image
@@ -47,13 +84,17 @@ const studentRegister = (props: any) => {
                     width={1000}
                     height={1000}
                 />
+                <div className='absolute bottom-0 left-0 p-4'>
+                <Toaster/>
+                </div>
             </div>
             <div className="w-1/2 h-full flex items-center justify-center  max-lg:w-screen">
-                <form className="w-3/4 max-w-md space-y-6">
+                <form className="w-3/4 max-w-md space-y-6 " onSubmit={handleSignup}>
                     <div>
-                        <h1 className="text-3xl font-bold mb-2">Let's get your food</h1>
+                        <h1 className="text-3xl font-bold mb-2">Let's Get To Know U!</h1>
                         <p className="text-xs text-gray-600 mb-6">
-                            Fill the below information to get started
+                            
+                            Fill in the form to verify it's really you we will get your food in a jiffy.
                         </p>
                         <div className={userInvalid ? `flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 ` : `hidden`} role="alert">
                             <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -64,6 +105,21 @@ const studentRegister = (props: any) => {
                                 <span className="font-medium">Alredy exists</span> user Alredy exists.
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-2">
+                            Student ID
+                        </label>
+                        <input
+                            id="studentId"
+                            value={input.studentId}
+                            name="studentId"
+                            onChange={handleChange}
+                            placeholder='201320142015'
+                            className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.mail ? "border-red-500" : "border-gray-300"
+                                }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                        />
+                        {errors.mail && <p className="text-red-500 text-sm mt-1">{errors.mail}</p>}
                     </div>
                     <div>
                         <label htmlFor="mail" className="block text-sm font-medium text-gray-700 mb-2">
@@ -84,21 +140,16 @@ const studentRegister = (props: any) => {
                         <label htmlFor="faculity" className="block text-sm font-medium text-gray-700 mb-2">
                             Faculity
                         </label>
-                        <select
+                        <input
                             id="faculity"
                             value={input.faculity}
                             onChange={handleChange}
                             name="faculity"
+                            placeholder='Engineering'
                             className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.faculity ? "border-red-500" : "border-gray-300"
                                 }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
                         >
-                            <option value=" " disabled>
-                                !--- Select Faculty --!
-                            </option>
-                            <option value="it">IT</option>
-                            <option value="bussiness">Bussiness</option>
-                            <option value="art">Art</option>
-                        </select>
+                        </input>
                         {errors.faculity && <p className="text-red-500 text-sm mt-1">{errors.faculity}</p>}
                     </div>
                     <div>
@@ -113,7 +164,7 @@ const studentRegister = (props: any) => {
                             className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.gender ? "border-red-500" : "border-gray-300"
                                 }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
                         >
-                            <option value=" " disabled>
+                            <option value="" disabled>
                                 !--- Select Gender --!
                             </option>
                             <option value="male">Male</option>
@@ -156,17 +207,15 @@ const studentRegister = (props: any) => {
 
                     <button
                         type="submit"
-                        // disabled={isLoading}
+                        disabled={mutation.isPending}
                         className="w-full bg-black mt-3 text-white py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
                     >
-                        {/* {isLoading ? "Signing Up" : "Sign Up"} */}
-                        login
+                        {mutation.isPending ? "Signing Up" : "Sign Up"}
+                        
                     </button>
                 </form>
             </div>
         </div>
-    // ):(
-        // <Loader/>
     )
 }
 

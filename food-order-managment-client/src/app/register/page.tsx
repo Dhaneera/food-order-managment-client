@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import Loader from "../components/Loader";
 import { useRouter } from "next/navigation";
+import { debug } from "console";
 
 type RegisterPayload = {
   phoneNumber: string;
@@ -43,6 +44,7 @@ const RegisterPage = () => {
     mutationFn: registerAxios,
     mutationKey: ["register"],
     onSuccess: (data: any) => {
+      debugger
       const { id, roles } = data.data;
       setPhoneNumber("");
       setName("");
@@ -56,9 +58,10 @@ const RegisterPage = () => {
 
     
       console.log(data);
-      if(data.data.status=="ACTIVE")router.push("/");
-      else if(data.data.status=="PENDING"){
-        router.push("/accessError")
+      if(sessionStorage.getItem("role")=="ROLE_STAFF"){
+        router.push('/internalStaffRegister');
+      }else if(sessionStorage.getItem("role")=="ROLE_STUDENT"){
+        router.push('/studentRegister');
       }
     },
     onError: () => {
@@ -168,7 +171,7 @@ const RegisterPage = () => {
             disabled={isLoading}
             className="w-full bg-black mt-3 text-white py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
           >
-            {isLoading ? "Signing Up" : "Sign Up"}
+            {isLoading && " Signing UpDirect to next " || "Direct to next page"}
           </button>
           <h2 className="text-sm ml-24"> Have an account click here to <Link href='/login'><span className="text-red-700">Sign In</span></Link></h2>
         </form>
