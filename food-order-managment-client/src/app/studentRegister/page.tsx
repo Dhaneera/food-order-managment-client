@@ -21,7 +21,7 @@ const studentRegister = (props: any) => {
         gender: "",
         batch: "",
         stream: "",
-        userId: Number(sessionStorage.getItem("userId")) || 0
+        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
 
     });
 

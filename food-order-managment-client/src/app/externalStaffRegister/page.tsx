@@ -19,7 +19,7 @@ const externalRegister = () => {
         gender: "",
         nic: "",
         isInternal: false,
-        userId: Number(sessionStorage.getItem("userId"))
+        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
 
     });
 

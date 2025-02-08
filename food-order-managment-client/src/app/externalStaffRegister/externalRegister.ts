@@ -1,5 +1,5 @@
-import axios from "axios";
 
+import axios from "axios";
 const registerExternalStaff = async(payload:any) => {
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/save-internal`,payload
