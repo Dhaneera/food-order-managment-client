@@ -78,13 +78,13 @@ const RegisterPage = () => {
   return!isPending?(
     <div className="flex h-screen font-poppins">
       <div className="w-1/2 h-full max-lg:hidden">
-        <Image
+        <Image 
           src={statue}
           alt="Statue"
           className="object-cover w-full h-full"
           width={1000}
-          height={1000}
-        />
+          height={1000} 
+          />
       </div>
       <div className="w-1/2 h-full flex items-center justify-center  max-lg:w-screen">
         <form className="w-3/4 max-w-md space-y-6" onSubmit={handleSignup}>
