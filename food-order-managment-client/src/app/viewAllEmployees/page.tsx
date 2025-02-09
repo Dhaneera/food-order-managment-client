@@ -9,16 +9,22 @@ import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import ConfirmationModal from '../components/ConfirmationModal';
 import Loader from '../components/Loader';
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Label } from '@/components/ui/label';
+import Image from 'next/image';
+// import statue from '@/../public/login-2.png';
 
 const Page = () => {
-    const rowCountPerPage = 10;
+    const rowCountPerPage = 5;
     const [page, setPage] = useState(0);
     const [tableRows, setTableRows] = useState<any[]>([]);
     let [ref, setRef] = useState(-1);
+    let [mobileNumber,setMobileNumber]=useState("")
     const updateRef = useRef(0);
     const [visible, setVisible] = useState(false)
     const [isAllApprovedusers, setIsAllApprovedUsers] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [userProfile, setUserProfile] = useState(false);
 
 
     const statusChangeMutation = useMutation({
@@ -26,6 +32,7 @@ const Page = () => {
         mutationFn: () => changeStatus(updateRef.current),
         onSuccess: () => window.location.reload()
     })
+
 
 
 
@@ -49,7 +56,9 @@ const Page = () => {
         retry: 3
     });
 
+
     useEffect(() => {
+
         if (data?.content) {
             const rows = data.content.map((obj: any) => ({
                 style: '',
@@ -58,8 +67,11 @@ const Page = () => {
                         isButton: 'Complete',
                         text: obj.name,
                         style: '',
+                        click: (e: any) => profileShow(e, obj.username)
                     },
+
                     {
+
                         isButton: '',
                         text: String(obj.username),
                         style: 'py-8',
@@ -92,6 +104,15 @@ const Page = () => {
         mutationKey: [tableRows],
 
     })
+
+    const getMutaion=useMutation({
+        mutationKey:[],
+        mutationFn:getEmployeeById,
+        retry:1,
+        retryDelay:5000
+    })
+
+    
 
 
     function deleteFuction(index: number) {
@@ -153,8 +174,8 @@ const Page = () => {
     function fetchDataForSearchedEmployees(page: number, userName: any): any {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/serachEmployees?username=${userName}&page=${page}&size=${rowCountPerPage}`)
             .then((res) => {
-                console.log(res.data.content);
-                const object=res.data.content[0];
+              
+                const object = res.data.content[0];
                 setTableRows([{
                     style: '',
                     cellData: [
@@ -167,6 +188,8 @@ const Page = () => {
                             isButton: '',
                             text: String(object.username),
                             style: 'py-8',
+                            click:(e:any)=>profileShow(e, object.userId)
+
                         },
                         {
                             isButton: [object.status == "ACTIVE" ? 'Complete' : object.status == "PENDING" ? 'Pending' : 'Rejected'],
@@ -181,23 +204,111 @@ const Page = () => {
                         },
                     ],
                 }]);
-                
+
                 return res
             }).catch((err) => {
                 setTableRows([])
                 return err
             })
     }
-    
+
 
     if (isLoading) {
         return <Loader />
     }
 
-    return (
+
+    function profileShow(e: any, userId: any) {
+        setUserProfile(true)
+        getMutaion.mutate(userId);
+    }
+
+    function getEmployeeById(mobileNumber: number):any {
+     
+        try {
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getByUsername?username=${mobileNumber}`).then((res)=>{
+                return res.data
+            })
+        } catch (error) {
+            throw error;
+        }
+       
+    }
+
+    console.log(data)
+    return getMutaion.isPending?(
+        <Loader/>):(
         <>
             {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}
             <div className="flex items-center">
+                {userProfile == true ? <Sheet open={userProfile} onOpenChange={()=>setUserProfile(prev=>!prev)} >
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle>View profile</SheetTitle>
+                            <SheetDescription className='pt-5'>
+                                Description of the employee selected from table below
+                            </SheetDescription>
+                        </SheetHeader>
+                        <div className="grid  gap-6  ">
+                            <Image
+                                src={data.content[0].imageStore}
+                                alt="Statue"
+                                className=" ml-24 mt-5  size-40  rounded-2xl"
+                            />
+                            <div className="grid grid-cols-2 font-sans ">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    NIC
+                                </Label>
+                                <h2 id='name' className='col-span-3 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.nic}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Name
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].name}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Gender
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.gender}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Department
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.department}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Status
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].status}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className="  text-pretty text-base">
+                                    Mobile
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].username}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className="   text-pretty text-base">
+                                    Mail
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.email}</h2>
+
+                            </div>
+                        </div>
+                        <SheetFooter>
+                        </SheetFooter>
+                    </SheetContent>
+                </Sheet> : <></>}
                 <div className="flex">
                     <SideBar />
                 </div>
@@ -235,6 +346,7 @@ const Page = () => {
                                             key={index}
                                             cellData={row.cellData}
                                             styles={row.style}
+
                                         />
                                     ))}
                                 </tbody>
@@ -275,10 +387,11 @@ export default Page;
 function deleteFromDatabase(indexforDelete: number): any {
     if (indexforDelete !== -1) {
         axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
-            console.log(res)
+            
         })
     }
 }
+
 
 
 
