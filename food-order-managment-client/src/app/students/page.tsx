@@ -15,6 +15,10 @@ import { AlertDescription } from '@/components/ui/alert'
 import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { debug } from 'console'
 import { useRouter } from 'next/navigation'
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import Image from 'next/image';
+import { Label } from '@/components/ui/label'
+import statue from '@/../public/login-2.png';
 
 
 
@@ -52,12 +56,15 @@ const Students = () => {
     const [isAllApprovedusers, setIsAllApprovedUsers] = useState(false);
     const [data, setData] = useState(-1);
     const [showModal, SetShowModal] = useState(false)
+    const [userProfile, setUserProfile] = useState(false);
+    let [mobileNumber,setMobileNumber]=useState("")
 
     let tableRows: any = []
 
-
-    const [students, setStudents] = useState([]);
+    
+    const [students, setStudents]:any = useState([]);
     let [ref, setRef] = useState(-1);
+
 
     tableRows = students.map((obj: any, index: number) => {
 
@@ -67,12 +74,16 @@ const Students = () => {
                 {
                     isButton: '',
                     text: obj.name,
-                    style: ''
+                    style: '',
+                    click: (e: any) => profileShow(e, obj.username)
+
                 },
                 {
                     isButton: '',
                     text: obj.username,
-                    style: ''
+                    style: '',
+                    click: (e: any) => profileShow(e, obj.username)
+
                 },
                 {
                     isButton: '',
@@ -92,6 +103,7 @@ const Students = () => {
                 }
 
             ]
+            
 
         }
     })
@@ -139,7 +151,6 @@ const Students = () => {
         router.refresh();
     }
     function deleteModalActivate(obj: any) {
-        debugger
         setData(obj)
         SetShowModal(true);
     }
@@ -147,6 +158,33 @@ const Students = () => {
         queryKey: ['allStudents', currentPage],
         queryFn: () => fetchDataForAllStudents(currentPage - 1)
     })
+
+
+    const getMutaion=useMutation({
+        mutationKey:[],
+        mutationFn:getStudentById,
+        retry:1,
+        retryDelay:5000
+    })
+
+    function profileShow(e: any, userId: any) {
+        setUserProfile(true)
+        getMutaion.mutate(userId);
+    }
+
+    function getStudentById(mobileNumber: number):any {
+     
+        try {
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getByUsername?username=${mobileNumber}`).then((res)=>{
+                return res.data
+            })
+        } catch (error) {
+            throw error;
+        }
+       
+    }
+
+
     function fetchDataForAllStudents(pageNum: any) {
 
 
@@ -231,12 +269,82 @@ const Students = () => {
         return <Loader />
     }
 
+console.log(students)
 
-    return (
+    return getMutaion.isPending?(
+        <Loader/>):(
         <>
 
             {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}
             <div className="w-screen flex flex-col">
+            {userProfile == true ? <Sheet open={userProfile} onOpenChange={()=>setUserProfile(prev=>!prev)} >
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle>View profile</SheetTitle>
+                            <SheetDescription className='pt-5'>
+                                Description of the employee selected from table below
+                            </SheetDescription>
+                        </SheetHeader>
+                        <div className="grid  gap-6  ">
+                            <Image
+                                src={statue}
+                                alt="Statue"
+                                className=" ml-24 mt-5  size-40  rounded-2xl"   
+                            />
+                            <div className="grid grid-cols-2 font-sans ">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Student ID / Number
+                                </Label>
+                                <h2 id='name' className='col-span-3 text-gray-700 font-thin'>{students[0].studentMoreInfo.studentId}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Name
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].name}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Gender
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].studentMoreInfo.gender}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Stream
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].studentMoreInfo.stream}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className=" text-pretty text-base">
+                                    Status
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].status}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className="  text-pretty text-base">
+                                    Faculty
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].studentMoreInfo.faculty || 'N/A'}</h2>
+
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-2">
+                                <Label htmlFor="name" className="   text-pretty text-base">
+                                    Batch
+                                </Label>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].studentMoreInfo.batch}</h2>
+
+                            </div>
+                        </div>
+                        <SheetFooter>
+                        </SheetFooter>
+                    </SheetContent>
+                </Sheet> : <></>}
                 <div className='flex'>
                     <SideBar />
                     <div className="w-full flex flex-col items-center justify-center">

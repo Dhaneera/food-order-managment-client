@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { DollarSign, GraduationCap, Hand, Home, Package, Users } from 'lucide-react';
+import { DollarSign, UserCog, Hand, Home, Package, Users } from 'lucide-react';
 import { Tooltip } from "@nextui-org/tooltip";
 
 const SideBar = () => {
@@ -20,6 +20,9 @@ const SideBar = () => {
             </Tooltip>
             <Tooltip content='View Payments' placement='right'>
                 <Link href='/viewAllPayments'><DollarSign size={80} className='px-4 className' strokeWidth={1} /></Link>
+            </Tooltip>
+            <Tooltip content='Employee Deductions' placement='right'>
+                <Link href='/viewDeduction'><UserCog size={80} className='px-4 className' strokeWidth={1} /></Link>
             </Tooltip>
         </div>
     );
