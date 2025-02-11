@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from "next/image";
 import { Input } from '@/components/ui/input';
 import { useMutation } from '@tanstack/react-query';
@@ -14,20 +14,41 @@ const studentRegister = (props: any) => {
 
     const [userInvalid, setuserInvalid] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [input, setInput] = useState({
+    const [userId, setUserId] = useState<number | null>(null);
+
+    const [input, setInput] = useState<{
+        studentId: string;
+        mail: string;
+        faculity: string;
+        gender: string;
+        batch: string;
+        stream: string;
+        userId: number | null;  
+    }>({
         studentId: "",
         mail: "",
         faculity: "",
         gender: "",
         batch: "",
         stream: "",
-        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
-
+        userId: null,  
     });
 
+    useEffect(() => {
+        const storedUserId = sessionStorage.getItem("userId");
+        if (storedUserId) {
+            setUserId(Number(storedUserId));
+            setInput(prev => ({
+                ...prev,
+                userId: Number(storedUserId),
+            }));
+        }
+    }, []);
+
+    
     function handleChange(e: any) {
         console.log(e.target.value)
-        setErrors({});  
+        setErrors({});
         setInput((prev) => {
             return {
                 ...prev,
@@ -51,10 +72,11 @@ const studentRegister = (props: any) => {
         e.preventDefault();
         if (!validateForm()) {
             console.log("hello")
-           toast.error("Please fill all the fields", { position: "bottom-left",description:"Validation Error please fill all data correctly."
+            toast.error("Please fill all the fields", {
+                position: "bottom-left", description: "Validation Error please fill all data correctly."
 
-           });
-        }else{
+            });
+        } else {
             mutation.mutate(input);
         }
     };
@@ -62,13 +84,13 @@ const studentRegister = (props: any) => {
     const validateForm = () => {
         debugger
         const newErrors: { [key: string]: string } = {};
-        if (input.studentId=="") newErrors.studentId = "Student ID is required.";
+        if (input.studentId == "") newErrors.studentId = "Student ID is required.";
         if (!/^\d{5,10}$/.test(input.studentId)) newErrors.studentId = "Invalid student ID.";
-        if (input.mail=="") newErrors.mail = "Mail is required.";
-        if (input.faculity=="") newErrors.faculity = "Faculity is required.";
-        if (input.batch=="") newErrors.batch = "Batch is required.";
-        if (input.stream=="") newErrors.stream = "Stream is required.";
-        if (input.gender=="") newErrors.gender = " gender is required.";
+        if (input.mail == "") newErrors.mail = "Mail is required.";
+        if (input.faculity == "") newErrors.faculity = "Faculity is required.";
+        if (input.batch == "") newErrors.batch = "Batch is required.";
+        if (input.stream == "") newErrors.stream = "Stream is required.";
+        if (input.gender == "") newErrors.gender = " gender is required.";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }
@@ -85,7 +107,7 @@ const studentRegister = (props: any) => {
                     height={1000}
                 />
                 <div className='absolute bottom-0 left-0 p-4'>
-                <Toaster/>
+                    <Toaster />
                 </div>
             </div>
             <div className="w-1/2 h-full flex items-center justify-center  max-lg:w-screen">
@@ -93,7 +115,7 @@ const studentRegister = (props: any) => {
                     <div>
                         <h1 className="text-3xl font-bold mb-2">Let's Get To Know U!</h1>
                         <p className="text-xs text-gray-600 mb-6">
-                            
+
                             Fill in the form to verify it's really you we will get your food in a jiffy.
                         </p>
                         <div className={userInvalid ? `flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 ` : `hidden`} role="alert">
@@ -211,7 +233,7 @@ const studentRegister = (props: any) => {
                         className="w-full bg-black mt-3 text-white py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
                     >
                         {mutation.isPending ? "Signing Up" : "Sign Up"}
-                        
+
                     </button>
                 </form>
             </div>

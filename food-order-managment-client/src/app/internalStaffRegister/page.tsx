@@ -1,5 +1,5 @@
 "use client"
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Image from "next/image";
 import { useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -17,15 +17,30 @@ const staffRegister = () => {
 
     const [userInvalid, setuserInvalid] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [userId, setUserId] = useState<number | null>(null);
     const [input, setInput] = useState({
         mail: "",
         department: "",
         gender: "",
         nic: "",
         isInternal: false,
-        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
-
+        userId: null as number | null, // Ensure type consistency
     });
+
+    useEffect(() => {
+        if (typeof window !== "undefined") { // Ensure it's running on the client-side
+            const storedUserId = sessionStorage.getItem("userId");
+            if (storedUserId) {
+                const parsedUserId = Number(storedUserId);
+                setUserId(parsedUserId);
+                setInput(prev => ({
+                    ...prev,
+                    userId: parsedUserId, // Ensures type consistency
+                }));
+            }
+        }
+    }, []);
+
 
     function handleChange(e: any) {
         setErrors({})

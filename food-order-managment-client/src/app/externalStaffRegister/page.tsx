@@ -1,6 +1,6 @@
 "use client"
 import { useMutation } from '@tanstack/react-query';
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import statue from '../../../public/login-1.jpeg'
@@ -11,17 +11,37 @@ import { useRouter } from 'next/navigation';
 import Loader from '../components/Loader';
 const externalRegister = () => {
 
-    const route=useRouter();
+    const route = useRouter();
     const [userInvalid, setuserInvalid] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [input, setInput] = useState({
+    const [userId, setUserId] = useState<number | null>(null);
+    const [input, setInput] = useState<{ 
+        mail: string; 
+        gender: string; 
+        nic: string; 
+        isInternal: boolean; 
+        userId: number | null;  // Allow userId to be a number or null
+    }>({
         mail: "",
         gender: "",
         nic: "",
         isInternal: false,
-        userId: window!=undefined?Number(sessionStorage.getItem("userId")):0
-
+        userId: null,
     });
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedUserId = sessionStorage.getItem("userId");
+            if (storedUserId) {
+                setUserId(Number(storedUserId));
+                setInput(prev => ({
+                    ...prev,
+                    userId: Number(storedUserId),
+                }));
+            }
+        }
+    }, []);
+
 
     function handleChange(e: any) {
         setErrors({})
@@ -35,13 +55,13 @@ const externalRegister = () => {
 
 
     const mutaion = useMutation({
-        mutationFn:registerExternalStaff,
+        mutationFn: registerExternalStaff,
         mutationKey: ["registerExternalStaff"],
         onSuccess: () => {
             route.push('/accessError')
-            
-         },
-        onError: () => { 
+
+        },
+        onError: () => {
             setuserInvalid(true)
         }
     })
@@ -74,8 +94,8 @@ const externalRegister = () => {
         return Object.keys(newErrors).length === 0;
     }
 
-    return mutaion.isPending?(
-        <Loader/>):(
+    return mutaion.isPending ? (
+        <Loader />) : (
         <div className='flex h-screen font-poppins'>
             <div className='w-1/2 h-full max-lg:hidden'>
                 <Image
