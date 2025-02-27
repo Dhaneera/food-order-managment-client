@@ -20,10 +20,10 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp"
-import { toast } from "sonner"
+import { toast, Toaster } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import InputForm from "./InputFormResetPassword"
 
@@ -32,10 +32,8 @@ import InputForm from "./InputFormResetPassword"
 
 const InputOTPFrom = (props:any) =>{
 
-    const[email,setEmail]=useState("")
     const[resetPassword,setResetPassword]=useState(false)
     const [serverOtp, setServerOtp] = useState<string | null>(null)
-
 
   const form = useForm({
     defaultValues: {
@@ -43,18 +41,13 @@ const InputOTPFrom = (props:any) =>{
     },
   })
   
-  function onSubmit(data:any):any {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-  }
+  useEffect(()=>{
+    setInterval(()=>{
+      setServerOtp('');
+    },36000)
+  },[serverOtp])
 
-
-
+  console.log(serverOtp)
    async function fetchOtpMessage(email:string) {
     
     if (!email) return null;
@@ -77,27 +70,29 @@ const InputOTPFrom = (props:any) =>{
   })
 
   function handleSubmitOtp() {
+    debugger
     const enteredOtp = form.getValues("pin");
 
     if (!enteredOtp) {
-      toast("Please enter the OTP sent to your mail.");
+      toast("please enter otp before submission")
       return;
     }
-
-    if (enteredOtp === serverOtp) {
+ 
+    if (enteredOtp == serverOtp) {
       setResetPassword(true);
     } else {
-      toast("Invalid OTP. Please try again.");
+      toast("Entered OTP is invalid or expired otp expires within 5 minutes please try again")
     }
   }
 
   return (
-    <>
+    <>  
+      <Toaster />
     {resetPassword?(
-        <InputForm />
+        <InputForm  mail={props.mail} />
     ):(
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmitOtp)} className="w-2/3 space-y-6">
         <FormField
           control={form.control}
           name="pin"

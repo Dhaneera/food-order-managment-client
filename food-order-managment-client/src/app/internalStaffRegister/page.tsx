@@ -19,7 +19,7 @@ const staffRegister = () => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [userId, setUserId] = useState<number | null>(null);
     const [input, setInput] = useState({
-        mail: "",
+        email: "",
         department: "",
         gender: "",
         nic: "",
@@ -43,6 +43,7 @@ const staffRegister = () => {
 
 
     function handleChange(e: any) {
+        debugger
         setErrors({})
         setInput((prev) => {
             return {
@@ -79,8 +80,9 @@ const staffRegister = () => {
 
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
-        if (input.mail == "") newErrors.mail = "Mail is required.";
-        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(input.mail)) {
+        debugger
+        if (input.email == "") newErrors.mail = "Mail is required.";
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(input.email)) {
             newErrors.mail = "Invalid email address.";
         }
         if (input.gender == "") newErrors.gender = " gender is required.";
@@ -145,8 +147,8 @@ const staffRegister = () => {
                         </label>
                         <input
                             id="mail"
-                            value={input.mail}
-                            name="mail"
+                            value={input.email}
+                            name="email"
                             onChange={handleChange}
                             placeholder='somone@mail.com'
                             className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.mail ? "border-red-500" : "border-gray-300"

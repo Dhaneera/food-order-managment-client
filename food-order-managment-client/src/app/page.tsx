@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from './components/Header';
 import CartItem from './components/CartItem';
 import Button from './components/Button';
@@ -18,6 +18,7 @@ const Page = () => {
   const [mealIds, setMealIds] = useState([]);
   const [role, setRole] = useState('');
   const [name, setName] = useState('');
+  const isSignIn = useRef("Sign In");
 
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
@@ -66,9 +67,16 @@ const Page = () => {
 
     // Ensures sessionStorage is accessed only on the client-side
     if (typeof window !== 'undefined') {
-      setRole(sessionStorage.getItem('role') || '');
-      setName(sessionStorage.getItem('name') || '');
+      const role=sessionStorage.getItem('role')
+      const name=sessionStorage.getItem('name') || '';
+      setRole(role || '');
+      setName(name);
+      debugger
+      if(name!=''){
+        isSignIn.current="Sign Out"
+      }
     }
+
   }, []);
 
   function handleChangeSelectTomorrow() {
@@ -123,7 +131,7 @@ const Page = () => {
     <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>
         <Header modalView={setModalVisible}/>
-        <UserHeader onSettingsClick={handleOpenModal} />
+        <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />
         <Modal
             title="User Settings"
             isVisible={isModalVisible}

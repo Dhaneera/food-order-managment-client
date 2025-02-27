@@ -6,9 +6,10 @@ import profile from '../../../public/login-1.jpeg';
 
 interface UserHeaderProps {
   onSettingsClick: () => void;
+  sign : string
 }
 
-const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
+const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [img, setImage] = useState<string | StaticImageData>(profile);
 
@@ -73,12 +74,14 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick }) => {
             <a href="#" 
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             onClick={(e) => {
-              e.preventDefault();
-              sessionStorage.clear();
-              window.location.href = '/login';
+                sessionStorage.clear();
+                localStorage.clear();
+                e.preventDefault();
+                sessionStorage.clear();
+                window.location.href = '/login';
             }}
             >
-              Sign out
+             {sign}
             </a>
           </div>
         </div>

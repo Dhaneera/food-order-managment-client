@@ -1,11 +1,10 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-// import { toast } from "@/components/hooks/use-toast"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -13,12 +12,12 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useMutation } from "@tanstack/react-query"
-import axios from "axios"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
     password: z.string().min(6, { message: "Password must be at least 6 characters." }),
@@ -26,15 +25,11 @@ const FormSchema = z.object({
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
     path: ["confirmPassword"],
-})
+});
 
-
-export default function InputForm(props: any) {
-
+export default function InputForm({ mail, ...props }: any) {
     const [error, setError] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [Mail, setMail] = useState("");
-    const router = useRouter()
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -42,26 +37,13 @@ export default function InputForm(props: any) {
             password: "",
             confirmPassword: ""
         },
-    })
+    });
 
-    console.log(Mail)
-
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast("You submitted the following values:", {
-
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
-    }
-
-    async function resetPassword(Mail: any, newPassword: any) {
+    async function resetPassword(newPassword: string) {
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/resetPassword`, {
-                mail: Mail,
-                newPassword: newPassword
+                mail: mail,
+                newPassword: newPassword,
             });
             return response.data;
         } catch (error) {
@@ -70,23 +52,28 @@ export default function InputForm(props: any) {
         }
     }
 
-
-    const mutaion = useMutation({
+    const mutation = useMutation({
         mutationKey: [],
-        mutationFn: () => resetPassword(props.Mail, newPassword),
+        mutationFn: resetPassword,
         onSuccess(data) {
-            if (data != null) {
-                console.log(data)
-                router.push("/")
-            }
+            console.log(data);
+            router.push("/");
         },
-        onError(error) {
-            setError("Something went wrong")
+        onError(error: any) {
+            setError("Something went wrong");
         }
-    })
+    });
 
-    function submitNewPasswordHandler() {
-        mutaion.mutate()
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        toast("You submitted the following values:", {
+            description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+                </pre>
+            ),
+        });
+
+        mutation.mutate(data.password);
     }
 
     return (
@@ -118,12 +105,9 @@ export default function InputForm(props: any) {
                         </FormItem>
                     )}
                 />
-                <Button onClick={() => submitNewPasswordHandler()} type="submit">Reset Paasword</Button>
+                {error && <p className="text-red-500">{error}</p>}
+                <Button type="submit">Reset Password</Button>
             </form>
         </Form>
-    )
+    );
 }
-
-
-
-
