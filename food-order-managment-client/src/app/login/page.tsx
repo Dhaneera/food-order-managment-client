@@ -9,6 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import loginAxios from "./login";
 import Loader from "../components/Loader";
 import { useRouter } from "next/navigation";
+import InputOTPFrom from "../components/InputOTPForm";
+import { InputWithButton } from "../components/InputWithButton";
 
 const Login = () => {
 
@@ -42,6 +44,8 @@ const Login = () => {
     },
   })
 
+  
+
   const images = [
     {
       image: LoginImage1,
@@ -63,6 +67,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ phoneNumber: "", password: "" });
   const [passwordInvalid, setPasswordInvalid] = useState(false);
+  const  [inputOtpFrom,setInputOtpFrom] =useState(false)
+  const [inputMail,setInputMail]= useState(false)
+
+  
 
   const validateFields = () => {
     const newErrors = { phoneNumber: "", password: "" };
@@ -118,9 +126,16 @@ const Login = () => {
     }
   };
 
+  function handleClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    setInputMail((prev)=>!prev)
+    setInputOtpFrom((prev)=>!prev)
+  }
+
+  
   return !isPending?(
+    
     <div className="w-screen h-screen flex">
-      <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
+      {!inputMail? <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
         <h3 className=" text-3xl font-bold mb-2 font-poppins">Welcome Back</h3>
         {/* responsive button */}
         <div className="flex justify-center items-center" onSubmit={handleSubmit}>
@@ -210,8 +225,12 @@ const Login = () => {
           Login
         </button>
         <h2 className="text-sm">Don t have an account click here to <Link href='/register'><span className="text-red-700">Sign Up</span></Link></h2>
+        <button onClick={(e) =>handleClick(e)}>forgot password</button>
+        <h2 className="text-sm">Don't remeber the password<Link href='/forgot password '><span className="text-red-700"> Reset Password</span></Link></h2>
       </div>
-
+    : <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
+      <InputWithButton/>
+      </div>}
       <div className="w-[48%] max-md:hidden h-full">
         <Image
           src={student ? images[1].image : images[2].image}
