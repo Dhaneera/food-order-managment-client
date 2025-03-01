@@ -9,26 +9,31 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@radix-ui/react-label';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
+import Loader from './Loader';
 
 const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
   const router = useRouter()
   const [state,setState]=useState(false);
+  const [error,setError]=useState(false);
   const mutation=useMutation({
     mutationKey:[],
     mutationFn:():any=>placeOrder(foodDataForBackend),
     onSuccess:()=>{
-      props.setIsModalComplete(true);
+     props.setIsModalComplete(true);
     },
     retry:1,
     retryDelay:5000,
   })
-
+  
+  
   function placeOrder(data:any){
     try{
-    axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data).then((data:any)=>{
+    const respones=axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data).then((data:any)=>{
       props.setMealIds(data.data)  
       console.log("Meal IDs:", data.data);
-    })  
+      
+    }) 
+    return respones; 
     }catch(ex){
      
       throw ex;
@@ -45,13 +50,24 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
 
 
   function handleOnClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    debugger
+    e.preventDefault();
+    setError(false);
+    if(userName.length<10){
+      setError(true);
+    }else{
+      debugger
     foodDataForBackend.createdBy=userName;
     foodDataForBackend.role="Guest"
     mutation.mutate();
+    }
   }
 
   return subtotal!=0 && state==false?(
+    
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
+      {mutation.isPending && <Loader />}
+
       {cartItems?.map((item:any, index:any):any => (
         item.quantity!=0?(
         <div
@@ -96,7 +112,8 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
             <Label htmlFor="name" className="text-right">
               Phone Number
             </Label>
-            <Input onChange={(e)=>handleUserData(e)} id="name" pattern='^\d{10}$' className="col-span-3" />
+            <Input onChange={(e)=>handleUserData(e)} id="name" className="col-span-3" />
+            {error && <Label className='w-full col-span-5 text-xs ml-20 pl-10 text-red-500 pt-[-8%]'>Please enter a valid phone Number</Label>}
           </div>
         </div>
         <DialogFooter>

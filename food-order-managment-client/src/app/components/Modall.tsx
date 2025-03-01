@@ -48,7 +48,7 @@ const Modall = (props:any) => {
                 {/* Body */}
                 <div className="p-4 md:p-5 space-y-4 flex flex-col gap-5">
                   <p className="text-base leading-relaxed text-center font-sans font-semibold">
-                    { `Order confirmed Remember These meal id's as they cannot be accessed again. ${props.message} pr`}
+                    { `Order confirmed Remember These meal id's as they cannot be accessed again. ${props.message}`}
                   </p>
                   {/* <button className='bg-red-500 border-2 border-white text-white px-8 py-2 rounded-lg hover:bg-red-600'onClick={props.clickEvent}></button> */}
                 </div>
