@@ -122,7 +122,7 @@ const Login = () => {
     }
   };
 
-  function handleClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+  function handleClick(e:any): void {
     setInputMail((prev)=>!prev)
     setInputOtpFrom((prev)=>!prev)
   }
@@ -221,7 +221,7 @@ const Login = () => {
           Login
         </button>
         <h2 className="text-sm">Don t have an account click here to <Link href='/register'><span className="text-red-700">Sign Up</span></Link></h2>
-        <button className=" border px-4 rounded-xl font-serif bg-black text-white py-2 hover:bg-slate-600" onClick={(e) =>handleClick(e)}>Forgot Password</button>
+        <p className="text-sm" onClick={(e) =>handleClick(e)}>can't remeber the password don't worry click <span className="text-red-700">Forgot Password</span></p>
       </div>
     : <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
       <InputWithButton/>
