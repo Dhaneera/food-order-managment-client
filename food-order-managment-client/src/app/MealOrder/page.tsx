@@ -81,7 +81,7 @@ const MealOrder = () => {
 
 
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/count/${date}/${meal}`);
-      console.log("Order Details:", response.data);
+
       
       setTotalOrders(response.data.total);
       setCompletedOrders(response.data.pending);

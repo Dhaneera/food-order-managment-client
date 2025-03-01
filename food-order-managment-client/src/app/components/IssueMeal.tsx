@@ -21,7 +21,7 @@ export default function IssueMeal({ mealData, ...props }: any) {
       if (mealId.current !== '') {
         axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/meal/status/${mealId.current}`)
           .then((res: any) => {
-            console.log(res.data)
+    
             return res.data
           })
       }

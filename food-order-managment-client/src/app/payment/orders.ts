@@ -40,7 +40,6 @@ export type OrderResponse = {
   }
   const ordersAxios = async (pageNumber = 0, pageSize = 10,createdBy=""): Promise<OrderResponse> => {
     try {
-      // debugger
       const response = await axios.get<OrderResponse>(
         
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/createdBy/${createdBy}`,
@@ -49,7 +48,6 @@ export type OrderResponse = {
           withCredentials: true,
         }
       );
-      console.log("Response Data:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("Error:", error);

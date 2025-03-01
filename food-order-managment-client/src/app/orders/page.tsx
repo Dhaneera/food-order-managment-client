@@ -73,7 +73,7 @@ const Page = () => {
             style: ""
         }
     ]
-    console.log(moreData)
+  
     let tableRows: { style: string; cellData: { isButton: string; text: string; style: string }[] }[] = [];
     data?.content.map((obj, index) => {
         let status = obj.status;

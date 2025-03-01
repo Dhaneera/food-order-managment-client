@@ -26,10 +26,11 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
   function placeOrder(data:any){
     try{
     axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data).then((data:any)=>{
-      props.setMealIds(data.data)
+      props.setMealIds(data.data)  
+      console.log("Meal IDs:", data.data);
     })  
     }catch(ex){
-      console.log(ex);
+     
       throw ex;
     }
   }
@@ -112,10 +113,7 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
   )
   
 function submit(){
-  debugger
   if(sessionStorage.getItem("userId")){
-    debugger
-  console.log(foodDataForBackend)
   mutation.mutate();
   }else{
     setState(true);

@@ -38,8 +38,6 @@ const Login = () => {
       
     },
     onError: (error) => {
-      debugger
-      console.log(error)
       setPasswordInvalid(true);
     },
   })
@@ -91,21 +89,19 @@ const Login = () => {
 
   const handleLoginSelection = (e: any) => {
     setStudent((prevState) => !prevState);
-    console.log(e.target.name);
+  
   };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
-    console.log(isPasswordVisible);
+   
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateFields()) {
-      console.log("Form submitted successfully");
       mutate({username:phoneNumber,password})
     } else {
-      console.log("Validation errors:", errors);
     }
   };
 
@@ -225,8 +221,7 @@ const Login = () => {
           Login
         </button>
         <h2 className="text-sm">Don t have an account click here to <Link href='/register'><span className="text-red-700">Sign Up</span></Link></h2>
-        <button onClick={(e) =>handleClick(e)}>forgot password</button>
-        <h2 className="text-sm">Don't remeber the password<Link href='/forgot password '><span className="text-red-700"> Reset Password</span></Link></h2>
+        <button className=" border px-4 rounded-xl font-serif bg-black text-white py-2 hover:bg-slate-600" onClick={(e) =>handleClick(e)}>Forgot Password</button>
       </div>
     : <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
       <InputWithButton/>
@@ -236,7 +231,7 @@ const Login = () => {
           src={student ? images[1].image : images[2].image}
           alt={student ? images[1].alt : images[2].alt}
           className="object-cover w-full h-full"
-        ></Image>
+          ></Image>
       </div>
     </div>
   ):(

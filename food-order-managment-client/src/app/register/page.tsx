@@ -57,7 +57,6 @@ const RegisterPage = () => {
       sessionStorage.setItem("name",phoneNumber);
 
     
-      console.log(data);
       if(sessionStorage.getItem("role")=="ROLE_STAFF"){
         router.push('/internalStaffRegister');
       }else if(sessionStorage.getItem("role")=="ROLE_STUDENT"){

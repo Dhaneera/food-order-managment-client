@@ -126,7 +126,6 @@ const Students = () => {
 
     }
 
-    console.log('visible', visible)
 
     const deleteMutation = useMutation({
         mutationFn: deleteFromDatabase(ref),
@@ -199,7 +198,6 @@ const Students = () => {
             })
 
     }
-    console.log(students)
     const handlePrevious = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1)
@@ -248,7 +246,6 @@ const Students = () => {
     function fetchDataForSearchedStudents(page: number, userName: any): any {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/serach?username=${userName}&pageable=${page}`)
             .then((res) => {
-                console.log(res);
                 setStudents(res?.data?.content)
                 return res
             }).catch((err) => {
@@ -269,7 +266,7 @@ const Students = () => {
         return <Loader />
     }
 
-console.log(students)
+
 
     return getMutaion.isPending?(
         <Loader/>):(
@@ -427,7 +424,6 @@ export default Students
 function deleteFromDatabase(indexforDelete: number): any {
     if (indexforDelete !== -1) {
         axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
-            console.log(res)
         })
     }
 }

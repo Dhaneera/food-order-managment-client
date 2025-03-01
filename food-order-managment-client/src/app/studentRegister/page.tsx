@@ -47,7 +47,6 @@ const studentRegister = (props: any) => {
 
     
     function handleChange(e: any) {
-        console.log(e.target.value)
         setErrors({});
         setInput((prev) => {
             return {
@@ -71,7 +70,6 @@ const studentRegister = (props: any) => {
     const handleSignup = (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) {
-            console.log("hello")
             toast.error("Please fill all the fields", {
                 position: "bottom-left", description: "Validation Error please fill all data correctly."
 

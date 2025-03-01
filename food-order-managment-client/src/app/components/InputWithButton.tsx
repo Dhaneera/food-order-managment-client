@@ -47,8 +47,10 @@ export function InputWithButton() {
         <>
             {inputOtpFrom ? (
                 <InputOTPForm mail={email} />) : (
-                <div className="flex w-full max-w-sm items-center space-x-2">
-                    <Input
+                <div className="md:flex w-screen md:justify-center  max-w-sm items-center space-x-2 max-md:ml-[12%]">
+                    <h1 className="text-2xl font-bold flex-none mb-10 md:absolute md:mb-40 md:ml-2  ml-16  font-serif">Reset Password</h1>
+
+                    <Input className="w-full max-md:w-3/4"
                         type="email"
                         placeholder="Email"
                         value={email}
@@ -56,13 +58,13 @@ export function InputWithButton() {
                             setEmail(e.target.value);
                             if (error) setError("");
                         }}
-                        className={error ? "border-red-500" : ""}
+                       
                         
                     />
-                    <Button onClick={handleClick} type="submit">
+                    <Button className=" hover:bg-slate-600 max-md:mt-5 max-md:w-3/4" onClick={handleClick} type="submit">
                         Send OTP Code
                     </Button>
-                    {error && <p className="  text-red-500 text-sm">{error}</p>}
+                    {error && <p className=" absolute mt-20 text-red-500 text-sm">{error}</p>}
                 </div>)}
         </>
     );

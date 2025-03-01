@@ -15,7 +15,7 @@ const Page = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalComplete, setIsModalComplete] = useState(false);
-  const [mealIds, setMealIds] = useState([]);
+  const [mealIds, setMealIds] = useState<any []>([]);
   const [role, setRole] = useState('');
   const [name, setName] = useState('');
   const isSignIn = useRef("Sign In");
@@ -124,9 +124,9 @@ const Page = () => {
   };
 
   return isModalComplete ? (
-    <Modall setIsModalComplete={setIsModalComplete} message={mealIds?.map((obj: any) => {
-      return obj;
-    })} />
+    <Modall setIsModalComplete={setIsModalComplete}
+    message={Array.isArray(mealIds) ? mealIds.map((obj) => obj) : []} 
+     />
   ) : (
     <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>

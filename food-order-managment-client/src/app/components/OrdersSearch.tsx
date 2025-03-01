@@ -40,7 +40,6 @@ export default function OrdersSearch(props:any) {
 
   const handleDiscard = () => {
     setSearchOrder('');
-    console.log('Search discarded');
   };
   
 

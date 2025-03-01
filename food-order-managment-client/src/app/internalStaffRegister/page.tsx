@@ -67,7 +67,6 @@ const staffRegister = () => {
     const handleSignup = (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) {
-            console.log("hello")
             toast.error("Please fill all the fields", {
                 position: "bottom-left", description: "Validation Error please fill all data correctly."
 

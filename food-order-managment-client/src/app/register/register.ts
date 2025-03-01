@@ -8,8 +8,7 @@ type RegisterPayload = {
 };
 
 const registerAxios = async (payload: RegisterPayload) => {
-  console.log("Payload:", payload);
-  console.log("Base URL:", process.env.NEXT_PUBLIC_BASE_URL);
+
 
   try {
     const response = await axios.post(
@@ -22,7 +21,6 @@ const registerAxios = async (payload: RegisterPayload) => {
         },
       }
     );
-    console.log("Response Data:", response.data);
     return response.data;
   } catch (error: any) {
     // Log the full error object

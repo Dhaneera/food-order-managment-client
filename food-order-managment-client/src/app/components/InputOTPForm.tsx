@@ -47,7 +47,6 @@ const InputOTPFrom = (props:any) =>{
     },36000)
   },[serverOtp])
 
-  console.log(serverOtp)
    async function fetchOtpMessage(email:string) {
     
     if (!email) return null;

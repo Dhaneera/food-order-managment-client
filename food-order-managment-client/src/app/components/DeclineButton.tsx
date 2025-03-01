@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 
 const DeclineButton = ({ data, ...props }: any) => {
 
-  console.log(data);
   let serialDa = encodeURIComponent(JSON.stringify(data));
   return (
 

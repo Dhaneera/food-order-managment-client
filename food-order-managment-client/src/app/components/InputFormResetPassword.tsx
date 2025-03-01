@@ -56,7 +56,6 @@ export default function InputForm({ mail, ...props }: any) {
         mutationKey: [],
         mutationFn: resetPassword,
         onSuccess(data) {
-            console.log(data);
             router.push("/");
         },
         onError(error: any) {
@@ -79,6 +78,7 @@ export default function InputForm({ mail, ...props }: any) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+            <h1 className="text-2xl font-bold flex-none absolute mb-20 ml-2 font-serif">Reset Password</h1>
                 <FormField
                     control={form.control}
                     name="password"
