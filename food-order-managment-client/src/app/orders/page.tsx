@@ -13,6 +13,7 @@ import { orderMobile } from './order'
 import Loader from "../components/Loader";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import axios from 'axios'
+import SideBarStudent from '../components/SideBarStudent'
 
 const Page = () => {
     const rowCountPerPage = 10;
@@ -73,7 +74,7 @@ const Page = () => {
             style: ""
         }
     ]
-  
+
     let tableRows: { style: string; cellData: { isButton: string; text: string; style: string }[] }[] = [];
     data?.content.map((obj, index) => {
         let status = obj.status;
@@ -144,12 +145,11 @@ const Page = () => {
         <Loader />
     ) : (
         <div className='h-screen flex flex-col motion-preset-slide-right motion-duration-700'>
-            <div className=' w-full flex py-3 justify-between px-3'>
-                <Header />
-                <Sheet onOpenChange={()=>setMoreData(()=>{
-                    return{
-                        orderId:-1,
-                        allData:[]
+            <div className=' w-full flex py-3  px-3 '>
+                <Sheet onOpenChange={() => setMoreData(() => {
+                    return {
+                        orderId: -1,
+                        allData: []
                     }
                 })} open={moreData.orderId != -1}>
                     <SheetContent side={"bottom"}>
@@ -164,13 +164,13 @@ const Page = () => {
                                         {["breakfast", "lunch", "dinner"].map((mealType) => {
                                             const mealData = moreData?.allData.filter((obj: any) => obj.type === mealType) || [];
                                             const totalCount = mealData.reduce((acc: number, obj: any) => acc + (obj.count || 0), 0);
-                                            const orderId = mealData.map((obj:any)=>obj.id || 0)
+                                            const orderId = mealData.map((obj: any) => obj.id || 0)
                                             const totalPrice = totalCount * Number(process.env.NEXT_PUBLIC_BREKFAST_PRICE || 0);
 
                                             return (
                                                 <div key={mealType} className="flex flex-col">
                                                     <strong className="text-lg font-sans font-bold text-black max-md:text-sm">
-                                                        {`${mealType.toUpperCase()} : ${totalCount!=0?orderId:`N/A`}`}
+                                                        {`${mealType.toUpperCase()} : ${totalCount != 0 ? orderId : `N/A`}`}
                                                     </strong>
                                                     <p className="font-semibold text-xl max-md:text-sm">count: {totalCount}</p>
                                                     <p className="font-semibold text-xl max-md:text-sm">price: {totalPrice}</p>
@@ -185,27 +185,31 @@ const Page = () => {
                     </SheetContent>
                 </Sheet>
             </div>
-            <div className='w-full flex justify-center max-md:hidden'>
-                <div className="p-6 w-[85%] max-lg:w-[95%] bg-white h-full rounded-lg shadow-md ">
-                    <div className='flex justify-between px-2 py-4'>
-                        <h3 className='font-sans text-3xl font-semibold px-3 py-2'>My Orders</h3>
-                        <button className=' px-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold' onClick={navigateToPlaceOrder}>Place Order</button>
+            <div className=' flex' h-screen>
+                <SideBarStudent />
+                <div className='w-full flex justify-center max-md:hidden mb-40'>
+                    <div className="p-6 w-[85%] max-lg:w-[95%] bg-white h-full rounded-lg shadow-md ">
+                        <div className='flex justify-between px-2 py-4'>
+                            <h3 className='font-sans text-3xl font-semibold px-3 py-2'>My Orders</h3>
+                            <button className=' px-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold' onClick={navigateToPlaceOrder}>Place Order</button>
+                        </div>
+                        {data?.content.length == 0 ?
+                            <div className='w-full h-96 flex justify-center items-center'><p className='text-center text-2xl font-bold'>No Orders To Show</p></div> :
+                            <table className="w-full border-collapse">
+                                <TableHeader header={tableHeader}></TableHeader>
+                                <tbody>
+                                    {tableRows.map((row: any, index: any): any => {
+                                        return (
+                                            <TableRow key={index} cellData={row.cellData} doubleClick={getMealData} styles={row.style} />
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        }
                     </div>
-                    {data?.content.length == 0 ?
-                        <div className='w-full h-96 flex justify-center items-center'><p className='text-center text-2xl font-bold'>No Orders To Show</p></div> :
-                        <table className="w-full border-collapse">
-                            <TableHeader header={tableHeader}></TableHeader>
-                            <tbody>
-                                {tableRows.map((row: any, index: any): any => {
-                                    return (
-                                        <TableRow key={index} cellData={row.cellData} doubleClick={getMealData} styles={row.style} />
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    }
                 </div>
             </div>
+
             {/* mobile view */}
             <div className='md:hidden w-screen h-screen px-3 flex flex-col'>
                 <h3 className='text-3xl font-poppins font-semibold my-3'>My Orders</h3>
@@ -223,7 +227,7 @@ const Page = () => {
                 </div>
 
             </div>
-            <div className='w-full flex gap-5 py-5 justify-center items-center max-lg:hidden'>
+            <div className='w-full flex gap-5 py-5 mt-[-10%] justify-center items-center max-lg:hidden'>
                 <button className=' bg-[#78b3a8] text-white px-4 py-2 rounded-md' onClick={() => page != 1 ? setPage((prev) => prev - 1) : setPage(prev => prev)}>Previous</button>
                 <p>{page}</p>
                 <button className='bg-[#78b3a8] text-white px-6 py-2 rounded-md' onClick={() => page != data?.totalPages ? setPage((prev) => prev + 1) : setPage(prev => prev)}>Next</button>

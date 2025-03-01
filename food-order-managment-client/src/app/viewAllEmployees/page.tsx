@@ -50,8 +50,11 @@ const Page = () => {
         queryFn: async () => {
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAllEmployees?page=${page}&size=${rowCountPerPage}`
+               
             );
+            console.log(response.data)
             return response.data;
+
         },
         retry: 3
     });
@@ -301,7 +304,7 @@ const Page = () => {
                                 <Label htmlFor="name" className="   text-pretty text-base">
                                     Mail
                                 </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.email}</h2>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].mail}</h2>
 
                             </div>
                         </div>

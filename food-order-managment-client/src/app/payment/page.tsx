@@ -5,6 +5,7 @@ import tableInterface from "../table/TableInteface";
 import TableRow from "../table/TableRow";
 import ordersAxios from "./orders";
 import Header from "../components/Header";
+import SideBarStudent from "../components/SideBarStudent";
 
 const tableHeader:tableInterface[] = [
   {
@@ -82,12 +83,9 @@ const Page = () => {
 
   return (
 
-    <div className="w-screen h-screen flex flex-col max-lg:w-2/3">
-
-      <div className="flex py-3 justify-between px-3">
-        <Header />
-      </div>
-      <div className="w-full flex flex-col items-center">
+    <div className="w-screen h-screen flex  max-lg:w-2/3">
+      <SideBarStudent />
+      <div className="w-full flex flex-col items-center mt-20">
         <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md">
         <h3 className="font-sans text-3xl font-semibold px-3 py-4">My Payments</h3>
           <table className="w-full border-collapse">

@@ -3,6 +3,7 @@ import Image, { StaticImageData } from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import profile from '../../../public/login-1.jpeg';
+import Modal from './Modal';
 
 interface UserHeaderProps {
   onSettingsClick: () => void;
@@ -12,6 +13,7 @@ interface UserHeaderProps {
 const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [img, setImage] = useState<string | StaticImageData>(profile);
+  const[modal,setModal]=useState(false);
 
   const { isLoading, isError } = useQuery({
     queryKey: ['userImage'],
@@ -32,14 +34,23 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => 
     retry: 0,
   });
 
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  return (
-    <div className="relative mr-48 max-lg:hidden">
+  function handleClick(e:any):any{
+    setModal(true)
+  }
+
+  return modal?(<Modal title='image' isVisible={true} onClose={function (): void {
+    throw new Error('Function not implemented.');
+  } } onDiscard={function (): void {
+    throw new Error('Function not implemented.');
+  } } onSubmit={function (formData: { name: string; contact: string; image: File | null; }): void {
+    throw new Error('Function not implemented.');
+  } }  /> ):(
+    <div className=" mt-[100%] flex  max-lg:hidden mb-8">
       <button
         id="avatarButton"
         type="button"
-        onClick={toggleDropdown}
+        onClick={(e)=>handleClick(e)}
         className="w-10 h-10 rounded-full cursor-pointer"
       >
         <Image
@@ -50,42 +61,6 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => 
           className="w-10 h-10 rounded-full"
         />
       </button>
-
-      {isDropdownOpen && (
-        <div
-          id="userDropdown"
-          className="z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-56"
-        >
-          <ul className="py-2 text-sm text-gray-700" aria-labelledby="avatarButton">
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSettingsClick();
-                }}
-              >
-                Settings
-              </a>
-            </li>
-          </ul>
-          <div className="py-1">
-            <a href="#" 
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            onClick={(e) => {
-                sessionStorage.clear();
-                localStorage.clear();
-                e.preventDefault();
-                sessionStorage.clear();
-                window.location.href = '/login';
-            }}
-            >
-             {sign}
-            </a>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

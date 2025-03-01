@@ -6,7 +6,9 @@ import Button from './components/Button';
 import UserHeader from './components/UserHeader';
 import Modal from './components/Modal';
 import Order from './components/Order';
-import Modall from './components/Modall';
+import Modall from './components/Modall';;
+import SideBarStudent from './components/SideBarStudent';
+import SideBar from './components/SideBar';
 
 const Page = () => {
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
@@ -71,7 +73,6 @@ const Page = () => {
       const name=sessionStorage.getItem('name') || '';
       setRole(role || '');
       setName(name);
-      debugger
       if(name!=''){
         isSignIn.current="Sign Out"
       }
@@ -124,24 +125,27 @@ const Page = () => {
   };
 
   return isModalComplete ? (
+    
     <Modall setIsModalComplete={setIsModalComplete}
     message={Array.isArray(mealIds) ? mealIds.map((obj) => obj) : []} 
      />
   ) : (
-    <div className="w-full flex flex-col ml-6 h-screen max-lg:w-[95%]">
+    <>
+    <div className="flex  h-screen ml-[-6%]">
       <div className='flex items-center  ml-24  max-lg:ml-0'>
-        <Header modalView={setModalVisible}/>
-        <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />
-        <Modal
+        {/* <Header modalView={setModalVisible}/> */}
+        {/* <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} /> */}
+        {/* <Modal
             title="User Settings"
             isVisible={isModalVisible}
             onClose={handleCloseModal}
             onDiscard={() => setModalVisible(false)}
             onSubmit={() => setModalVisible(false)}
-          />
+          /> */}
       </div>
-      <div className="w-full flex h-full max-lg:flex-col">
-        <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 h-full">
+   { role != 'ROLE_STAFF' ?<SideBarStudent />:<SideBar/>}
+      <div className="w-full ml-10 mt-10 flex  max-lg:flex-col">
+        <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 ">
           <h1 className="font-sans font-bold text-3xl">Place Order</h1>
           <div className="mt-5 gap-5 flex-col flex w-full">
             <div className="gap-5 flex">
@@ -180,6 +184,7 @@ const Page = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
