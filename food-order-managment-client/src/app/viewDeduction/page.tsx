@@ -12,6 +12,9 @@ import { format } from "date-fns"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
+import Loader from '../components/Loader'
+import { PDFViewer, Document, Page, Text, View } from '@react-pdf/renderer'
+import Report from '../components/Report'
 
 
 const page = () => {
@@ -20,9 +23,12 @@ const page = () => {
     const [phoneNumber, setPhoneNumber] = useState();
     const [orderInfo, setOrderInfo]: any = useState([]);
     const [meal, setMeal] = useState([]);
-    const breakfast= Number(process.env.NEXT_PUBLIC_BREKFAST_PRICE)
-    const lunch=Number(process.env.NEXT_PUBLIC_LUNCH_PRICE)
-    const dinner=Number(process.env.NEXT_PUBLIC_DINNER_PRICE)
+    const [loading, setLoading] = useState(false);
+    const [allInfo, setAllInfo] = useState([]);
+    const [showReport, setShowReport] = useState(false);
+    const breakfast = Number(process.env.NEXT_PUBLIC_BREKFAST_PRICE)
+    const lunch = Number(process.env.NEXT_PUBLIC_LUNCH_PRICE)
+    const dinner = Number(process.env.NEXT_PUBLIC_DINNER_PRICE)
 
     function handleChange(e: any) {
         setPhoneNumber(prev => e.target.value)
@@ -34,8 +40,9 @@ const page = () => {
         retry: 1,
         retryDelay: 5000,
         onSuccess: (data: any) => {
-            debugger
+            setLoading(false);
             setOrderInfo(data.data)
+            setAllInfo(data.data)
         }
     })
 
@@ -53,7 +60,24 @@ const page = () => {
     })
     console.log(meal)
 
+    const mutationFullReport = useMutation({
+        mutationKey: [],
+        mutationFn: () => getOrdersOfEmployeeForFullReport(),
+        retry: 1,
+        retryDelay: 5000,
+        onSuccess: (data: any) => {
+            setAllInfo(data.data);
+            setLoading(false);
+            setShowReport(true);
+        },
+        onError:()=>{
+            setLoading(false);
+            setShowReport(true);
+        }
+    })
+
     async function getOrdersOfEmployee() {
+        setLoading(true);
         try {
             if (date && endDate) {
                 const stDate = date.toLocaleDateString("en-CA")
@@ -75,7 +99,35 @@ const page = () => {
     }
     console.log(date);
 
-    return (
+    async function getOrdersOfEmployeeForFullReport() {
+        setLoading(true);
+        try {
+            if (date && endDate) {
+                const stDate = date.toLocaleDateString("en-CA")
+                const enDate = endDate.toLocaleDateString("en-CA")
+                const res = axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payments/get-all-for-period/${stDate}/${enDate}`)
+                return (await res).data;
+            }
+        } catch (error) {
+            throw new Error("error");
+        }
+    }
+
+    function handleReport(event: any): void {
+        showFullReport(event);
+    }
+    function showFullReport(event: any): void {
+        debugger
+        mutationFullReport.mutateAsync();
+    }
+    function handleSingleReport(){
+        mutation.mutateAsync();
+        setShowReport(true);
+    }
+
+    return loading ? (
+        <Loader />
+    ) : (
         <div className='w-screen h-screen flex'>
             <SideBar />
             <div className='w-full h-full flex justify-center items-center'>
@@ -131,6 +183,8 @@ const page = () => {
                         </PopoverContent>
                     </Popover>
                     <Button className='mt-5' onClick={handleClick}>Search for Deductions</Button>
+                    <Button className='mt-3' onClick={handleReport}>Download Deduction Report</Button>
+                    <Button className='mt-3' onClick={handleSingleReport}>Download Single Employee Report</Button>
                 </div>
                 <div className='w-[60%]'>
                     <div className='bg-white w-full shadow-lg rounded-lg'>
@@ -154,7 +208,7 @@ const page = () => {
                                                             <div className='w-full h-full my-5 flex justify-around'>
                                                                 <p>Meal ID : {mObj.id}</p>
                                                                 <p>Type : {mObj.type}</p>
-                                                                <p>Price : {mObj.type=='breakfast'?breakfast*mObj.count:mObj.type=='lunch'?lunch*mObj.count:dinner*mObj.count}</p>
+                                                                <p>Price : {mObj.type == 'breakfast' ? breakfast * mObj.count : mObj.type == 'lunch' ? lunch * mObj.count : dinner * mObj.count}</p>
                                                                 <p>Count : {mObj.count}</p>
                                                             </div>
                                                         </AccordionContent>
@@ -166,6 +220,23 @@ const page = () => {
                                 }
                             </Accordion>
                         </div>
+                        {showReport && (
+                            <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+                                <div className='bg-white p-5 rounded-lg shadow-lg w-[80%] h-[80%] flex flex-col'>
+                                    <h2 className='text-xl font-bold mb-4'>Employee Deduction Report</h2>
+                                    <PDFViewer width="100%" height="90%">
+                                        <Document>
+                                            <Page size="A4">
+                                                <Report data={allInfo}/>
+                                            </Page>
+                                        </Document>
+
+                                    </PDFViewer>
+                                    <button className='mt-4 p-2 bg-red-500 text-white rounded'>Download</button>
+                                    <button className='mt-4 p-2 bg-black text-white rounded' onClick={() => setShowReport(false)}>Close</button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
