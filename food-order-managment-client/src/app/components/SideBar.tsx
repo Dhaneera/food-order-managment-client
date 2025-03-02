@@ -32,38 +32,11 @@ const SideBar = () => {
 
     const route = useRouter();
 
-    const mutaion = useMutation({
-        mutationFn: userLogout,
-        mutationKey: ["userLogout"],
-        onSuccess: () => {
-            toast.success('User Logout successfully');
-            route.push('/login');
-        },
-        onError: (error) => {
-            toast.error('User registration failed');
-            setErrors(error.message);
-        },
-    })
-
-    async function userLogout() {
-        try {
-            sessionStorage.removeItem("name");
-            const response = await axios.post('http://localhost:3000/api/auth/logout');
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
-    }
-
 
     function hanldeClick() {
-        mutaion.mutate();
-    }
-
-    function hanldeRoute() {
+        sessionStorage.clear();
         route.push('/login');
     }
-
 
 
     return (
@@ -91,7 +64,7 @@ const SideBar = () => {
                     throw new Error('Function not implemented.');
                 }} sign={''} />
                 <Tooltip content={content} placement='right' className='px-3 className '>
-                    {name == null ? <PowerOff onClick={() => hanldeClick()} size={40} strokeWidth={1.2} /> : <Power onClick={() => hanldeRoute()} size={40} strokeWidth={1.2} />}
+                    {name == null ? <Power onClick={() => hanldeClick()} size={40} strokeWidth={1.2} /> : <PowerOff onClick={() => hanldeClick()} size={40} strokeWidth={1.2} />}
                 </Tooltip>
             </div>
         </>
