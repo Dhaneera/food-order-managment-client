@@ -41,9 +41,9 @@ const FoodCard = ({
           <Image
             src={image}
             alt={name}
-            className="rounded-lg object-cover"
+            className="rounded-lg object-cover -z-50 "
             layout="fill"
-          />
+            />
           <div
             className="absolute bottom-2 right-2 rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer"
             onClick={handleIncrease}

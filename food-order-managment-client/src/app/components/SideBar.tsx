@@ -7,12 +7,16 @@ import UserHeader from './UserHeader';
 import { Power } from 'lucide-react';
 import { PowerOff } from 'lucide-react';
 import { set } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import axios from 'axios';
 const SideBar = () => {
 
 
     const [name, setName] = useState("");
-     const [content,setContent]=useState('Log In');
-
+    const [content, setContent] = useState('Log In');
+    const [errors, setErrors] = useState("");
 
 
 
@@ -26,11 +30,45 @@ const SideBar = () => {
         }
     }, []);
 
-    
+    const route = useRouter();
+
+    const mutaion = useMutation({
+        mutationFn: userLogout,
+        mutationKey: ["userLogout"],
+        onSuccess: () => {
+            toast.success('User Logout successfully');
+            route.push('/login');
+        },
+        onError: (error) => {
+            toast.error('User registration failed');
+            setErrors(error.message);
+        },
+    })
+
+    async function userLogout() {
+        try {
+            sessionStorage.removeItem("name");
+            const response = await axios.post('http://localhost:3000/api/auth/logout');
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+    function hanldeClick() {
+        mutaion.mutate();
+    }
+
+    function hanldeRoute() {
+        route.push('/login');
+    }
+
+
 
     return (
         <>
-            <div className=' h-screen flex flex-col justify-center items-center gap-5 bg-white motion-preset-slide-right motion-duration-800'>
+            <div className='md:ml-[-0.5%] max-md:hidden h-screen  flex flex-col justify-center items-center gap-5 bg-white motion-preset-slide-right motion-duration-800'>
                 <Tooltip content='Order Completion' showArrow={true} placement='right'>
                     <Link href='/MealOrder'><Home size={80} className='px-4 className' strokeWidth={1} /></Link>
                 </Tooltip>
@@ -51,9 +89,9 @@ const SideBar = () => {
                 </Tooltip>
                 <UserHeader onSettingsClick={function (): void {
                     throw new Error('Function not implemented.');
-                } } sign={''}  />
+                }} sign={''} />
                 <Tooltip content={content} placement='right' className='px-3 className '>
-                    {name == null ? <PowerOff size={40} strokeWidth={1.2} /> : <Power size={40} strokeWidth={1.2} />}
+                    {name == null ? <PowerOff onClick={() => hanldeClick()} size={40} strokeWidth={1.2} /> : <Power onClick={() => hanldeRoute()} size={40} strokeWidth={1.2} />}
                 </Tooltip>
             </div>
         </>

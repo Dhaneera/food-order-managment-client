@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { useQuery } from '@tanstack/react-query';
@@ -11,9 +12,9 @@ interface UserHeaderProps {
 }
 
 const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [img, setImage] = useState<string | StaticImageData>(profile);
   const[modal,setModal]=useState(false);
+  const [isModalVisible, setModalVisible] = useState(true);
 
   const { isLoading, isError } = useQuery({
     queryKey: ['userImage'],
@@ -38,15 +39,15 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => 
   function handleClick(e:any):any{
     setModal(true)
   }
+  function handleDiscard(){
+    console.log('discard')
+    setModal(false)
+  }
 
-  return modal?(<Modal title='image' isVisible={true} onClose={function (): void {
-    throw new Error('Function not implemented.');
-  } } onDiscard={function (): void {
-    throw new Error('Function not implemented.');
-  } } onSubmit={function (formData: { name: string; contact: string; image: File | null; }): void {
-    throw new Error('Function not implemented.');
-  } }  /> ):(
-    <div className=" mt-[100%] flex  max-lg:hidden mb-8">
+  return(
+  <>
+  {modal && <Modal title='User Settings'  onClose={handleDiscard} onDiscard={handleDiscard}   isVisible={isModalVisible}/> }
+    <div className=" mt-[100%] flex mb-8">
       <button
         id="avatarButton"
         type="button"
@@ -62,6 +63,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => 
         />
       </button>
     </div>
+    </>
   );
 };
 

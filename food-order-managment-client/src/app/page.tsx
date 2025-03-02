@@ -131,17 +131,19 @@ const Page = () => {
      />
   ) : (
     <>
-    <div className="flex  h-screen ml-[-6%]">
-      <div className='flex items-center  ml-24  max-lg:ml-0'>
-        {/* <Header modalView={setModalVisible}/> */}
-        {/* <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} /> */}
-        {/* <Modal
+    <div className="md:flex  h-screen ml-[-6%]">
+      <div className=' max-md:flex flex-col md:hidden items-center ml-16 '>
+        <Header modalView={setModalVisible}/>
+        <div className=' flex mt-[-30%] mr-[-70%]'>
+        <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />
+        </div>
+        <Modal
             title="User Settings"
             isVisible={isModalVisible}
             onClose={handleCloseModal}
             onDiscard={() => setModalVisible(false)}
             onSubmit={() => setModalVisible(false)}
-          /> */}
+          />
       </div>
    { role != 'ROLE_STAFF' ?<SideBarStudent />:<SideBar/>}
       <div className="w-full ml-10 mt-10 flex  max-lg:flex-col">

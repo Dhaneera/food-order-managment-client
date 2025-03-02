@@ -12,7 +12,7 @@ interface ModalProps {
   onSubmit: (formData: { name: string; contact: string; image: File | null }) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ title, isVisible, onClose, onDiscard, onSubmit }) => {
+const Modal = ({ title, isVisible, onClose, onDiscard, onSubmit }:any) => {
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
   const [image, setImage]: any = useState<File | null>(null);
@@ -59,7 +59,7 @@ const Modal: React.FC<ModalProps> = ({ title, isVisible, onClose, onDiscard, onS
   if (!isVisible) return null;
 
   return (
-    <div className=" ml-[-12%] fixed w-screen h-screen inset-0 flex items-center justify-center bg-opacity-25 bg-black/30 z-50">
+    <div className="fixed w-screen h-screen inset-0 flex items-center justify-center bg-opacity-25 bg-black/30 z-50">
       <div className="bg-white rounded-md w-96 p-6 relative">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">{title}</h2>
