@@ -3,6 +3,7 @@ import Button from './Button';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import ConfirmationModal from './ConfirmationModal';
+import { sendError } from 'next/dist/server/api-utils';
 
 export default function OrdersSearch(props:any) {
 
@@ -12,6 +13,7 @@ export default function OrdersSearch(props:any) {
   });
 
   const [searchOrder, setSearchOrder] = useState('');
+  const [error, setError] = useState('');
 
   const mutation = useMutation({
     mutationKey: ['ordersSearch', searchOrder],
@@ -36,10 +38,22 @@ export default function OrdersSearch(props:any) {
     setSearchOrder(e.target.value);
     mutation.mutateAsync();
 
+    if(searchOrder.indexOf(' ')>=0){
+      setError('Order ID cannot contain spaces');
+    } else if(searchOrder.length<1){
+      setError('Order ID cannot be empty');
+    }
   };
 
+
+  const hanldeChange = (e:any) => {
+    setSearchOrder(e.target.value);
+    if(error) setError('');
+  }
+  
   const handleDiscard = () => {
     setSearchOrder('');
+    setError('');
   };
   
 
@@ -67,9 +81,10 @@ export default function OrdersSearch(props:any) {
           type="text"
           placeholder="Enter Order"
           value={searchOrder}
-          onChange={(e) => setSearchOrder(e.target.value)}
+          onChange={(e) => hanldeChange(e)}
           className="w-full ring ring-black  rounded-lg p-3 shadow-sm focus:ring focus:ring-green-200 focus:border-green-500"
         />
+        {error && <p className="text-red-500 mt-2">{error}</p>}
       </div>
 
       <div className="mt-6 flex gap-4">
