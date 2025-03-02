@@ -44,7 +44,7 @@ export default function OrdersSearch(props:any) {
   
 
   return props.error==''?(
-    <div className=" w-1/3  bg-white border rounded-lg p-8 shadow-xl">
+    <div className=" w-1/3  bg-white border rounded-lg p-8 shadow-xl  max-lg:w-1/2 max-lg:ml-5">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Orders Search</h3>
       
       <div className="space-y-4 border-b pb-6">

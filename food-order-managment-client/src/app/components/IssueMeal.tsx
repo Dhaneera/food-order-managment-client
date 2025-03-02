@@ -83,7 +83,7 @@ export default function IssueMeal({ mealData, ...props }: any) {
 
 
   return props.order == null && props.order == undefined || isintial? (
-    <div className=" w-1/3 ml-12 bg-white border flex justify-center items-center rounded-lg shadow-xl p-6 text-center">
+    <div className=" w-1/3 ml-12 bg-white border flex justify-center items-center rounded-lg shadow-xl p-6 text-center max-lg:w-1/2">
       <h3 className='font-bold font-sans text-2xl'>Search for a meal in order to show here</h3>
     </div>
   ) : (

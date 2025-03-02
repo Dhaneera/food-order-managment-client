@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import profile from '../../../public/login-1.jpeg';
+import profile from '../../../public/profileImage.jpg';
 import Modal from './Modal';
 
 interface UserHeaderProps {

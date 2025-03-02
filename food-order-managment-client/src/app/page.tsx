@@ -145,7 +145,7 @@ const Page = () => {
             onSubmit={() => setModalVisible(false)}
           />
       </div>
-   { role != 'ROLE_STAFF' ?<SideBarStudent />:<SideBar/>}
+   { role != 'ROLE_STAFF' ?<div className=' ml-[5.8%]'><SideBarStudent/></div>:<div className='ml-[5.8%]'><SideBar/></div>}
       <div className="w-full ml-10 mt-10 flex  max-lg:flex-col">
         <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 ">
           <h1 className="font-sans font-bold text-3xl">Place Order</h1>
