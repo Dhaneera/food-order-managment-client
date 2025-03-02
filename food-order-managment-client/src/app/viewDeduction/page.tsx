@@ -184,7 +184,7 @@ const page = () => {
                     </Popover>
                     <Button className='mt-5' onClick={handleClick}>Search for Deductions</Button>
                     <Button className='mt-3' onClick={handleReport}>Download Deduction Report</Button>
-                    <Button className='mt-3' onClick={handleSingleReport}>Download Single Employee Report</Button>
+                    <Button className='mt-3' onClick={handleSingleReport}>Download Single Employee Deduction Report</Button>
                 </div>
                 <div className='w-[60%]'>
                     <div className='bg-white w-full shadow-lg rounded-lg'>
@@ -195,10 +195,10 @@ const page = () => {
                                     orderInfo?.map((obj: any, index: any) => {
                                         return (
                                             <AccordionItem value={`item${index}`}>
-                                                <AccordionTrigger onClick={() => loadMealInfo(obj.id)}>
+                                                <AccordionTrigger onClick={() => loadMealInfo(obj.orders_id)}>
                                                     <div className='w-full flex justify-between px-2'>
-                                                        <p>Date : {obj.orderedAt && obj.orderedAt.split('T')[0]}</p>
-                                                        <p> Order : {obj.id}</p>
+                                                        <p>Date : {obj.created_at && obj.created_at.split('T')[0]}</p>
+                                                        <p> Order : {obj.orders_id}</p>
                                                         <p className='text-green-600'> Total : LKR {obj.price}</p>
                                                     </div>
                                                 </AccordionTrigger>
