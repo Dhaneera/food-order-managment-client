@@ -9,6 +9,7 @@ import Order from './components/Order';
 import Modall from './components/Modall';;
 import SideBarStudent from './components/SideBarStudent';
 import SideBar from './components/SideBar';
+import { Item } from '@radix-ui/react-accordion';
 
 const Page = () => {
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
@@ -17,11 +18,11 @@ const Page = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalComplete, setIsModalComplete] = useState(false);
-  const [mealIds, setMealIds] = useState<any []>([]);
+  const [mealIds, setMealIds] = useState<any[]>([]);
   const [role, setRole] = useState('');
   const [name, setName] = useState('');
+  const [visible,setVisible] = useState(false);
   const isSignIn = useRef("Sign In");
-
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
 
@@ -38,6 +39,7 @@ const Page = () => {
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const updateCartItemQuantity = (name: string, quantity: number) => {
+    setVisible(true)
     setCartItems((prevCartItems) =>
       prevCartItems.map((item) =>
         item.name === name ? { ...item, quantity: quantity, price: item.price } : item
@@ -45,8 +47,13 @@ const Page = () => {
     );
   };
 
+  
+
+
+
+
+
   useEffect(() => {
-    // routeToTheLogin();
     const today = new Date();
 
     const tomorrowDate = new Date(today);
@@ -56,6 +63,8 @@ const Page = () => {
     const dayAfterTomorrowDate = new Date(today);
     dayAfterTomorrowDate.setDate(today.getDate() + 2);
     const dayAfterTomorrowMonth = dayAfterTomorrowDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+
+  
 
     setTomorrow({
       date: tomorrowDate.getDate(),
@@ -69,16 +78,17 @@ const Page = () => {
 
     // Ensures sessionStorage is accessed only on the client-side
     if (typeof window !== 'undefined') {
-      const role=sessionStorage.getItem('role')
-      const name=sessionStorage.getItem('name') || '';
+      const role = sessionStorage.getItem('role')
+      const name = sessionStorage.getItem('name') || '';
       setRole(role || '');
       setName(name);
-      if(name!=''){
-        isSignIn.current="Sign Out"
+      if (name != '') {
+        isSignIn.current = "Sign Out"
       }
     }
 
   }, []);
+  
 
   function handleChangeSelectTomorrow() {
     setSelected(true);
@@ -124,69 +134,77 @@ const Page = () => {
     },
   };
 
-  
+
   return isModalComplete ? (
-    
+
     <Modall setIsModalComplete={setIsModalComplete}
-    message={Array.isArray(mealIds) ? mealIds.map((obj) => obj) : []} 
-     />
+      message={Array.isArray(mealIds) ? mealIds.map((obj) => obj) : []}
+    />
   ) : (
     <>
-    <div className="md:flex  h-screen ml-[-6%]">
-      <div className=' max-md:flex flex-col md:hidden items-center ml-16 '>
-        <Header modalView={setModalVisible}/>
-        <div className=' flex mt-[-30%] mr-[-70%]'>
-        <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />
-        </div>
-        <Modal
+      <div className="md:flex  h-screen ml-[-6%]">
+        <div className=' max-md:flex flex-col md:hidden items-center ml-16 '>
+          <Header modalView={setModalVisible} />
+          <div className=' flex mt-[-30%] mr-[-70%]'>
+            <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />
+          </div>
+          <Modal
             title="User Settings"
             isVisible={isModalVisible}
             onClose={handleCloseModal}
             onDiscard={() => setModalVisible(false)}
             onSubmit={() => setModalVisible(false)}
           />
-      </div>
-   { role != 'ROLE_STAFF' ?<div className=' ml-[5.8%]'><SideBarStudent/></div>:<div className='ml-[5.8%]'><SideBar/></div>}
-      <div className="w-full ml-10 mt-10 flex  max-lg:flex-col">
-        <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 ">
-          <h1 className="font-sans font-bold text-3xl">Place Order</h1>
-          <div className="mt-5 gap-5 flex-col flex w-full">
-            <div className="gap-5 flex">
-              <button
-                className={`${selected
-                  ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
-                  : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
-                  }`}
-                onClick={handleChangeSelectTomorrow}
-              >
-                {`${tomorrow.date} ${tomorrow.month}`}
-              </button>
-              <button
-                className={`${!selected
-                  ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
-                  : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
-                  }`}
-                onClick={handleChangeSelectDayAfterTomorrow}
-              >
-                {`${dayAfterTomorrow.date} ${dayAfterTomorrow.month}`}
-              </button>
-            </div>
-            <div className="mb-12">
-              <Order cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity} />
+        </div>
+        {role != 'ROLE_STAFF' ? <div className=' ml-[5.8%]'><SideBarStudent /></div> : <div className='ml-[5.8%]'><SideBar /></div>}
+        <div className="w-full ml-10 mt-10 flex  max-lg:flex-col">
+          <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 ">
+            <h1 className="font-sans font-bold text-3xl">Place Order</h1>
+            <div className="mt-5 gap-5 flex-col flex w-full">
+              <div className="gap-5 flex">
+                <button
+                  className={`${selected
+                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
+                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
+                    }`}
+                  onClick={handleChangeSelectTomorrow}
+                >
+                  {`${tomorrow.date} ${tomorrow.month}`}
+                </button>
+                <button
+                  className={`${!selected
+                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
+                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
+                    }`}
+                  onClick={handleChangeSelectDayAfterTomorrow}
+                >
+                  {`${dayAfterTomorrow.date} ${dayAfterTomorrow.month}`}
+                </button>
+              </div>
+              <div className="mb-12">
+                <Order cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-[51%] px-[5%] mt-5 max-lg:hidden">
-          <h1 className="font-sans font-bold text-3xl pb-5">Cart</h1>
-          <div className="w-full h-[85%] shadow-2xl rounded-md">
-            <CartItem foodDataForBackend={foodDataForBackend} setIsModalComplete={setIsModalComplete} cartItems={cartItems} setMealIds={setMealIds} subtotal={subtotal} />
+          <div className="md:w-[51%] px-[5%] mt-5 max-lg:hidden">
+            <h1 className="font-sans font-bold text-3xl pb-5">Cart</h1>
+            <div className="w-full h-[85%] shadow-2xl rounded-md ">
+              <CartItem foodDataForBackend={foodDataForBackend} setIsModalComplete={setIsModalComplete} cartItems={cartItems} setMealIds={setMealIds} subtotal={subtotal} />
+            </div>
           </div>
-        </div>
-        <div className='lg:hidden w-full flex justify-center items-center mb-96  '>
-          <Button data={cartItems} />
+        {visible &&<div className='lg:hidden w-full  justify-center items-center  '>
+              <div className="flex justify-around">
+                <h3 className="font-sans font-thin">Subtotal</h3>
+                <h2 className="font-poppins font-medium">{subtotal?.toFixed(2)}</h2>
+              </div>
+              <div className="flex justify-around pt-4">
+                <h3 className="font-sans font-thin">Grand Total</h3>
+                <h2 className="font-poppins font-bold">{subtotal?.toFixed(2)}</h2>
+              </div>
+            <Button data={cartItems} />
+          </div>}
         </div>
       </div>
-    </div>
     </>
   );
 };

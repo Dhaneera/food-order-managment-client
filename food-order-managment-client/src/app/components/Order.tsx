@@ -1,13 +1,17 @@
 import React from 'react';
 import FoodCard from './FoodCard';
+import { set } from 'date-fns';
 
 const Order = ({
   cartItems,
   updateCartItemQuantity,
+ 
 }: {
   cartItems: any[];
   updateCartItemQuantity: (name: string, quantity: number) => void;
+
 }) => {
+ 
   return (
     <div className="w-full">
       <h2 className="font-sans text-lg font-medium">
@@ -20,6 +24,7 @@ const Order = ({
             name={item.name}
             price={item.price}
             onUpdateQuantity={(quantity) => updateCartItemQuantity(item.name, quantity)}
+            
           />
         ))}
       </div>
