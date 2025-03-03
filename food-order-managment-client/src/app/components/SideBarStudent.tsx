@@ -13,7 +13,6 @@ const SideBarStudent = () => {
     const [content, setContent] = useState('Log In');
 
 
-
     const isSignIn = useRef("Sign In");
     interface UserHeaderProps {
         onSettingsClick: () => void;

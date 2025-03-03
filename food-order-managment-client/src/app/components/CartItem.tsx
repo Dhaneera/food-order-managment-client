@@ -10,35 +10,43 @@ import { Label } from '@radix-ui/react-label';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import Loader from './Loader';
+import PlaceOrderAlert from './PlaceOrderAlert';
 
 const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
   const router = useRouter()
   const [state,setState]=useState(false);
   const [error,setError]=useState(false);
+  const [alert,setAlert]=useState(false);
+  const [mealIds, setMealIds] = useState([]);
+
   const mutation=useMutation({
     mutationKey:[],
     mutationFn:():any=>placeOrder(foodDataForBackend),
-    onSuccess:()=>{
-     props.setIsModalComplete(true);
+    onSuccess:(data)=>{ 
+    setAlert(true);
+    setTimeout(() => {
+      window.location.reload(); 
+    }, 4000);
     },
+    
     retry:1,
     retryDelay:5000,
   })
   
   
-  function placeOrder(data:any){
-    try{
-    const respones=axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create',data).then((data:any)=>{
-      props.setMealIds(data.data)  
-      console.log("Meal IDs:", data.data);
-      
-    }) 
-    return respones; 
-    }catch(ex){
-     
-      throw ex;
-    }
+  function placeOrder(data: any) {
+    return axios.post(process.env.NEXT_PUBLIC_BASE_URL + '/api/orders/create', data)
+      .then((response) => {
+        setMealIds(response.data);
+        return response;
+      })
+      .catch((error) => {
+        console.error("Order Error:", error);
+        throw error;
+      });
   }
+
+
   function handleLoginRedirect(event:any): void {
     router.push('/login')
   }
@@ -63,11 +71,11 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
     }
   }
 
-  return subtotal!=0 && state==false?(
-    
+  return subtotal!=0 && state==false ?(
+    <div className='flex'>
+    {alert &&<div className=' absolute mt-[-4%] ml-[26%] '><PlaceOrderAlert mealIds={mealIds}/></div>}
     <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
       {mutation.isPending && <Loader />}
-
       {cartItems?.map((item:any, index:any):any => (
         item.quantity!=0?(
         <div
@@ -96,6 +104,8 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
         </div>
       </div>
     </div>
+    </div>
+    
   ):state==true?(
     <>
      <Dialog open={state}>
@@ -123,6 +133,7 @@ const CartItem = ({ cartItems, subtotal,foodDataForBackend, ...props }:any) => {
       </DialogContent>
     </Dialog>
     </>
+
   ):(
     <div className="w-full h-full flex justify-center items-center">
        <h1 className="font-sans text-3xl font-semibold">No items in cart</h1>
