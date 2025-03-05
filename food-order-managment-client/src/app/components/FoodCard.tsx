@@ -7,7 +7,6 @@ const FoodCard = ({
   name,
   price,
   onUpdateQuantity,
- 
 }: {
   name: string;
   price: number;
@@ -44,12 +43,18 @@ const FoodCard = ({
             <Image
               src={image}
               alt={name}
-              className="rounded-lg object-cover -z-50 "
-              width={160}
-              height={160}
+              className="rounded-lg  -z-50 "
+              width={200}
+              height={200}
             />
             <div className='absolute justify-center px-2 m-3 mt-1  rounded-full   bg-[#E6F5E9] text-black  '>
               {quantity}
+            </div>
+            <div
+              className="absolute mr-[11%] bottom-2   rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer "
+              onClick={handleDecrease}
+            >
+              <Minus strokeWidth={1.25} />
             </div>
             <div
               className="absolute bottom-2 right-2 rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer"
