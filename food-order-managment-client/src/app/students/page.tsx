@@ -21,7 +21,6 @@ import { Label } from '@/components/ui/label'
 import statue from '@/../public/login-2.png';
 
 
-
 const tableHeader: tableInterface[] = [
     {
         width: '25%',
@@ -45,8 +44,6 @@ const tableHeader: tableInterface[] = [
         style: ""
     }
 ]
-
-
 
 
 const Students = () => {
@@ -126,7 +123,6 @@ const Students = () => {
 
     }
 
-
     const deleteMutation = useMutation({
         mutationFn: deleteFromDatabase(ref),
         mutationKey: [students],
@@ -183,7 +179,6 @@ const Students = () => {
        
     }
 
-
     function fetchDataForAllStudents(pageNum: any) {
 
 
@@ -236,8 +231,6 @@ const Students = () => {
             fetchDataForAllStudents(0);
         }
     }
-
-
     const serachStudentMutaion = useMutation({
         mutationKey: ['searchStudent'],
         mutationFn: () => fetchDataForSearchedStudents(currentPage - 1, sarch)
@@ -253,7 +246,6 @@ const Students = () => {
                 return err
             })
     }
-
     function getStudentsList(): any {
         serachStudentMutaion.mutate();
     }
@@ -267,11 +259,9 @@ const Students = () => {
     }
 
 
-
     return getMutaion.isPending?(
         <Loader/>):(
         <>
-
             {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}
             <div className="w-screen flex flex-col">
             {userProfile == true ? <Sheet open={userProfile} onOpenChange={()=>setUserProfile(prev=>!prev)} >
@@ -293,21 +283,18 @@ const Students = () => {
                                     Student ID / Number
                                 </Label>
                                 <h2 id='name' className='col-span-3 text-gray-700 font-thin'>{students[0].studentMoreInfo.studentId}</h2>
-
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className=" text-pretty text-base">
                                     Name
                                 </Label>
                                 <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].name}</h2>
-
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className=" text-pretty text-base">
                                     Gender
                                 </Label>
                                 <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].studentMoreInfo.gender}</h2>
-
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className=" text-pretty text-base">
@@ -335,18 +322,16 @@ const Students = () => {
                                     Batch
                                 </Label>
                                 <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{students[0].studentMoreInfo.batch}</h2>
-
                             </div>
                         </div>
                         <SheetFooter>
                         </SheetFooter>
                     </SheetContent>
-                </Sheet> : <></>}
+                </Sheet>: <></>}
                 <div className='flex'>
                     <SideBar />
                     <div className="w-full flex flex-col items-center justify-center">
                         {showModal ? <AlertDialog open={showModal}>
-
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>Are you absolutely sure about deleting this user ?</AlertDialogTitle>
@@ -360,13 +345,11 @@ const Students = () => {
                                     <AlertDialogAction onClick={() => deleteFuction(data)}>Continue</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
-                        </AlertDialog>
-                            : <></>}
+                        </AlertDialog>: <></>}
                         <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md  ">
                             <h3 className="font-sans text-3xl font-semibold px-3 py-4 mb-10 ">View Students</h3>
 
                             <div className='flex items-end gap-5'>
-                                <button className=' px-8 py-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold mb-10  '>Register Students</button>
                                 <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</button>
 
                                 <div className='flex  flex-auto justify-end'>

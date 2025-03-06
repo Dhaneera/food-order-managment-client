@@ -7,7 +7,7 @@ import ErrorModal from './ErrorModal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCheck, Ticket } from 'lucide-react';
 
-export default function IssueMeal({ mealData, ...props }: any) {
+export default function   IssueMeal({ mealData, ...props }: any) {
   const [issued, setIssued] = useState(false);
   const [showCompletion,setShowCompletion] = useState(false);
   const [isintial, setIsIntial] = useState(false);

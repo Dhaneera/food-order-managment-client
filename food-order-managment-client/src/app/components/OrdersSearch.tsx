@@ -32,6 +32,7 @@ export default function OrdersSearch(props:any) {
       props.setError(error.response.data);
     },
   })
+  
 
   const handleSearch = (e:any) => {
     e.preventDefault();
@@ -77,11 +78,13 @@ export default function OrdersSearch(props:any) {
           Enter Order
         </label>
         <input
+          
           id="search"
           type="text"
           placeholder="Enter Order"
           value={searchOrder}
           onChange={(e) => hanldeChange(e)}
+          disabled={!props.Session} 
           className="w-full ring ring-black  rounded-lg p-3 shadow-sm focus:ring focus:ring-green-200 focus:border-green-500"
         />
         {error && <p className="text-red-500 mt-2">{error}</p>}
@@ -97,6 +100,7 @@ export default function OrdersSearch(props:any) {
         <button
           onClick={(e)=>handleSearch(e)}
           className="w-full bg-green-500 text-white font-medium py-3 rounded-lg shadow-md hover:bg-green-700 transition-all"
+          disabled={!props.Session}
         >
           Search Order
         </button>

@@ -26,6 +26,7 @@ const MealOrder = () => {
   const [date, setDate] = useState(""); // Stores the formatted date string
   const [meal, setMeal] = useState(""); // Stores the meal type (Breakfast, Lunch, Dinner)
   const ref = useRef(""); // Stores the current time string
+  const [session,setSession]=useState(false)
 
 
 
@@ -97,6 +98,10 @@ const MealOrder = () => {
     }
   }
 
+  function handleClickSesstion(e:any) {
+    setSession(!session)
+  }
+
   return errorForModal == '' ?
     (
       <div>
@@ -107,15 +112,38 @@ const MealOrder = () => {
           Current Meal: {meal}
         </p>
         <div className="w-screen mt-56 flex h-1/2 justify-center">
-          <OrdersSearch totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder} />
+          <OrdersSearch Session={session} totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder} />
           <IssueMeal error={errorForModal} order={order} mealData={order} />
         </div>
       </div>
-      <div className="flex gap-3 items-end  justify-end mt-[-5%] max-lg:mt-[-10%]">
-            <Button name="bre" onClick={(e)=>hanldeClick(e)}>Breakfast</Button>
-            <Button name="lun" onClick={(e)=>hanldeClick(e)}>Lunch</Button>
-            <Button name="din" onClick={(e)=>hanldeClick(e)}>Dinner</Button>
-        </div>
+      <div className="flex gap-5 items-end  justify-end mt-[-10%] max-lg:mt-[-10%]">
+      <Button 
+    name="bre" 
+    onClick={(e) => hanldeClick(e)} 
+    className={`${meal === 'Breakfast' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+  >
+    Breakfast
+  </Button>
+  <Button 
+    name="lun" 
+    onClick={(e) => hanldeClick(e)} 
+    className={`${meal === 'Lunch' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+  >
+    Lunch
+  </Button>
+  <Button 
+    name="din" 
+    onClick={(e) => hanldeClick(e)} 
+    className={`${meal === 'Dinner' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+  >
+    Dinner
+  </Button>
+      </div>
+        {session ?<div className=" flex items-end justify-end mt-5 ">
+        <Button className=" size-1 w-72 bg-red-500" onClick={handleClickSesstion}>End Session</Button>
+        </div>:<div className=" flex items-end justify-end mt-5 ">
+        <Button className=" size-1 w-72 bg-green-500" onClick={(e)=>handleClickSesstion(e)}>Start Session</Button>
+        </div>}
       </div>
     ) : (
       <ErrorModal message={errorForModal} setVisible={setErrorForModal} />
