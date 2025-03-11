@@ -15,27 +15,32 @@ const studentRegister = (props: any) => {
     const [userInvalid, setuserInvalid] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [userId, setUserId] = useState<number | null>(null);
+    const [visible, setIsVisible] = useState(true)
 
     const [input, setInput] = useState<{
         studentId: string;
         mail: string;
-        faculity: string;
+        faculty: string;
         gender: string;
         batch: string;
         stream: string;
-        userId: number | null;  
+        userId: number | null;
     }>({
         studentId: "",
         mail: "",
-        faculity: "",
+        faculty: "",
         gender: "",
         batch: "",
         stream: "",
-        userId: null,  
+        userId: null,
     });
+
 
     useEffect(() => {
         const storedUserId = sessionStorage.getItem("userId");
+        if (sessionStorage.getItem("role") == "ROLE_PIRIVEN_STUDENT") {
+            setIsVisible(false)
+        }
         if (storedUserId) {
             setUserId(Number(storedUserId));
             setInput(prev => ({
@@ -45,7 +50,7 @@ const studentRegister = (props: any) => {
         }
     }, []);
 
-    
+
     function handleChange(e: any) {
         setErrors({});
         setInput((prev) => {
@@ -85,7 +90,7 @@ const studentRegister = (props: any) => {
         if (input.studentId == "") newErrors.studentId = "Student ID is required.";
         if (!/^\d{5,10}$/.test(input.studentId)) newErrors.studentId = "Invalid student ID.";
         if (input.mail == "") newErrors.mail = "Mail is required.";
-        if (input.faculity == "") newErrors.faculity = "Faculity is required.";
+        if (input.faculty == "") newErrors.faculity = "Faculity is required.";
         if (input.batch == "") newErrors.batch = "Batch is required.";
         if (input.stream == "") newErrors.stream = "Stream is required.";
         if (input.gender == "") newErrors.gender = " gender is required.";
@@ -136,10 +141,10 @@ const studentRegister = (props: any) => {
                             name="studentId"
                             onChange={handleChange}
                             placeholder='201320142015'
-                            className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.mail ? "border-red-500" : "border-gray-300"
+                            className={`w-full border px-4 py-2 rounded-md shadow-sm ${errors.studentId ? "border-red-500" : "border-gray-300"
                                 }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
                         />
-                        {errors.mail && <p className="text-red-500 text-sm mt-1">{errors.mail}</p>}
+                        {errors.studentId && <p className="text-red-500 text-sm mt-1">{errors.studentId}</p>}
                     </div>
                     <div>
                         <label htmlFor="mail" className="block text-sm font-medium text-gray-700 mb-2">
@@ -157,22 +162,22 @@ const studentRegister = (props: any) => {
                         {errors.mail && <p className="text-red-500 text-sm mt-1">{errors.mail}</p>}
                     </div>
                     <div>
-                        <label htmlFor="faculity" className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="faculty" className="block text-sm font-medium text-gray-700 mb-2">
                             Faculity
                         </label>
                         <input
-                            id="faculity"
-                            value={input.faculity}
+                            id="faculty"
+                            value={input.faculty}
                             onChange={handleChange}
-                            name="faculity"
+                            name="faculty"
                             placeholder='Engineering'
-                            className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.faculity ? "border-red-500" : "border-gray-300"
+                            className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.faculty ? "border-red-500" : "border-gray-300"
                                 }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
                         >
                         </input>
                         {errors.faculity && <p className="text-red-500 text-sm mt-1">{errors.faculity}</p>}
                     </div>
-                    <div>
+                    {visible == true? <div>
                         <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
                             Gender
                         </label>
@@ -189,11 +194,28 @@ const studentRegister = (props: any) => {
                             </option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
+                        </select>
+                        {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
+                    </div>:                    <div>
+                        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                            Gender
+                        </label>
+                        <select
+                            id="gender"
+                            value={input.gender}
+                            onChange={handleChange}
+                            name='gender'
+                            className={`w-full bg-white border px-4 py-2 rounded-md shadow-sm ${errors.gender ? "border-red-500" : "border-gray-300"
+                                }  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none`}
+                        >
+                            <option value="" disabled>
+                                !--- Select Gender --!
+                            </option>
                             <option value="malep">Male-Priest</option>
                             <option value="femalep">Female-Priest</option>
                         </select>
                         {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
-                    </div>
+                    </div>}
                     <div>
                         <label htmlFor="batch" className="block text-sm font-medium text-gray-700 mb-2">
                             Batch/Year

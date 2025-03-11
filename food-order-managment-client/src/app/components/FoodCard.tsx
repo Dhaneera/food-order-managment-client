@@ -36,32 +36,38 @@ const FoodCard = ({
         <div className="flex flex-col">
           <h3 className="font-sans font-medium">{name}</h3>
           <h4>Rs{price.toFixed(2)}</h4>
-        </div>
-        <div className="relative flex-1 flex justify-end">
-
-          <div className="flex justify-end w-24 h-24">
-            <Image
-              src={image}
-              alt={name}
-              className="rounded-lg  -z-50 "
-              width={200}
-              height={200}
-            />
-            <div className='absolute justify-center px-2 m-3 mt-1  rounded-full   bg-[#E6F5E9] text-black  '>
-              {quantity}
-            </div>
-            <div
-              className="absolute mr-[11%] bottom-2   rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer "
+          <div className=' flex gap-3 pt-3'>
+          <div
+              className="rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer "
               onClick={handleDecrease}
             >
               <Minus strokeWidth={1.25} />
-            </div>
+            </div> 
+
             <div
-              className="absolute bottom-2 right-2 rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer"
+              className="  bottom-2  rounded-full flex justify-center items-center h-8 w-8 bg-[#e6f6e9] cursor-pointer"
               onClick={handleIncrease}
             >
               <Plus strokeWidth={1.25} />
             </div>
+          </div>
+
+          
+        </div>
+        <div className="relative flex-1 flex justify-end max-md:justify-center max-md:ml-32">
+
+          <div className="flex justify-end  h-24 ">
+            <Image
+              src={image}
+              alt={name}
+              className="  rounded-lg  -z-50 "
+              width={100}
+              height={200}
+            />
+            <div className='absolute justify-center px-2 m-2 mt-1  rounded-full   bg-[#E6F5E9] text-black  '>
+              {quantity}
+            </div>
+
           </div>
         </div>
       </div>

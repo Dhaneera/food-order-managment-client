@@ -29,11 +29,15 @@ const Login = () => {
       sessionStorage.setItem("status",data.status)  
       if(roles[0] == "ROLE_STAFF" && data.status=='ACTIVE'){
         router.push('/MealOrder')
-      }else if(data.status=='PENDING'){
+      }
+      else if(data.status=='PENDING'){
         router.push('/accessError')
       }
       else{
         router.push('/');
+      }
+      if(roles[0] == "ROLE_PIRIVEN_STUDENT" && data.status == 'ACTIVE'){
+        router.push('/')
       }
       
     },
@@ -125,6 +129,10 @@ const Login = () => {
   function handleClick(e:any): void {
     setInputMail((prev)=>!prev)
     setInputOtpFrom((prev)=>!prev)
+  }
+
+  function handleClickGuest(e:any){
+    router.push("/")
   }
 
   
@@ -220,8 +228,9 @@ const Login = () => {
         >
           Login
         </button>
-        <h2 className="text-sm">Don t have an account click here to <Link href='/register'><span className="text-red-700">Sign Up</span></Link></h2>
-        <p className="text-sm" onClick={(e) =>handleClick(e)}>can't remeber the password don't worry click <span className="text-red-700">Forgot Password</span></p>
+        <h2 className="text-sm max-lg:text-xs">Don t have an account click here to <Link href='/register'><span className="text-red-700">Sign Up</span></Link></h2>
+        <p className="text-sm max-lg:text-xs"  onClick={(e) =>handleClick(e)}>can't remeber the password don't worry click <span className="text-red-700">Forgot Password</span></p>
+        <p className="text-sm max-lg:text-xs " onClick={(e) =>handleClickGuest(e)}>Direct as a  <span className="text-red-700">Guest</span></p>
       </div>
     : <div className="w-[52%] max-md:w-full  h-full flex flex-col justify-center gap-5 items-center">
       <InputWithButton/>

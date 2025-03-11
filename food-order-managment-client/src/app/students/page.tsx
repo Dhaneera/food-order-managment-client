@@ -19,6 +19,8 @@ import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetT
 import Image from 'next/image';
 import { Label } from '@/components/ui/label'
 import statue from '@/../public/login-2.png';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 
 const tableHeader: tableInterface[] = [
@@ -54,12 +56,12 @@ const Students = () => {
     const [data, setData] = useState(-1);
     const [showModal, SetShowModal] = useState(false)
     const [userProfile, setUserProfile] = useState(false);
-    let [mobileNumber,setMobileNumber]=useState("")
+    let [mobileNumber, setMobileNumber] = useState("")
 
     let tableRows: any = []
 
-    
-    const [students, setStudents]:any = useState([]);
+
+    const [students, setStudents]: any = useState([]);
     let [ref, setRef] = useState(-1);
 
 
@@ -100,7 +102,7 @@ const Students = () => {
                 }
 
             ]
-            
+
 
         }
     })
@@ -151,15 +153,15 @@ const Students = () => {
     }
     const { isPending } = useQuery({
         queryKey: ['allStudents', currentPage],
-        queryFn: () => fetchDataForAllStudents(currentPage - 1)
+        queryFn: async () => await fetchDataForAllStudents(currentPage - 1)
     })
 
 
-    const getMutaion=useMutation({
-        mutationKey:[],
-        mutationFn:getStudentById,
-        retry:1,
-        retryDelay:5000
+    const getMutaion = useMutation({
+        mutationKey: [],
+        mutationFn: (userId) => getStudentById(userId),
+        retry: 1,
+        retryDelay: 5000
     })
 
     function profileShow(e: any, userId: any) {
@@ -167,30 +169,33 @@ const Students = () => {
         getMutaion.mutate(userId);
     }
 
-    function getStudentById(mobileNumber: number):any {
-     
+   async function getStudentById(mobileNumber:any) {
+
         try {
-            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getByUsername?username=${mobileNumber}`).then((res)=>{
-                return res.data
-            })
-        } catch (error) {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getByUsername?username=${mobileNumber}`);
+            return res.data;
+        }
+        catch (error) {
             throw error;
         }
-       
+
     }
 
-    function fetchDataForAllStudents(pageNum: any) {
+    async function fetchDataForAllStudents(pageNum: any) {
+        try {
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll/students?page=${pageNum}&size=10`)
+                .then((res: any) => {
+                    setStudents(res?.data?.content)
+                    setTotalPages(res?.data?.totalPages)
+                    return res
+                })
+
+        } catch (error) {
+            console.log(error)
+            return []
+        }
 
 
-        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAll/students?page=${pageNum}&size=10`)
-            .then((res: any) => {
-                setStudents(res?.data?.content)
-                setTotalPages(res?.data?.totalPages)
-                return res
-            })
-            .catch((ex: any) => {
-                return ex;
-            })
 
     }
     const handlePrevious = () => {
@@ -258,13 +263,20 @@ const Students = () => {
         return <Loader />
     }
 
+    function deleteFromDatabase(indexforDelete: number): any {
+        if (indexforDelete !== -1) {
+            axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
+            })
+        }
+    }
 
-    return getMutaion.isPending?(
-        <Loader/>):(
+
+    return getMutaion.isPending ? (
+        <Loader />) : (
         <>
             {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}
             <div className="w-screen flex flex-col">
-            {userProfile == true ? <Sheet open={userProfile} onOpenChange={()=>setUserProfile(prev=>!prev)} >
+                {userProfile == true ? <Sheet open={userProfile} onOpenChange={() => setUserProfile(prev => !prev)} >
                     <SheetContent>
                         <SheetHeader>
                             <SheetTitle>View profile</SheetTitle>
@@ -276,7 +288,7 @@ const Students = () => {
                             <Image
                                 src={statue}
                                 alt="Statue"
-                                className=" ml-24 mt-5  size-40  rounded-2xl"   
+                                className=" ml-24 mt-5  size-40  rounded-2xl"
                             />
                             <div className="grid grid-cols-2 font-sans ">
                                 <Label htmlFor="name" className=" text-pretty text-base">
@@ -327,7 +339,7 @@ const Students = () => {
                         <SheetFooter>
                         </SheetFooter>
                     </SheetContent>
-                </Sheet>: <></>}
+                </Sheet> : <></>}
                 <div className='flex'>
                     <SideBar />
                     <div className="w-full flex flex-col items-center justify-center">
@@ -345,23 +357,23 @@ const Students = () => {
                                     <AlertDialogAction onClick={() => deleteFuction(data)}>Continue</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
-                        </AlertDialog>: <></>}
+                        </AlertDialog> : <></>}
                         <div className="p-6 w-[85%] bg-white   rounded-xl shadow-md  ">
                             <h3 className="font-sans text-3xl font-semibold px-3 py-4 mb-10 ">View Students</h3>
 
-                            <div className='flex items-end gap-5'>
-                                <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</button>
+                            <div className='flex items-end gap-5 mb-10'>
+                                <Button className=' px-8 py-4  font-sans font-semibold ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</Button>
 
                                 <div className='flex  flex-auto justify-end'>
-                                    <div className=' m-12  ring  ring-orange-300 hover:ring-orange-400  active:ring-orange-400     rounded border'>
-                                        <input
+                                    <div className='  mr-5 '>
+                                        <Input
                                             type="text"
                                             name="search"
-                                            placeholder="Search..."
+                                            placeholder="Search For Contact ..."
                                             onChange={(e) => search(e)} />
 
                                     </div>
-                                    <button className=' mt-10  px-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getStudentsList()}> Search Student</button>
+                                    <Button className='  px-4 font-sans font-semibold  ' onClick={() => getStudentsList()}> Search Student</Button>
                                 </div>
 
                             </div>
@@ -404,10 +416,5 @@ const Students = () => {
 export default Students
 
 
-function deleteFromDatabase(indexforDelete: number): any {
-    if (indexforDelete !== -1) {
-        axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
-        })
-    }
-}
+
 

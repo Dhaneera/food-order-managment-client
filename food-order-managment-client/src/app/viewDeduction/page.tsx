@@ -182,9 +182,9 @@ const page = () => {
                             />
                         </PopoverContent>
                     </Popover>
-                    <Button className='mt-5' onClick={handleClick}>Search for Deductions</Button>
+                    <Button className='mt-16' onClick={handleClick}>Search for Deductions</Button>
                     <Button className='mt-3' onClick={handleReport}>Download Deduction Report</Button>
-                    <Button className='mt-3' onClick={handleSingleReport}>Download Single Employee Deduction Report</Button>
+                    <Button className='mt-3 max-lg:py-8' onClick={handleSingleReport}>Download Single Employee<br className='lg:hidden'/> Deduction Report</Button>
                 </div>
                 <div className='w-[60%]'>
                     <div className='bg-white w-full shadow-lg rounded-lg'>

@@ -1,6 +1,20 @@
-import React from 'react';
+"use client"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 
 const Page = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      sessionStorage.clear();
+      router.push("/login");
+    }, 5000);
+
+    return () => clearTimeout(timeout); // Cleanup timeout if component unmounts
+  }, []);
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-lg rounded-2xl p-6 max-w-lg text-center">

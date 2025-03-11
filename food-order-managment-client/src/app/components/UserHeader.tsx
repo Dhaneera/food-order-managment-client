@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -16,7 +16,20 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => 
   const[modal,setModal]=useState(false);
   const [isModalVisible, setModalVisible] = useState(true);
 
-  const { isLoading, isError } = useQuery({
+
+      // const role = sessionStorage.getItem('role')
+      // sessionStorage.getItem("name")||'';
+  
+      //     useEffect(() => {
+      //         if (typeof window !== "undefined") {
+      //              ;
+      //             if (sessionStorage.getItem("name")== undefined ||sessionStorage.getItem("name")=="") {  
+      //                 setName("Guest");
+      //             }
+      //         }
+      //     }, []);
+
+   useQuery({
     queryKey: ['userImage'],
     queryFn: async () => {
       const userId = sessionStorage.getItem('userId');
@@ -43,6 +56,8 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick,sign }:any) => 
     console.log('discard')
     setModal(false)
   }
+
+
 
   return(
   <>

@@ -10,8 +10,11 @@ import Modall from './components/Modall';;
 import SideBarStudent from './components/SideBarStudent';
 import SideBar from './components/SideBar';
 import { Item } from '@radix-ui/react-accordion';
+import { useRouter } from 'next/navigation';
+
 
 const Page = () => {
+
   const [tomorrow, setTomorrow] = useState({ date: 0, month: '' });
   const [dayAfterTomorrow, setDayAfterTomorrow] = useState({ date: 0, month: '' });
   const [selected, setSelected] = useState(true);
@@ -21,7 +24,8 @@ const Page = () => {
   const [mealIds, setMealIds] = useState<any[]>([]);
   const [role, setRole] = useState('');
   const [name, setName] = useState('');
-  const [visible,setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [imageVisible, setImageVisible] = useState(true)
   const isSignIn = useRef("Sign In");
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
@@ -47,10 +51,7 @@ const Page = () => {
     );
   };
 
-  
-
-
-
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -64,7 +65,7 @@ const Page = () => {
     dayAfterTomorrowDate.setDate(today.getDate() + 2);
     const dayAfterTomorrowMonth = dayAfterTomorrowDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
 
-  
+
 
     setTomorrow({
       date: tomorrowDate.getDate(),
@@ -81,14 +82,29 @@ const Page = () => {
       const role = sessionStorage.getItem('role')
       const name = sessionStorage.getItem('name') || '';
       setRole(role || '');
-      setName(name);
+      setName(name || '');
       if (name != '') {
         isSignIn.current = "Sign Out"
       }
+
     }
 
+
   }, []);
-  
+
+  useEffect(() => {
+    if (sessionStorage.getItem("name") == "Guest") {
+      setImageVisible(false)
+    }
+  }, [])
+
+   useEffect(()=>{
+    if (sessionStorage.getItem("status")== "PENDING") {
+        router.push("/accessError")
+    }
+   })
+
+
 
   function handleChangeSelectTomorrow() {
     setSelected(true);
@@ -135,6 +151,8 @@ const Page = () => {
   };
 
 
+
+
   return isModalComplete ? (
 
     <Modall setIsModalComplete={setIsModalComplete}
@@ -142,11 +160,11 @@ const Page = () => {
     />
   ) : (
     <>
-      <div className="md:flex  h-screen ml-[-6%]">
-        <div className=' max-md:flex flex-col md:hidden items-center ml-16 '>
+      <div className="md:flex  h-screen ml-[-6%] max-md:ml-2 max-md:mr-7">
+        <div className=' max-md:flex flex-col md:hidden items-center w-full ml-5  '>
           <Header modalView={setModalVisible} />
           <div className=' flex mt-[-30%] mr-[-70%]'>
-            <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />
+            {imageVisible && <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />}
           </div>
           <Modal
             title="User Settings"
@@ -158,14 +176,14 @@ const Page = () => {
         </div>
         {role != 'ROLE_STAFF' ? <div className=' ml-[5.8%]'><SideBarStudent /></div> : <div className='ml-[5.8%]'><SideBar /></div>}
         <div className="w-full ml-10 mt-10 flex  max-lg:flex-col">
-          <div className="lg:w-[52%] max-lg:align-middle w-full mt-5 ">
-            <h1 className="font-sans font-bold text-3xl">Place Order</h1>
+          <div className="lg:w-[52%] max-lg:align-middle w-full  ">
+            <h1 className="font-sans font-bold text-4xl  mb-10">Place Order</h1>
             <div className="mt-5 gap-5 flex-col flex w-full">
-              <div className="gap-5 flex">
+              <div className="gap-5 flex max-md:gap-6 max-md:mb-10">
                 <button
                   className={`${selected
-                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
-                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
+                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black max-md:w-[40%]'
+                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3  max-md:w-[35%]'
                     }`}
                   onClick={handleChangeSelectTomorrow}
                 >
@@ -173,8 +191,8 @@ const Page = () => {
                 </button>
                 <button
                   className={`${!selected
-                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black'
-                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3'
+                    ? 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3 border-2 border-black  max-md:w-[40%]'
+                    : 'rounded-lg lg:w-[20%] w-[46%] bg-[#faeee6] px-5 py-3  max-md:w-[40%]'
                     }`}
                   onClick={handleChangeSelectDayAfterTomorrow}
                 >
@@ -192,15 +210,15 @@ const Page = () => {
               <CartItem foodDataForBackend={foodDataForBackend} setIsModalComplete={setIsModalComplete} cartItems={cartItems} setMealIds={setMealIds} subtotal={subtotal} />
             </div>
           </div>
-        {visible &&<div className='lg:hidden w-full  justify-center items-center  '>
-              <div className="flex justify-around">
-                <h3 className="font-sans font-thin">Subtotal</h3>
-                <h2 className="font-poppins font-medium">{subtotal?.toFixed(2)}</h2>
-              </div>
-              <div className="flex justify-around pt-4">
-                <h3 className="font-sans font-thin">Grand Total</h3>
-                <h2 className="font-poppins font-bold">{subtotal?.toFixed(2)}</h2>
-              </div>
+          {visible && <div className='lg:hidden w-full  justify-center items-center ml-[-8.5%]  '>
+            <div className="flex justify-around">
+              <h3 className="font-sans font-thin">Subtotal</h3>
+              <h2 className="font-poppins font-medium">{subtotal?.toFixed(2)}</h2>
+            </div>
+            <div className="flex justify-around pt-4 pb-5">
+              <h3 className="font-sans font-thin">Grand Total</h3>
+              <h2 className="font-poppins font-bold">{subtotal?.toFixed(2)}</h2>
+            </div>
             <Button data={cartItems} />
           </div>}
         </div>

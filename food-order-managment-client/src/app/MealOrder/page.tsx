@@ -26,7 +26,7 @@ const MealOrder = () => {
   const [date, setDate] = useState(""); // Stores the formatted date string
   const [meal, setMeal] = useState(""); // Stores the meal type (Breakfast, Lunch, Dinner)
   const ref = useRef(""); // Stores the current time string
-  const [session,setSession]=useState(false)
+  const [session, setSession] = useState(false)
 
 
 
@@ -66,11 +66,6 @@ const MealOrder = () => {
     // Ensure the query runs only when date and meal are set
   );
 
-  if (isLoading) {
-    // return <Loader />;
-  }
-
-
   async function getOrderDetails(date: any, meal: any) {
     try {
 
@@ -88,61 +83,61 @@ const MealOrder = () => {
     return null;
   }
 
-  function hanldeClick(e:any) {
+  function hanldeClick(e: any) {
     if (e.target.name == 'bre') {
       setMeal('Breakfast');
-    }else if (e.target.name == 'lun') {
+    } else if (e.target.name == 'lun') {
       setMeal('Lunch');
-    }else if (e.target.name == 'din') {
+    } else if (e.target.name == 'din') {
       setMeal('Dinner');
     }
   }
 
-  function handleClickSesstion(e:any) {
+  function handleClickSesstion(e: any) {
     setSession(!session)
   }
 
   return errorForModal == '' ?
     (
       <div>
-      <div className="flex h-screen">
-        <Sidebar />
-        <p className="absolute top-3 right-8 font-sans font-bold text-2xl">{date}</p>
-        <p className="absolute top-12 right-8 font-sans font-semibold text-lg">
-          Current Meal: {meal}
-        </p>
-        <div className="w-screen mt-56 flex h-1/2 justify-center">
-          <OrdersSearch Session={session} totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder} />
-          <IssueMeal error={errorForModal} order={order} mealData={order} />
+        <div className="flex h-screen">
+          <Sidebar />
+          <p className="absolute top-3 right-8 font-sans font-bold text-2xl">{date}</p>
+          <p className="absolute top-12 right-8 font-sans font-semibold text-lg">
+            Current Meal: {meal}
+          </p>
+          <div className="w-screen mt-56 flex h-1/2 justify-center max-lg:mt-36">
+            <OrdersSearch Session={session} totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder} />
+            <IssueMeal error={errorForModal} order={order} mealData={order} />
+          </div>
         </div>
-      </div>
-      <div className="flex gap-5 items-end  justify-end mt-[-10%] max-lg:mt-[-10%]">
-      <Button 
-    name="bre" 
-    onClick={(e) => hanldeClick(e)} 
-    className={`${meal === 'Breakfast' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
-  >
-    Breakfast
-  </Button>
-  <Button 
-    name="lun" 
-    onClick={(e) => hanldeClick(e)} 
-    className={`${meal === 'Lunch' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
-  >
-    Lunch
-  </Button>
-  <Button 
-    name="din" 
-    onClick={(e) => hanldeClick(e)} 
-    className={`${meal === 'Dinner' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
-  >
-    Dinner
-  </Button>
-      </div>
-        {session ?<div className=" flex items-end justify-end mt-5 ">
-        <Button className=" size-1 w-72 bg-red-500" onClick={handleClickSesstion}>End Session</Button>
-        </div>:<div className=" flex items-end justify-end mt-5 ">
-        <Button className=" size-1 w-72 bg-green-500" onClick={(e)=>handleClickSesstion(e)}>Start Session</Button>
+        <div className="flex gap-5 items-end  justify-end mt-[-10%] max-lg:mt-[-20%] max-lg:items-center max-lg:justify-center ">
+          <Button
+            name="bre"
+            onClick={(e) => hanldeClick(e)}
+            className={`${meal === 'Breakfast' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+          >
+            Breakfast
+          </Button>
+          <Button
+            name="lun"
+            onClick={(e) => hanldeClick(e)}
+            className={`${meal === 'Lunch' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+          >
+            Lunch
+          </Button>
+          <Button
+            name="din"
+            onClick={(e) => hanldeClick(e)}
+            className={`${meal === 'Dinner' ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+          >
+            Dinner
+          </Button>
+        </div>
+        {session ? <div className=" flex items-end justify-end mt-5  max-lg:justify-center max-lg:items-center ">
+          <Button className="  w-72 bg-red-500" onClick={handleClickSesstion}>End Session</Button>
+        </div> : <div className=" flex items-end justify-end mt-5  max-lg:justify-center max-lg:items-center  ">
+          <Button className="  w-72 bg-green-500" onClick={(e) => handleClickSesstion(e)}>Start Session</Button>
         </div>}
       </div>
     ) : (

@@ -172,8 +172,6 @@ const externalRegister = () => {
                             </option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
-                            <option value="malep">Male-Priest</option>
-                            <option value="femalep">Female-Priest</option>
                         </select>
                         {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
                     </div>

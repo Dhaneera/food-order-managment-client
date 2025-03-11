@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import tableInterface from '../table/TableInteface'
 import TableHeader from '../table/TableHeader'
 import TableRow from '../table/TableRow'
@@ -14,10 +14,18 @@ import Loader from "../components/Loader";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import axios from 'axios'
 import SideBarStudent from '../components/SideBarStudent'
+import UserHeader from '../components/UserHeader'
+import Modal from '../components/Modal'
+import { Button } from '@/components/ui/button'
 
 const Page = () => {
     const rowCountPerPage = 10;
     let name: string = '';
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [imageVisible, setImageVisible] = useState(true)
+    const isSignIn = useRef("Sign In");
+    const handleOpenModal = () => setModalVisible(true);
+    const handleCloseModal = () => setModalVisible(false);
     const [page, setPage] = useState(1);
     const [moreData, setMoreData] = useState({
         orderId: -1,
@@ -45,7 +53,7 @@ const Page = () => {
             id: obj.id,
             price: obj.price,
             orderRecDate: obj.orderedAt,
-            status: obj.status
+            status: obj.status!
         })
     })
 
@@ -187,11 +195,11 @@ const Page = () => {
             </div>
             <div className=' flex' h-screen>
                 <SideBarStudent />
-                <div className='w-full flex justify-center max-md:hidden mb-40'>
+                <div className='w-full flex justify-center max-md:hidden mb-40 mt-16'>
                     <div className="p-6 w-[85%] max-lg:w-[95%] bg-white h-full rounded-lg shadow-md ">
                         <div className='flex justify-between px-2 py-4'>
                             <h3 className='font-sans text-3xl font-semibold px-3 py-2'>My Orders</h3>
-                            <button className=' px-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold' onClick={navigateToPlaceOrder}>Place Order</button>
+                            <Button className='font-sans font-semibold' onClick={navigateToPlaceOrder}>Place Order</Button>
                         </div>
                         {data?.content.length == 0 ?
                             <div className='w-full h-96 flex justify-center items-center'><p className='text-center text-2xl font-bold'>No Orders To Show</p></div> :
@@ -212,7 +220,20 @@ const Page = () => {
 
             {/* mobile view */}
             <div className='md:hidden w-screen h-screen px-3 flex flex-col'>
-                <h3 className='text-3xl font-poppins font-semibold my-3'>My Orders</h3>
+                <div className=' max-md:flex flex-col md:hidden items-center w-full  mb-3  '>
+                    <Header modalView={setModalVisible} />
+                    <div className=' flex mt-[-28%] mr-[-70%]'>
+                        {imageVisible && <UserHeader onSettingsClick={handleOpenModal} sign={isSignIn.current} />}
+                    </div>
+                    <Modal
+                        title="User Settings"
+                        isVisible={isModalVisible}
+                        onClose={handleCloseModal}
+                        onDiscard={() => setModalVisible(false)}
+                        onSubmit={() => setModalVisible(false)}
+                    />
+                </div>
+                <h3 className='text-4xl font-poppins font-semibold my-3 ml-2 mb-10'>My Orders</h3>
                 <div className='w-full h-full  flex flex-col gap-1'>
                     {ordersMobileMock.map((ord, index) => {
                         return (

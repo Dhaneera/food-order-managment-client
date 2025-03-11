@@ -47,8 +47,8 @@ export function InputWithButton() {
         <>
             {inputOtpFrom ? (
                 <InputOTPForm mail={email} />) : (
-                <div className="md:flex w-screen md:justify-center  max-w-sm items-center space-x-2 max-md:ml-[12%]">
-                    <h1 className="text-2xl font-bold flex-none mb-10 md:absolute md:mb-40 md:ml-2  ml-16  font-serif">Reset Password</h1>
+                <div className="md:flex w-screen md:justify-center  max-w-sm items-center space-x-2 max-md:ml-[20%]">
+                    <h1 className="text-2xl font-bold flex-none mb-10 md:absolute md:mb-40 md:ml-4  ml-12  font-serif">Reset Password</h1>
 
                     <Input className="w-full max-md:w-3/4"
                         type="email"
@@ -61,10 +61,10 @@ export function InputWithButton() {
                        
                         
                     />
-                    <Button className=" hover:bg-slate-600 max-md:mt-5 max-md:w-3/4" onClick={handleClick} type="submit">
+                    <Button className=" hover:bg-slate-600 max-md:mt-8 max-md:w-3/4" onClick={handleClick} type="submit">
                         Send OTP Code
                     </Button>
-                    {error && <p className=" absolute mt-20 text-red-500 text-sm">{error}</p>}
+                    {error && <p className=" absolute max-md:mt-[-60]  md:mt-20  text-red-500 text-sm">{error}</p>}
                 </div>)}
         </>
     );

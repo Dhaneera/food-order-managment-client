@@ -13,6 +13,7 @@ import Loader from './Loader';
 import PlaceOrderAlert from './PlaceOrderAlert';
 import { set } from 'date-fns';
 import { number } from 'zod';
+import Modall from './Modall';
 
 const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) => {
   const router = useRouter()
@@ -21,15 +22,17 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
   const [alert, setAlert] = useState(false);
   const [mealIds, setMealIds] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [ordeAlert,setOrderAlert] = useState(false);
 
   const mutation = useMutation({
-    mutationKey: [],
+    mutationKey: ['placeOrder'],
     mutationFn: (): any => placeOrder(foodDataForBackend),
     onSuccess: (data) => {
       setAlert(true);
       setTimeout(() => {
         window.location.reload();
-      }, 4000);
+      }, 6000);
+
     },
 
     retry: 1,
@@ -38,10 +41,12 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
 
  
 
-  function placeOrder(data: any) {
-    return axios.post(process.env.NEXT_PUBLIC_BASE_URL + '/api/orders/create', data)
+  function placeOrder(data: any){
+    debugger
+     axios.post(process.env.NEXT_PUBLIC_BASE_URL+'/api/orders/create', data)
       .then((response) => {
         setMealIds(response.data);
+        setOrderAlert(true)
         return response;
       })
       .catch((error) => {
@@ -61,23 +66,32 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
   }
 
 
-  function handleOnClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+  function handleOnClick(e:any) {
     debugger
     e.preventDefault();
     setError(false);
+
+
+
     if (userName.length < 10) {
+      console.log("Error: Username too short");
       setError(true);
+
     } else {
-      debugger
+
       foodDataForBackend.createdBy = userName;
       foodDataForBackend.role = "Guest"
+    
       mutation.mutate();
+      setState(false)
+      
     }
-  }
 
+  }
+  
   return subtotal != 0 && state == false ? (
     <div className='flex'>
-      {alert && <div className=' absolute mt-[-4%] ml-[26%] '><PlaceOrderAlert mealIds={mealIds} /></div>}
+      {alert && <div className=' absolute mt-[-4%]   ml-[20%]  '><PlaceOrderAlert mealIds={mealIds} /></div>}
       <div className="w-full h-full px-3 flex gap-2 flex-col py-10 ">
         {mutation.isPending && <Loader />}
         {cartItems?.map((item: any, index: any): any => (
@@ -89,9 +103,7 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
               <Image src={img} alt={item.name} className="w-24 h-24" />
               <p>{item.name}</p>
               <h3 className="px-1 font-medium">{`${Number(item?.price * item.quantity)?.toFixed(2)}`}</h3>
-            </div>
-          ) : (<div key={index}></div>)
-
+            </div>) : (<div key={index}></div>)
         ))}
         <div className="w-full border-t-2 flex flex-col mt-6">
           <div className="flex justify-around pt-4">
@@ -107,7 +119,6 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
           </div>
         </div>
       </div>
-      
     </div>
 
   ) : state == true ? (
@@ -135,9 +146,9 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
             <Btn type="submit" onClick={(e) => handleOnClick(e)}>Place Order</Btn>
           </DialogFooter>
         </DialogContent>
+        
       </Dialog>
     </>
-
   ) : (
     <div className="w-full h-full flex justify-center items-center">
       <h1 className="font-sans text-3xl font-semibold">No items in cart</h1>
@@ -154,5 +165,3 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
   }
 };
 export default CartItem;
-
-

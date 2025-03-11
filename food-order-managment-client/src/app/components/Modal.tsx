@@ -40,7 +40,9 @@ const Modal = ({ title, isVisible, onClose, onDiscard, onSubmit }:any) => {
   };
 
   const mutation = useMutation({
+
     mutationFn: (): any => {
+      debugger
       const formData = new FormData();
       formData.append('file', image);
       formData.append("name", name);

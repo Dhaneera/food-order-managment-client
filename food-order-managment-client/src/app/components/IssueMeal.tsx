@@ -6,6 +6,7 @@ import profile from '../../../public/file.svg';
 import ErrorModal from './ErrorModal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCheck, Ticket } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function   IssueMeal({ mealData, ...props }: any) {
   const [issued, setIssued] = useState(false);
@@ -124,16 +125,16 @@ export default function   IssueMeal({ mealData, ...props }: any) {
           <span>{mealData.quantity}</span>
         </div>
 
-        <button
+        <Button
           onClick={(e) => handleIssueOrder(e)}
           disabled={issued}
-          className={`w-full py-3 rounded-lg text-lg font-medium ${issued
+          className={` lg:py-3 lg:px-20 rounded-lg text-lg font-medium ${issued
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-green-100 text-green-600 hover:bg-green-200'
             } transition-all`}
         >
           {issued ? 'Order Issued' : 'Issue Order'}
-        </button>
+        </Button>
       </div>
     </>
   );

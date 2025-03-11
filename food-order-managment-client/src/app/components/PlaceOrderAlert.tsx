@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 export default function PlaceOrderAlert({ mealIds }: { mealIds: string[] }) {
   const [visible, setVisible] = useState(true);
 
+  
+
   useEffect(() => {
     const timer = setTimeout(() => setVisible(false), 5000); // Auto-hide after 5 seconds
     return () => clearTimeout(timer);

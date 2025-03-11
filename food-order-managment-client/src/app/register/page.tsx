@@ -24,6 +24,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [userInvalid, setuserInvalid] = useState(false);
+  const [status,setStatus] = useState("")
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -44,24 +45,34 @@ const RegisterPage = () => {
     mutationFn: registerAxios,
     mutationKey: ["register"],
     onSuccess: (data: any) => {
-      debugger
-      const { id, roles } = data.data;
+      const { id, roles ,status} = data.data;
       setPhoneNumber("");
       setName("");
       setPassword("");
       setRole("");
+      setStatus("");
       setErrors({});
 
       sessionStorage.setItem("userId", id.toString());
       sessionStorage.setItem("role", roles[0]?.name || ""); 
+
+      if(sessionStorage.getItem("role")=="ROLE_STAFF"||sessionStorage.getItem("role")=="ROLE_PIRIVEN_STUDENT"){
+        setStatus("PENDING")
+      }
+      
       sessionStorage.setItem("name",phoneNumber);
+      sessionStorage.setItem("status",status)
+
+    
 
     
       if(sessionStorage.getItem("role")=="ROLE_STAFF"){
         router.push('/internalStaffRegister');
-      }else if(sessionStorage.getItem("role")=="ROLE_STUDENT"){
+      }else if(sessionStorage.getItem("role")=="ROLE_STUDENT"||"ROLE_PIRIVEN_STUDENT"){
         router.push('/studentRegister');
       }
+
+      
     },
     onError: () => {
       setuserInvalid(true);
@@ -172,7 +183,7 @@ const RegisterPage = () => {
           >
             {isLoading && " Signing UpDirect to next " || "Direct to next page"}
           </button>
-          <h2 className="text-sm ml-24"> Have an account click here to <Link href='/login'><span className="text-red-700">Sign In</span></Link></h2>
+          <h2 className="text-sm md:ml-24 max-md:ml-2"> Have an account click here to <Link href='/login'><span className="text-red-700">Sign In</span></Link></h2>
         </form>
       </div>
     </div>
