@@ -12,6 +12,12 @@ import Loader from '../components/Loader';
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { setDate } from 'date-fns';
+import { AlertDialog } from '@radix-ui/react-alert-dialog'
+import { AlertDescription } from '@/components/ui/alert'
+import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { promises } from 'dns';
 // import statue from '@/../public/login-2.png';
 
 const Page = () => {
@@ -25,6 +31,8 @@ const Page = () => {
     const [isAllApprovedusers, setIsAllApprovedUsers] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [userProfile, setUserProfile] = useState(false);
+    const [showModal, SetShowModal] = useState(false)
+    const [info, setInfo] = useState(-1);
 
 
     const statusChangeMutation = useMutation({
@@ -32,8 +40,6 @@ const Page = () => {
         mutationFn: () => changeStatus(updateRef.current),
         onSuccess: () => window.location.reload()
     })
-
-
 
 
     function changeStatus(index: any): any {
@@ -87,7 +93,7 @@ const Page = () => {
                     },
                     {
                         isButton: 'icon',
-                        text: <Trash2 width={100} className='ml-[-20%]' onClick={() => deleteFuction(obj.id)} />,
+                        text: <Trash2 width={100} className='ml-[-20%]' onClick={() => deleteModalActivate(obj.id)} />,
                         style: 'flex flex-row mt-3'
                     },
                 ],
@@ -103,10 +109,17 @@ const Page = () => {
     }
 
     const deleteMutation = useMutation({
-        mutationFn: deleteFromDatabase(ref),
-        mutationKey: [tableRows],
+        mutationFn:()=> deleteFromDatabase(ref),
+        mutationKey: [data],
+        onSuccess:()=>{
+            window.location.reload();
+        }
 
     })
+
+    if (deleteMutation.isPending) {
+        <Loader></Loader>
+    }
 
     const getMutaion=useMutation({
         mutationKey:[],
@@ -120,13 +133,19 @@ const Page = () => {
 
     function deleteFuction(index: number) {
         setRef(index);
-        if (ref != -1) {
+        debugger
+        
             deleteMutation.mutate()
             tableRows.pop();
-        }
+        
+        SetShowModal(false)
+        router.refresh();
     }
 
-
+    function deleteModalActivate(obj:any){
+        setInfo(obj)
+        SetShowModal(true);
+    }
 
 
     // Navigate to another page
@@ -238,7 +257,16 @@ const Page = () => {
        
     }
 
-    console.log(data)
+
+    async function deleteFromDatabase(indexforDelete: number){
+        if (indexforDelete !== -1) {
+            const res = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
+            })
+            return res;
+        }
+        
+    }
+
     return getMutaion.isPending?(
         <Loader/>):(
         <>
@@ -315,13 +343,28 @@ const Page = () => {
                 <div className="flex">
                     <SideBar />
                 </div>
-                <div className="w-full flex flex-col items-center">
+                <div className="w-full flex flex-col items-center justify-center">
+                {showModal ? <AlertDialog open={showModal}>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure about deleting this user ?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete this account
+                                        and remove data from our servers.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel onClick={() => SetShowModal(false)}>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => deleteFuction(info)}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>: <></>}
                     <div className="p-6 w-[85%] bg-white rounded-xl shadow-md">
                         <h3 className="font-sans text-3xl font-semibold px-3 py-4">
                             View All Employees
                         </h3>
                         <div className='flex items-end gap-5'>
-                            <button className=' px-8 py-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getEmployeesforAppoval()}>{isAllApprovedusers ? 'Approve Employee' : 'All Employees'}</button>
+                            <Button className=' px-8 py-4 rounded-2x font-sans font-semibold mb-10  ' onClick={() => getEmployeesforAppoval()}>{isAllApprovedusers ? 'Approve Employee' : 'All Employees'}</Button>
 
                             <div className='flex  flex-auto justify-end'>
                                 <div className=' m-12  ring  ring-orange-300 hover:ring-orange-400  active:ring-orange-400     rounded border'>
@@ -332,7 +375,7 @@ const Page = () => {
                                         onChange={(e) => search(e)} />
 
                                 </div>
-                                <button className=' mt-10  px-4 rounded-2xl bg-[#e6e6f6] font-sans font-semibold mb-10  ' onClick={() => getEmployeeList()}> Search Employee</button>
+                                <Button className=' mt-10   font-sans font-semibold mb-10  ' onClick={() => getEmployeeList()}> Search Employee</Button>
                             </div>
 
                         </div>
@@ -387,13 +430,7 @@ const Page = () => {
 
 export default Page;
 
-function deleteFromDatabase(indexforDelete: number): any {
-    if (indexforDelete !== -1) {
-        axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
-            
-        })
-    }
-}
+
 
 
 

@@ -12,6 +12,7 @@ import MobileCard from '../table/MobileCard'
 import { orderMobile } from '../orders/order'
 import SideBar from '../components/SideBar'
 import Loader from '../components/Loader'
+import { Button } from '@/components/ui/button'
 
 const Page = () => {
     const rowCountPerPage = 10;
@@ -117,9 +118,9 @@ const Page = () => {
                 </div>
                 <div className='w-full flex justify-center max-md:hidden'>
                     <div className="p-6 w-[85%] max-lg:w-[95%] bg-white h-full rounded-lg shadow-md ">
-                        <div className='flex justify-between px-2 py-4'>
-                            <h3 className='font-sans text-3xl font-semibold px-3 py-2'>View All Orders</h3>
-                            <button className=' px-4 rounded-2xl bg-[#e6f6e9] font-sans font-semibold' onClick={navigateToPlaceOrder}>Place Order</button>
+                        <div className='flex justify-between px-2 py-4 mb-10'>
+                            <h3 className='font-sans text-4xl font-semibold'>View All Orders</h3>
+                            <Button className='font-sans font-semibold' onClick={navigateToPlaceOrder}>Place Order</Button>
                         </div>
                         {data?.content.length == 0 ?
                             <div className='w-full h-96 flex justify-center items-center'><p className='text-center text-2xl font-bold'>No Orders To Show</p></div> :
