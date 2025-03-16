@@ -18,14 +18,16 @@ import { AlertDialog } from '@radix-ui/react-alert-dialog'
 import { AlertDescription } from '@/components/ui/alert'
 import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { promises } from 'dns';
+
 // import statue from '@/../public/login-2.png';
 
 const Page = () => {
+
     const rowCountPerPage = 5;
     const [page, setPage] = useState(0);
     const [tableRows, setTableRows] = useState<any[]>([]);
     let [ref, setRef] = useState(-1);
-    let [mobileNumber,setMobileNumber]=useState("")
+    let [mobileNumber, setMobileNumber] = useState("")
     const updateRef = useRef(0);
     const [visible, setVisible] = useState(false)
     const [isAllApprovedusers, setIsAllApprovedUsers] = useState(false);
@@ -33,12 +35,13 @@ const Page = () => {
     const [userProfile, setUserProfile] = useState(false);
     const [showModal, SetShowModal] = useState(false)
     const [info, setInfo] = useState(-1);
+    const [userIndividual, setuserIndividual]: any = useState(null);
 
 
     const statusChangeMutation = useMutation({
         mutationKey: [tableRows, 'status'],
         mutationFn: () => changeStatus(updateRef.current),
-        onSuccess: () => window.location.reload()
+
     })
 
 
@@ -46,6 +49,57 @@ const Page = () => {
         axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/status/change/${index}`)
 
     }
+
+    const approvalGetMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/type?page=0&size=10`, {
+                type: "staff",
+                status: "Pending"
+            });
+            console.log(response)
+            return response.data;
+        },
+        onSuccess: (data) => {
+            if (data?.content?.length) {
+                const object = data.content[0];
+                setTableRows([{
+                    style: '',
+                    cellData: [
+                        {
+                            isButton: 'Complete',
+                            text: object.name,
+                            style: '',
+                        },
+                        {
+                            isButton: '',
+                            text: String(object.username),
+                            style: 'py-8',
+                            click: (e: any) => profileShow(e, object.userId)
+                        },
+                        {
+                            isButton: [object.status === "ACTIVE" ? 'Complete' : object.status === "PENDING" ? 'Pending' : 'Rejected'],
+                            clickEvent: (e: any) => changeStatusOfEmployees(e, object.id),
+                            text: object.status,
+                            style: ''
+                        },
+                        {
+                            isButton: 'icon',
+                            text: <Trash2 width={100} className='ml-[-20%]' onClick={() => deleteFuction(object.id)} />,
+                            style: 'flex flex-row mt-3'
+                        },
+                    ],
+                }]);
+            }
+        },
+        onError: (error) => {
+            console.error("Error fetching data:", error);
+        }
+    });
+
+
+
+
+
 
 
     const router = useRouter();
@@ -56,9 +110,9 @@ const Page = () => {
         queryFn: async () => {
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getAllEmployees?page=${page}&size=${rowCountPerPage}`
-               
+
             );
-            console.log(response.data)
+
             return response.data;
 
         },
@@ -109,9 +163,9 @@ const Page = () => {
     }
 
     const deleteMutation = useMutation({
-        mutationFn:()=> deleteFromDatabase(ref),
+        mutationFn: () => deleteFromDatabase(ref),
         mutationKey: [data],
-        onSuccess:()=>{
+        onSuccess: () => {
             window.location.reload();
         }
 
@@ -121,28 +175,28 @@ const Page = () => {
         <Loader></Loader>
     }
 
-    const getMutaion=useMutation({
-        mutationKey:[],
-        mutationFn:getEmployeeById,
-        retry:1,
-        retryDelay:5000
+    const getMutaion = useMutation({
+        mutationKey: [],
+        mutationFn: getEmployeeById,
+        retry: 1,
+        retryDelay: 5000
     })
 
-    
+
 
 
     function deleteFuction(index: number) {
         setRef(index);
         debugger
-        
-            deleteMutation.mutate()
-            tableRows.pop();
-        
+
+        deleteMutation.mutate()
+        tableRows.pop();
+
         SetShowModal(false)
         router.refresh();
     }
 
-    function deleteModalActivate(obj:any){
+    function deleteModalActivate(obj: any) {
         setInfo(obj)
         SetShowModal(true);
     }
@@ -180,9 +234,20 @@ const Page = () => {
 
 
     function getEmployeesforAppoval(): void {
-        setIsAllApprovedUsers((prev) => !prev)
-        statusChangeMutation.mutate();
+        setIsAllApprovedUsers((prev) => {
+            const newApprovalStatus = !prev;
+            
+            approvalGetMutation.mutate();
+    
+            if (newApprovalStatus == false) {
+                // Reload the page when approval status changes
+                window.location.reload();
+            }
+    
+            return newApprovalStatus;
+        });
     }
+
 
     function getEmployeeList(): any {
         serachEmployeeMutaion.mutate()
@@ -196,7 +261,7 @@ const Page = () => {
     function fetchDataForSearchedEmployees(page: number, userName: any): any {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/serachEmployees?username=${userName}&page=${page}&size=${rowCountPerPage}`)
             .then((res) => {
-              
+
                 const object = res.data.content[0];
                 setTableRows([{
                     style: '',
@@ -210,7 +275,7 @@ const Page = () => {
                             isButton: '',
                             text: String(object.username),
                             style: 'py-8',
-                            click:(e:any)=>profileShow(e, object.userId)
+                            click: (e: any) => profileShow(e, object.userId)
 
                         },
                         {
@@ -245,34 +310,35 @@ const Page = () => {
         getMutaion.mutate(userId);
     }
 
-    function getEmployeeById(mobileNumber: number):any {
-     
+    function getEmployeeById(mobileNumber: number): any {
+
         try {
-            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getByUsername?username=${mobileNumber}`).then((res)=>{
-                return res.data
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/getByUsername?username=${mobileNumber}`).then((res) => {
+                setuserIndividual(res.data);
+
             })
         } catch (error) {
             throw error;
         }
-       
+
     }
 
 
-    async function deleteFromDatabase(indexforDelete: number){
+    async function deleteFromDatabase(indexforDelete: number) {
         if (indexforDelete !== -1) {
             const res = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/delete/${indexforDelete}`).then((res: any) => {
             })
             return res;
         }
-        
+
     }
 
-    return getMutaion.isPending?(
-        <Loader/>):(
+    return getMutaion.isPending ? (
+        <Loader />) : (
         <>
             {visible ? <ConfirmationModal clickEvent={statusChangeMutation.mutate} setVisible={setVisible} /> : <></>}
             <div className="flex items-center">
-                {userProfile == true ? <Sheet open={userProfile} onOpenChange={()=>setUserProfile(prev=>!prev)} >
+                {userProfile == true ? <Sheet open={userProfile} onOpenChange={() => setUserProfile(prev => !prev)} >
                     <SheetContent>
                         <SheetHeader>
                             <SheetTitle>View profile</SheetTitle>
@@ -281,58 +347,46 @@ const Page = () => {
                             </SheetDescription>
                         </SheetHeader>
                         <div className="grid  gap-6  ">
-                            <Image
-                                src={data.content[0].imageStore}
-                                alt="Statue"
-                                className=" ml-24 mt-5  size-40  rounded-2xl"
-                            />
-                            <div className="grid grid-cols-2 font-sans ">
+                            <div className="grid grid-cols-2 mt-4 font-sans ">
                                 <Label htmlFor="name" className=" text-pretty text-base">
                                     NIC
                                 </Label>
-                                <h2 id='name' className='col-span-3 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.nic}</h2>
+                                <h2 id='name' className='col-span-3 text-gray-700 font-thin'>{userIndividual?.username}</h2>
 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className=" text-pretty text-base">
                                     Name
                                 </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].name}</h2>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{userIndividual?.name}</h2>
 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className=" text-pretty text-base">
-                                    Gender
+                                    Role
                                 </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.gender}</h2>
-
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-2">
-                                <Label htmlFor="name" className=" text-pretty text-base">
-                                    Department
-                                </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].moreEmpInfo.department}</h2>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{userIndividual?.roles[0].name.toString().replaceAll('_', ' ')}</h2>
 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className=" text-pretty text-base">
                                     Status
                                 </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].status}</h2>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{userIndividual?.status}</h2>
 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className="  text-pretty text-base">
                                     Mobile
                                 </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].username}</h2>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{userIndividual?.username}</h2>
 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-2">
                                 <Label htmlFor="name" className="   text-pretty text-base">
                                     Mail
                                 </Label>
-                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{data.content[0].mail}</h2>
+                                <h2 id='name' className='col-span-4 text-gray-700 font-thin'>{userIndividual?.mail}</h2>
 
                             </div>
                         </div>
@@ -344,30 +398,34 @@ const Page = () => {
                     <SideBar />
                 </div>
                 <div className="w-full flex flex-col items-center justify-center">
-                {showModal ? <AlertDialog open={showModal}>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure about deleting this user ?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete this account
-                                        and remove data from our servers.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel onClick={() => SetShowModal(false)}>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => deleteFuction(info)}>Continue</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>: <></>}
+                    {showModal ? <AlertDialog open={showModal}>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure about deleting this user ?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete this account
+                                    and remove data from our servers.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel onClick={() => SetShowModal(false)}>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => deleteFuction(info)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog> : <></>}
                     <div className="p-6 w-[85%] bg-white rounded-xl shadow-md">
                         <h3 className="font-sans text-3xl font-semibold px-3 py-4">
                             View All Employees
                         </h3>
                         <div className='flex items-end gap-5'>
-                            <Button className=' px-8 py-4 rounded-2x font-sans font-semibold mb-10  ' onClick={() => getEmployeesforAppoval()}>{isAllApprovedusers ? 'Approve Employee' : 'All Employees'}</Button>
+                            <Button
+                                className=' font-sans font-semibold mb-10  '
+                                onClick={() => getEmployeesforAppoval()}>
+                                {isAllApprovedusers ? 'Approve Employee' : 'All Employees'}
+                            </Button>
 
                             <div className='flex  flex-auto justify-end'>
-                                <div className=' m-12  ring  ring-orange-300 hover:ring-orange-400  active:ring-orange-400     rounded border'>
+                                <div className=' m-12  ring ring-black     rounded border'>
                                     <input
                                         type="text"
                                         name="search"
@@ -375,7 +433,7 @@ const Page = () => {
                                         onChange={(e) => search(e)} />
 
                                 </div>
-                                <Button className=' mt-10   font-sans font-semibold mb-10  ' onClick={() => getEmployeeList()}> Search Employee</Button>
+                                <Button className=' mt-10  font-sans font-semibold max-lg: mr-[10%]  ' onClick={() => getEmployeeList()}> Search Employee</Button>
                             </div>
 
                         </div>

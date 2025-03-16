@@ -70,7 +70,7 @@ const Students = () => {
             style: '',
             cellData: [
                 {
-                    isButton: '',
+                    isButton: 'Complete',
                     text: obj.name,
                     style: '',
                     click: (e: any) => profileShow(e, obj.name)
@@ -357,7 +357,7 @@ const Students = () => {
                                 <Button className=' font-sans font-semibold mb-10  ' onClick={() => getStudentsforAppoval()}>{isAllApprovedusers ? 'Approve Students' : 'All Students'}</Button>
 
                                 <div className='flex  flex-auto justify-end'>
-                                    <div className=' m-12  py-1     rounded border'>
+                                    <div className=' m-12    ring ring-black  rounded border'>
                                         <input
                                             type="text"
                                             name="search"

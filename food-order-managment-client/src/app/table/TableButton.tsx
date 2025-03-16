@@ -8,6 +8,7 @@ const TableButton = (props:any) => {
   )
 
   function clickEvent(e:any) {
+    debugger
      props.onClick();
   }
 }

@@ -5,7 +5,7 @@ import TableCellWithIcon from './TableCellWithIcon'
 
 const TableRow = ({ cellData, ...props }: any) => {
     return (
-        <tr className={`text-sm text-gray-700   border-b-2 hover:bg-gray-50 max-h-1/2 ${props.styles}`} onClick={(e)=>props.onClick(e)} onDoubleClick={(e) => props.doubleClick(cellData[0].text)}>
+        <tr className={`text-sm text-gray-700   border-b-2 hover:bg-gray-50 max-h-1/2 ${props.styles}`}  onDoubleClick={(e) => props.doubleClick(cellData[0].text)}>
             {cellData?.map((key: any, index: any) => {
                 if (key.isButton == 'Complete') {
                     return (
