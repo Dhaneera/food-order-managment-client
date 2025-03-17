@@ -107,7 +107,7 @@ const Page = () => {
             }
                 , {
                 isButton: '',
-                text: obj.orderedAt,
+                text: obj.orderedAt.split('T')[0],
                 style: ''
             },
             {
