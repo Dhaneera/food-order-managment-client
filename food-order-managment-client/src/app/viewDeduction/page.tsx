@@ -232,7 +232,6 @@ const page = () => {
                                         </Document>
 
                                     </PDFViewer>
-                                    <button className='mt-4 p-2 bg-red-500 text-white rounded'>Download</button>
                                     <button className='mt-4 p-2 bg-black text-white rounded' onClick={() => setShowReport(false)}>Close</button>
                                 </div>
                             </div>

@@ -41,12 +41,17 @@ const Page = () => {
     const statusChangeMutation = useMutation({
         mutationKey: [tableRows, 'status'],
         mutationFn: () => changeStatus(updateRef.current),
+        onSuccess: () => {
+            window.location.reload();
+        }
 
     })
 
 
     function changeStatus(index: any): any {
-        axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/status/change/${index}`)
+        const res =axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/status/change/${index}`).then((res)=>(
+            res=res.data
+        ))
 
     }
 

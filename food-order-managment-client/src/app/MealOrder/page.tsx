@@ -107,7 +107,7 @@ const MealOrder = () => {
             Current Meal: {meal}
           </p>
           <div className="w-screen mt-56 flex h-1/2 justify-center max-lg:mt-36">
-            <OrdersSearch Session={session} totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder} />
+            <OrdersSearch Session={session} meal={meal} totalOrders={totalOrders} completedOrders={completedOrders} error={errorForModal} setError={setErrorForModal} setOrderData={setOrder} />
             <IssueMeal error={errorForModal} order={order} mealData={order} />
           </div>
         </div>

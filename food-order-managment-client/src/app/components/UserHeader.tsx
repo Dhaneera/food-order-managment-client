@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { useQuery } from '@tanstack/react-query';
+import profile from '../../../public/profileImage.jpg'
 import axios from 'axios';
-// import profile from '../../../public/profileImage.jpg';
 import Modal from './Modal';
 
 interface UserHeaderProps {
@@ -12,7 +12,7 @@ interface UserHeaderProps {
 }
 
 const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick, sign }: any) => {
-  const [img, setImage] = useState<string | StaticImageData>('/defaultProfile.jpg'); // Use a default image
+  const [img, setImage] = useState<string | StaticImageData>(profile); // Use a default image
   const [modal, setModal] = useState(false);
   const [isModalVisible, setModalVisible] = useState(true);
 
@@ -32,10 +32,14 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick, sign }: any) =
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && data.byteLength>0) {
       const blob = new Blob([data], { type: 'image/jpeg' });
       const profileImage = URL.createObjectURL(blob);
+      
       setImage(profileImage);
+    }else{
+      debugger
+      setImage(profile);
     }
   }, [data]);
 
@@ -52,7 +56,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onSettingsClick, sign }: any) =
       <div className="mt-[100%] flex mb-8">
         <button id="avatarButton" type="button" onClick={handleClick} className="w-10 h-10 rounded-full cursor-pointer">
           <Image
-            src={typeof img === 'string' ? img : '/defaultProfile.jpg'}
+            src={img}
             alt="User dropdown"
             width={40}
             height={40}

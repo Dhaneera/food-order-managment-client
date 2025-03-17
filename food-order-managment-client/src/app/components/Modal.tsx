@@ -2,6 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 interface ModalProps {
@@ -14,6 +15,7 @@ interface ModalProps {
 
 const Modal = ({ title, isVisible, onClose, onDiscard, onSubmit }:any) => {
   const [name, setName] = useState('');
+  const router = useRouter();
   const [contact, setContact] = useState('');
   const [image, setImage]: any = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -51,11 +53,16 @@ const Modal = ({ title, isVisible, onClose, onDiscard, onSubmit }:any) => {
           "Content-Type": "multipart/form-data", 
         },
       });
+      return response;
     },
-    mutationKey: [image]
+    mutationKey: [image],
+    onSuccess:()=>{
+      window.location.reload();
+    }
   })
   const handleSubmit = () => {
     mutation.mutate();
+    
   };
 
   if (!isVisible) return null;

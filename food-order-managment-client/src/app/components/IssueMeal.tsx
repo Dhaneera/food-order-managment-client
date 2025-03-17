@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Image, { StaticImageData } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import profile from '../../../public/file.svg';
+import profile from '../../../public/profileImage.jpg';
 import ErrorModal from './ErrorModal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCheck, Ticket } from 'lucide-react';

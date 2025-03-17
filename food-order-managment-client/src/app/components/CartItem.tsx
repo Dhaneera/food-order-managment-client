@@ -123,7 +123,7 @@ const CartItem = ({ cartItems, subtotal, foodDataForBackend, ...props }: any) =>
 
   ) : state == true ? (
     <>
-      <Dialog open={state}>
+      <Dialog open={state} onOpenChange={()=>setState((prev)=>!prev)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Place Order As A Guest</DialogTitle>

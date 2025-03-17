@@ -48,7 +48,23 @@ export default function OrdersSearch(props:any) {
 
 
   const hanldeChange = (e:any) => {
+    const text=e.target.value
+    debugger
+    if(text.length==2){
+      const mealPre=text.slice(0,2);
+      let propPre=props.meal.slice(0, 2).toUpperCase();
+      if(propPre=='LU') propPre = 'LN'
+      if(propPre=='DI') propPre = 'DN'
+      debugger
+      if (mealPre.toUpperCase() == propPre.toUpperCase()) {
+        setSearchOrder(e.target.value);
+      }else{
+        setSearchOrder('');
+      }
+    }else{
     setSearchOrder(e.target.value);
+    }
+   
     if(error) setError('');
   }
   

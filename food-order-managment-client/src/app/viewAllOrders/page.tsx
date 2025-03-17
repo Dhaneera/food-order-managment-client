@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
 
 const Page = () => {
     const rowCountPerPage = 10;
-    let name: string = '';
+    let name: string = 'all';
     const [page, setPage] = useState(1);
     const tableRows: any = [];
     const router = useRouter();
